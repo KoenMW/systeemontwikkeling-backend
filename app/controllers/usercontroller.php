@@ -2,15 +2,18 @@
 
 namespace Controllers;
 
+
 use Services\UserService;
 use Exception;
+use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
-use \Firebase\JWT\Key;
 
 
 class UserController extends Controller
 {
     private $service;
+
+    private $jwt;
 
     // initialize services
     function __construct()
@@ -35,7 +38,6 @@ class UserController extends Controller
         try {
             $user = $this->createObjectFromPostedJson("Models\\User");
             $this->service->createUser($user);
-            print_r($user);
             $this->respond($user);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
