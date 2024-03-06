@@ -16,11 +16,8 @@ class PageController extends Controller
     function get()
     {
         //declare variable test:
-        $test = new \stdClass();
-        $test->name = "John";
-        $test->age = 30;
-        $test->city = "New York";
-        $this->respond($test);
+        $page = $this->service->getOne(1);
+        $this->respond($page);
     }
 
     function post()
