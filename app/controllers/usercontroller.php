@@ -13,8 +13,6 @@ class UserController extends Controller
 {
     private $service;
 
-    private $jwt;
-
     // initialize services
     function __construct()
     {
