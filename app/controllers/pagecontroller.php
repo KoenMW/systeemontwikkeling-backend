@@ -5,7 +5,7 @@ namespace Controllers;
 use Services\PageService;
 
 
-class TestController extends Controller
+class PageController extends Controller
 {
 
     function __construct()
