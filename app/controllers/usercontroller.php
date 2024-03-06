@@ -60,8 +60,8 @@ class UserController extends Controller
             "exp" => $expire,
             "data" => array(
                 "id" => $user->id,
-                "username" => $user->username,
-                "email" => $user->email
+                "email" => $user->email,
+                "role" => $user->role
             )
         );
 

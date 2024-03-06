@@ -52,7 +52,6 @@ class UserRepository extends Repository
         $stmt = $this->connection->prepare("INSERT INTO users 
         (email, password, role) VALUES (?,?,?)");
         $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role]);
-        print($user);
         }
         catch (PDOException $e){
             echo $e;
