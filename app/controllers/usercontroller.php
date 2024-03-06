@@ -17,7 +17,8 @@ class UserController extends Controller
         $this->service = new UserService();
     }
 
-    public function login() {
+    public function login()
+    {
 
         // read user data from request body
 
@@ -34,7 +35,7 @@ class UserController extends Controller
         try {
             $user = $this->createObjectFromPostedJson("Models\\User");
             $this->service->createUser($user);
-
+            print_r($user);
             $this->respond($user);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());

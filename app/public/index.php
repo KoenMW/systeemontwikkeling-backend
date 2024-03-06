@@ -29,7 +29,7 @@ $router->delete('/categories/(\d+)', 'CategoryController@delete');
 
 // routes for the users endpoint
 $router->post('/users/login', 'UserController@login');
-$router->post('/users/signUp', 'UsersController@createUser');
+$router->post('/users/signUp', 'UserController@createUser');
 
 // routes for the test endpoint 
 $router->get('/test', 'TestController@get');
