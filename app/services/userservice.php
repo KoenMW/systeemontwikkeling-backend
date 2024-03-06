@@ -19,4 +19,7 @@ class UserService {
     public function createUser($user){
         $this->repository->createUser($user);
     }
+    public function checkEmailPassword($username, $password){
+        return $this->repository->checkEmailPassword($username, $password);
+    }
 }
