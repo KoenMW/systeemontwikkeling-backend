@@ -6,15 +6,14 @@ use Services\UserService;
 
 class UserController extends Controller
 {
-    private $service;
-
     // initialize services
     function __construct()
     {
         $this->service = new UserService();
     }
 
-    public function login() {
+    public function login()
+    {
 
         // read user data from request body
 

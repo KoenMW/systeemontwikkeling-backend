@@ -8,9 +8,12 @@ use \Firebase\JWT\Key;
 
 class Controller
 {
-    function checkForJwt() {
-         // Check for token header
-         if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    protected $service;
+
+    function checkForJwt()
+    {
+        // Check for token header
+        if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $this->respondWithError(401, "No token provided");
             return;
         }
@@ -65,7 +68,7 @@ class Controller
             return $object;
         }
         foreach ($data as $key => $value) {
-            if(is_object($value)) {
+            if (is_object($value)) {
                 continue;
             }
             $object->{$key} = $value;
