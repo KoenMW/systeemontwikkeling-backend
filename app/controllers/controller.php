@@ -30,8 +30,6 @@ class Controller
         if ($jwt) {
             try {
                 $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
-                // username is now found in
-                // echo $decoded->data->username;
                 return $decoded;
             } catch (Exception $e) {
                 $this->respondWithError(401, $e->getMessage());
