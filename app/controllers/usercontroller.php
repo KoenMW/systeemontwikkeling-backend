@@ -11,8 +11,6 @@ use Firebase\JWT\JWT;
 
 class UserController extends Controller
 {
-    private $service;
-
     // initialize services
     function __construct()
     {

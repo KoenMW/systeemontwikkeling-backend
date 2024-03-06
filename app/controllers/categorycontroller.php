@@ -7,8 +7,6 @@ use Services\CategoryService;
 
 class CategoryController extends Controller
 {
-    private $service;
-
     // initialize services
     function __construct()
     {
@@ -45,7 +43,7 @@ class CategoryController extends Controller
             $this->respondWithError(404, "Category not found");
             return;
         }
-        
+
         $this->respond($category);
     }
 

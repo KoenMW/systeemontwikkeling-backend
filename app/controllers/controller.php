@@ -8,6 +8,8 @@ use \Firebase\JWT\Key;
 
 class Controller
 {
+    protected $service;
+
     function checkForJwt()
     {
         // Check for token header
