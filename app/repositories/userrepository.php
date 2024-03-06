@@ -5,6 +5,8 @@ namespace Repositories;
 use PDO;
 use PDOException;
 use Repositories\Repository;
+use Exception;
+
 
 class UserRepository extends Repository
 {
@@ -56,5 +58,29 @@ class UserRepository extends Repository
         catch (PDOException $e){
             echo $e;
         }
+    }
+    function checkEmailPassword($email, $password)
+    {
+        // retrieve the user with the given username
+        $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\\User');
+        $user = $stmt->fetch();
+
+        if (!$user) {
+            throw new Exception("Incorrect email");
+        } 
+        
+        $passwordResult = $this->verifyPassword($password, $user->password);
+        
+        if (!$passwordResult) {
+            throw new Exception("Incorrect password");
+        }
+
+        // do not pass the password hash to the caller
+        $user->password = "";
+        return $user;
     }
 }

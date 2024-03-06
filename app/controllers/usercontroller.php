@@ -2,8 +2,10 @@
 
 namespace Controllers;
 
+
 use Services\UserService;
 use Exception;
+use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
 
 
@@ -19,23 +21,21 @@ class UserController extends Controller
 
     public function login()
     {
+        try {
+            $data = $this->createObjectFromPostedJson("Models\\User");
+            $user = $this->service->checkEmailPassword($data->email, $data->password);
 
-        // read user data from request body
-
-        // get user from db
-
-        // if the method returned false, the username and/or password were incorrect
-
-        // generate jwt
-
-        // return jwt
+            $tokenResponse = $this->generateJwt($user);
+            $this->respond($tokenResponse);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
     }
     public function createUser()
     {
         try {
             $user = $this->createObjectFromPostedJson("Models\\User");
             $this->service->createUser($user);
-            print_r($user);
             $this->respond($user);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
