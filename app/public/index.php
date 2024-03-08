@@ -37,5 +37,8 @@ $router->get('/test', 'TestController@get');
 // pages endpoint
 $router->get('/pages', 'PageController@get');
 
+// events endpoint
+$router->get('/events', 'EventController@get');
+
 // Run it!
 $router->run();
