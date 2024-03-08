@@ -13,11 +13,11 @@ class EventController extends Controller
         $this->service = new EventService();
     }
 
-    function get()
+    function get($eventType)
     {
         //declare variable test:
-        $page = $this->service->getByType("1");
-        $this->respond($page);
+        $events = $this->service->getByType($eventType);
+        $this->respond($events);
     }
 
     function post()

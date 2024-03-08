@@ -35,10 +35,10 @@ $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/test', 'TestController@get');
 
 // pages endpoint
-$router->get('/pages', 'PageController@get');
+$router->get('/pages/(\d+)', 'PageController@get');
 
 // events endpoint
-$router->get('/events', 'EventController@get');
+$router->get('/events/(\d+)', 'EventController@get');
 
 // Run it!
 $router->run();
