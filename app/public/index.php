@@ -41,7 +41,10 @@ $router->delete('/orders', 'OrderController@deleteOrder');
 $router->get('/test', 'TestController@get');
 
 // pages endpoint
-$router->get('/pages', 'PageController@get');
+$router->get('/pages/(\d+)', 'PageController@get');
+
+// events endpoint
+$router->get('/events/(\d+)', 'EventController@get');
 
 // Run it!
 $router->run();
