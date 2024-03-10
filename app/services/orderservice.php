@@ -11,8 +11,8 @@ class OrderService {
         $this->orderRepository = new OrderRepository();
     }
 
-    public function getAllOrders(int $offset = null, int $limit = null) {
-        return $this->orderRepository->getAllOrders($offset, $limit);
+    public function getAllOrders() {
+        return $this->orderRepository->getAllOrders();
     }
 
     public function createOrder(Order $order) {

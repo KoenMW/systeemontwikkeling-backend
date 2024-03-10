@@ -12,7 +12,7 @@ class OrderRepository extends Repository {
             $stmt->execute();
             $ordersData = $stmt->fetchAll();
             
-            if ($ordersData === false) {
+            if (!$ordersData) {
                 throw new \Exception("Failed to fetch orders from the database.");
             }
             
