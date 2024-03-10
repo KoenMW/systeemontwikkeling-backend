@@ -182,7 +182,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` int(11) NOT NULL,
-  `createDate` date NOT NULL DEFAULT current_timestamp()
+  `createDate` date NOT NULL DEFAULT current_timestamp(),
   `picture` TEXT DEFAULT NULL,
   `confirmed` BOOLEAN NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
