@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Gegenereerd op: 28 feb 2024 om 14:23
--- Serverversie: 10.9.4-MariaDB-1:10.9.4+maria~ubu2204
--- PHP-versie: 8.0.25
+-- Gegenereerd op: 10 mrt 2024 om 13:36
+-- Serverversie: 10.11.2-MariaDB-1:10.11.2+maria~ubu2204
+-- PHP-versie: 8.1.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -90,9 +90,9 @@ CREATE TABLE `events` (
 --
 
 INSERT INTO `events` (`id`, `title`, `startTime`, `price`, `location`, `ticket_amount`, `page_id`, `endTime`, `eventType`) VALUES
-(1, 'Gare du Nord', '2024-07-26 18:00:00', '15.00', 'Patronaat Main Hall', 200, 1, '2024-07-26 19:00:00', 1),
-(2, 'Mano Restaurant', '2024-07-26 18:00:00', '10.00', 'Bakenessergracht 109', 20, 3, '2024-07-26 20:00:00', 3),
-(3, 'English Tour', '2024-07-26 10:00:00', '17.50', 'Grote markt', 25, 2, '2024-07-26 12:30:00', 2);
+(1, 'Gare du Nord', '2024-07-26 18:00:00', 15.00, 'Patronaat Main Hall', 200, 1, '2024-07-26 19:00:00', 1),
+(2, 'Mano Restaurant', '2024-07-26 18:00:00', 10.00, 'Bakenessergracht 109', 20, 3, '2024-07-26 20:00:00', 3),
+(3, 'English Tour', '2024-07-26 10:00:00', 17.50, 'Grote markt', 25, 2, '2024-07-26 12:30:00', 2);
 
 -- --------------------------------------------------------
 
@@ -181,7 +181,8 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` int(11) NOT NULL
+  `role` int(11) NOT NULL,
+  `createDate` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -294,7 +295,7 @@ ALTER TABLE `pages`
 -- AUTO_INCREMENT voor een tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Beperkingen voor geëxporteerde tabellen
