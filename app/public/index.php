@@ -31,6 +31,12 @@ $router->delete('/categories/(\d+)', 'CategoryController@delete');
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 
+// orders endpoint
+$router->get('/orders', 'OrderController@getAllOrders');
+$router->post('/orders', 'OrderController@createOrder');
+$router->put('/orders', 'OrderController@updateOrder');
+$router->delete('/orders', 'OrderController@deleteOrder');
+
 // test endpoint
 $router->get('/test', 'TestController@get');
 
