@@ -30,6 +30,7 @@ $router->delete('/categories/(\d+)', 'CategoryController@delete');
 // users endpoint
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
+$router->get('/users', 'UserController@getUsers');
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
