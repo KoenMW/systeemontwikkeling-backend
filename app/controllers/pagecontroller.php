@@ -13,15 +13,9 @@ class PageController extends Controller
         $this->service = new PageService();
     }
 
-    function get()
+    function get($page_id)
     {
-        //declare variable test:
-        $page = $this->service->getOne(1);
+        $page = $this->service->getOne($page_id);
         $this->respond($page);
-    }
-
-    function post()
-    {
-        $this->respond("Hello from TestController");
     }
 }

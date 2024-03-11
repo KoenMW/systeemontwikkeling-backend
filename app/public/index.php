@@ -30,12 +30,25 @@ $router->delete('/categories/(\d+)', 'CategoryController@delete');
 // users endpoint
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
+$router->get('/users', 'UserController@getUsers');
+
+// orders endpoint
+$router->get('/orders', 'OrderController@getAllOrders');
+$router->get('/orders/(\d+)', 'OrderController@getById');
+$router->get('/orders/check/(\d+)', 'OrderController@checkOrderById');
+$router->post('/orders', 'OrderController@createOrder');
+$router->put('/orders', 'OrderController@updateOrder');
+$router->put('/orders/checkin', 'OrderController@setCheckin');
+$router->delete('/orders', 'OrderController@deleteOrder');
 
 // test endpoint
 $router->get('/test', 'TestController@get');
 
 // pages endpoint
-$router->get('/pages', 'PageController@get');
+$router->get('/pages/(\d+)', 'PageController@get');
+
+// events endpoint
+$router->get('/events/(\d+)', 'EventController@get');
 
 //password reset endpoint
 $router->post('/password/reset', 'PasswordResetController@reset');

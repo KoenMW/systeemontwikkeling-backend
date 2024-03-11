@@ -29,4 +29,7 @@ class UserService {
     {
         return $this->repository->updateResetToken($userId, $token, $expiry);
     }
+    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC') {
+        return $this->repository->getUsers($searchEmail, $filterRole, $sortByCreateDate);
+    }
 }
