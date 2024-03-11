@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 11, 2024 at 01:50 PM
+-- Generation Time: Mar 11, 2024 at 09:29 PM
 -- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
 -- PHP Version: 8.2.16
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `banners` (
   `picture` longblob DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `page_id` (`page_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `banners`
@@ -47,7 +47,8 @@ CREATE TABLE IF NOT EXISTS `banners` (
 INSERT INTO `banners` (`id`, `page_id`, `title`, `intro`, `picture`) VALUES
 (1, 1, 'Jazz', 'Experience the soulful diversity at Haarlem Festival Jazz with an electrifying lineup of vibrant jazz styles. From the improvisational fusion of Gumbo Kings to Evolve\'s avant-garde beats, and Ntjam Rosie\'s captivating neo-soul, immerse yourself in a tapestry of musical brilliance. Groove to Wicked Jazz Sounds\' infectious rhythms, savor Tom Thomsom Assemble\'s dynamic compositions, and be enchanted by Jonna Frazer\'s spellbinding vocals. Let Fox & The Mayors\' melodic tales captivate, Uncle Sue\'s nostalgia linger, and Chris Allen\'s smooth jazz mastery mesmerize. Feel Myles Sanko\'s soulful tunes, embrace Ruis Soundsystem\'s experimental beats, and bask in The Family XL\'s expansive melodies. Join us in Haarlem for an unforgettable celebration of jazz\'s rich tapestry!', NULL),
 (2, 3, 'Yummy', 'Experience Haarlem\'s Yummie! Festival event – \r\na culinary delight showcasing our city\'s diverse \r\nflavors! Discover exclusive festival menus at top \r\nrestaurants and savor home cooking recipes from \r\nour renowned chefs. Join us for an unforgettable \r\ncelebration of Haarlem\'s vibrant food scene!', NULL),
-(3, 2, 'Stroll through history', 'Embark on an enchanting voyage through the rich tapestry of Haarlem\'s centuries-old history! Now, before you even step foot on the tour, you\'ll get a preview of the city\'s hidden gems. Our expertly guided walking tour is a thrilling 2.5-hour exploration, complete with a rejuvenating 15-minute break.', NULL);
+(3, 2, 'Stroll through history', 'Embark on an enchanting voyage through the rich tapestry of Haarlem\'s centuries-old history! Now, before you even step foot on the tour, you\'ll get a preview of the city\'s hidden gems. Our expertly guided walking tour is a thrilling 2.5-hour exploration, complete with a rejuvenating 15-minute break.', NULL),
+(4, 4, 'Dance', 'Get ready to groove with Hardwel, Martin Garrix, and Tiesto in the ultimate dance extravaganza! Join us for electrifying beats and non-stop fun from August 15th to August 18th in Amsterdam. This high-energy event promises to keep you on your feet all night long.', NULL);
 
 -- --------------------------------------------------------
 
@@ -61,11 +62,11 @@ CREATE TABLE IF NOT EXISTS `cards` (
   `title` varchar(100) DEFAULT NULL,
   `text` text DEFAULT NULL,
   `picture` longblob DEFAULT NULL,
-  `page_id` int(11) DEFAULT NULL,
-  `redirect_link` text NOT NULL,
+  `page_id` int(11) NOT NULL,
+  `redirect_link` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `page_id` (`page_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `cards`
@@ -75,7 +76,30 @@ INSERT INTO `cards` (`id`, `title`, `text`, `picture`, `page_id`, `redirect_link
 (1, 'Gare du Nord', 'Gare du Nord is a sophisticated jazz-pop band acclaimed for their fusion of lounge, jazz, and pop elements, creating a distinctive sound that resonates with listeners worldwide.', NULL, 1, ''),
 (2, 'Tatsu Haarlem', 'At Tatsu Haarlem, you can enjoy a delightful all-you-can-eat lunch and dinner seven days a week. Come by and get two hours of unlimited access to our delicious sushi and modern Japanese cuisine.', NULL, 3, ''),
 (4, 'De Sint Bavokerk', 'The city of Haarlem is located around the Grote St. Bavokerk (or Sint-Bavo Cathedral). This late medieval church was built on the Grote Markt and has a height of 78 meters.', NULL, 2, ''),
-(5, 'Myles Sanko', 'Myles Sanko, a soul singer extraordinaire, brings his powerful voice and emotive storytelling to the stage, delivering performances that touch hearts and uplift spirits.', NULL, 1, '');
+(5, 'Myles Sanko', 'Myles Sanko, a soul singer extraordinaire, brings his powerful voice and emotive storytelling to the stage, delivering performances that touch hearts and uplift spirits.', NULL, 1, ''),
+(9, 'Ntjam Rosie', 'Ntjam Rosie, a Haarlem native, enchants audiences with her versatile vocals and eclectic blend of jazz, soul, and African influences, creating a truly unique musical experience.', NULL, 1, NULL),
+(10, 'Rilan & The Bombadiers', 'Rilan & The Bombadiers deliver energetic and charismatic performances, blending funk, pop, and jazz, creating an electrifying atmosphere that gets the crowd moving.', NULL, 1, NULL),
+(11, 'Soul Six', 'Soul Six brings a contemporary twist to classic soul and jazz, infusing their performances with infectious grooves and powerful vocals that resonate with audiences of all ages.', NULL, 1, NULL),
+(12, 'De Hallen', 'The Frans Hals Museum, founded in 1862 and known as the “Museum of the Golden Century,” displays Haarlem’s 16th-century architectural development.', NULL, 2, NULL),
+(13, 'Grote Markt', 'Next to the church of St. Bavo there is a large square in the centre, formerly known as \'t Sant, a name originating from when the square was unpaved.', NULL, 2, NULL),
+(14, 'Proveniershof', 'established in 1704, was originally the Michielsklooster, a structure built for women in 1401. After 167 years, the grounds were transferred to the city of Haarlem.', NULL, 2, NULL),
+(15, 'Waalse Kerk Haarlem', 'Built in 1262, the Walloon Church is Haarlem’s oldest. Despite a fire in 1347 that led to its destruction, it was rebuilt a few years later, preserving its status as the city’s most ancient church.', NULL, 2, NULL),
+(16, 'Mano Restaurant', 'Meet Kevin Kion and Daniël Damen, the culinary force behind Mano. Our menu blends global street food influences with French finesse. Join our 15-year flavorful journey today! ', NULL, 3, NULL),
+(17, 'Restaurant De Zeeuw', 'Discover Restaurant De Zeeuw\'s artisanal touch, offering a sustainable dining experience with locally sourced seasonal delights, curated by skilled chefs.', NULL, 3, NULL),
+(18, 'card titel Hardwel', 'Experience the electrifying energy of Harwel as he takes the stage with his signature beats.', NULL, 4, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detail_page`
+--
+
+DROP TABLE IF EXISTS `detail_page`;
+CREATE TABLE IF NOT EXISTS `detail_page` (
+  `id` int(11) NOT NULL,
+  `page_id` int(11) NOT NULL,
+  `parent_page_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -164,7 +188,7 @@ INSERT INTO `info_texts` (`id`, `page_id`, `title`, `content`, `img`) VALUES
 
 DROP TABLE IF EXISTS `Orders`;
 CREATE TABLE IF NOT EXISTS `Orders` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(23) NOT NULL,
   `event_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
@@ -172,16 +196,26 @@ CREATE TABLE IF NOT EXISTS `Orders` (
   `paymentDate` date DEFAULT NULL,
   `checkedIn` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
   KEY `event_id` (`event_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `Orders`
 --
 
 INSERT INTO `Orders` (`id`, `event_id`, `user_id`, `quantity`, `comment`, `paymentDate`, `checkedIn`) VALUES
-(1, 1, 1, 2, NULL, NULL, b'0');
+('65ef324f0e1836.47147373', 1, 5, 2, '', NULL, b'0'),
+('65ef32a0b82d25.11475413', 1, 5, 2, '', NULL, b'0'),
+('65ef33223cd3f5.54606502', 1, 5, 2, '', NULL, b'0'),
+('65ef3327520141.29808749', 1, 5, 2, '', NULL, b'0'),
+('65ef3328bed001.66767682', 1, 5, 2, '', NULL, b'0'),
+('65ef332a5c0577.71884554', 1, 5, 2, '', NULL, b'0'),
+('65ef337112cfd5.71212646', 1, 5, 2, '', NULL, b'0'),
+('65ef33830ab194.64343561', 1, 5, 2, '', NULL, b'0'),
+('65ef3397c73777.35846103', 1, 5, 2, '', NULL, b'0'),
+('65ef34cea8eeb7.61936709', 1, 5, 2, '', NULL, b'0');
 
 -- --------------------------------------------------------
 
@@ -209,29 +243,45 @@ INSERT INTO `pages` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `restaurant_card`
+--
+
+DROP TABLE IF EXISTS `restaurant_card`;
+CREATE TABLE IF NOT EXISTS `restaurant_card` (
+  `id` int(11) NOT NULL,
+  `card_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  KEY `card_id` (`card_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` int(11) NOT NULL,
   `img` longblob DEFAULT NULL,
   `createDate` date NOT NULL DEFAULT current_timestamp(),
+  `phoneNumber` int(10) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `confirmed` bit(11) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `role`, `img`, `createDate`) VALUES
-(1, 'test', '$2y$10$Y0l3evmJXD4sXrXBoQmv5.A84sKDNvyW5o5qacZ9bb8bCS45zeDd.', 0, NULL, '2024-03-11'),
-(3, 'test@test.test', '$2y$10$CUCi56DH6GbykXc3GdaJFuWhuhCPCkxzYLeTsdv8YyHzjoMVsgcYO', 0, NULL, '2024-03-11'),
-(4, 'test111@test.test', '$2y$10$CNDv/Jj/KPzT6quQmGXkgOotVl.lrE1K0L24dwwDagtB/3EhG24US', 0, NULL, '2024-03-11');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `img`, `createDate`, `phoneNumber`, `address`, `confirmed`) VALUES
+(5, 'test', 'test@test.test', '$2y$10$tEK3nr8MsCqHcwGLd.JFsOBwh7.Qgs1ckXcv0zUPB668HGJ1LfsIS', 0, '', '2024-03-11', 1, 'test', b'00000000000');
 
 --
 -- Constraints for dumped tables
@@ -255,6 +305,19 @@ ALTER TABLE `cards`
 ALTER TABLE `events`
   ADD CONSTRAINT `event_typefk` FOREIGN KEY (`eventType`) REFERENCES `eventType` (`id`),
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`);
+
+--
+-- Constraints for table `Orders`
+--
+ALTER TABLE `Orders`
+  ADD CONSTRAINT `Orders_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`),
+  ADD CONSTRAINT `Orders_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `restaurant_card`
+--
+ALTER TABLE `restaurant_card`
+  ADD CONSTRAINT `restaurant_card_ibfk_1` FOREIGN KEY (`card_id`) REFERENCES `cards` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
