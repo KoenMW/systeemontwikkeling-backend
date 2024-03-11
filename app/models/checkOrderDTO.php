@@ -2,13 +2,17 @@
 
 namespace Models;
 
-class Order
+class checkOrderDTO
 {
     public int $id;
     public int $event_id;
     public int $user_id;
     public int $quantity;
+    public bool $checkedIn;
     public ?string $comment;
     public ?string $paymentDate;
-    public bool $checkedIn;
+    public string $title;
+    public string $startTime;
+    public string $endTime;
+    public string $location;
 }

@@ -15,13 +15,7 @@ class EventController extends Controller
 
     function get($eventType)
     {
-        //declare variable test:
         $events = $this->service->getByType($eventType);
         $this->respond($events);
-    }
-
-    function post()
-    {
-        $this->respond("Hello from TestController");
     }
 }
