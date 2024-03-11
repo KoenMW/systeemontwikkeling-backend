@@ -1,9 +1,12 @@
 <?php
+
 namespace Services;
 
+use Models\User;
 use Repositories\UserRepository;
 
-class UserService {
+class UserService
+{
 
     private $repository;
 
@@ -12,17 +15,22 @@ class UserService {
         $this->repository = new UserRepository();
     }
 
-    public function checkUsernamePassword($email, $password) {
-        return $this->repository->checkUsernamePassword($email, $password);
+    public function checkUsernamePassword($email, $password)
+    {
+        return $this->repository->login($email, $password);
     }
-    
-    public function createUser($user){
-        $this->repository->createUser($user);
+
+    public function createUser(User $user)
+    {
+        $user->img ?? $user->img = '';
+        $this->repository->signUp($user);
     }
-    public function checkEmailPassword($username, $password){
+    public function checkEmailPassword($username, $password)
+    {
         return $this->repository->checkEmailPassword($username, $password);
     }
-    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC') {
+    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC')
+    {
         return $this->repository->getUsers($searchEmail, $filterRole, $sortByCreateDate);
     }
 }

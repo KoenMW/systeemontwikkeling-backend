@@ -2,15 +2,16 @@
 
 namespace Repositories;
 
+use DateTime;
 use PDO;
 use PDOException;
 use Repositories\Repository;
 use Exception;
-
+use Models\User;
 
 class UserRepository extends Repository
 {
-    function checkUsernamePassword($email, $password)
+    function login($email, $password)
     {
         try {
             // retrieve the user with the given username
@@ -47,15 +48,15 @@ class UserRepository extends Repository
     {
         return password_verify($input, $hash);
     }
-    function createUser($user)
+
+    function signUp(User $user)
     {
-        try{
-        //inser the user into the table users and return the user
-        $stmt = $this->connection->prepare("INSERT INTO users 
-        (email, password, role) VALUES (?,?,?)");
-        $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role]);
-        }
-        catch (PDOException $e){
+        try {
+            //inser the user into the table users and return the user
+            $stmt = $this->connection->prepare("INSERT INTO users 
+        (email, password, role, username, img, phoneNumber, address) VALUES (?,?,?,?,?,?,?)");
+            $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role, $user->username, $user->img, $user->phoneNumber, $user->address]);
+        } catch (PDOException $e) {
             echo $e;
         }
     }
@@ -71,10 +72,10 @@ class UserRepository extends Repository
 
         if (!$user) {
             throw new Exception("Incorrect email");
-        } 
-        
+        }
+
         $passwordResult = $this->verifyPassword($password, $user->password);
-        
+
         if (!$passwordResult) {
             throw new Exception("Incorrect password");
         }
@@ -83,7 +84,8 @@ class UserRepository extends Repository
         $user->password = "";
         return $user;
     }
-    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC') {
+    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC')
+    {
         $query = "SELECT id, email, role, createDate FROM users WHERE 1 = 1";
         $parameters = [];
 
