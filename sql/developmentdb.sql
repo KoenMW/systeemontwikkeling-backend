@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 11, 2024 at 10:09 AM
+-- Generation Time: Mar 11, 2024 at 10:44 AM
 -- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
 -- PHP Version: 8.2.16
 
@@ -218,17 +218,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` int(11) NOT NULL,
-  `img` longblob NOT NULL,
+  `img` longblob DEFAULT NULL,
+  `create_time` date NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `role`, `img`) VALUES
-(1, 'test', '$2y$10$Y0l3evmJXD4sXrXBoQmv5.A84sKDNvyW5o5qacZ9bb8bCS45zeDd.', 0, '');
+INSERT INTO `users` (`id`, `email`, `password`, `role`, `img`, `create_time`) VALUES
+(1, 'test', '$2y$10$Y0l3evmJXD4sXrXBoQmv5.A84sKDNvyW5o5qacZ9bb8bCS45zeDd.', 0, NULL, '2024-03-11'),
+(3, 'test@test.test', '$2y$10$CUCi56DH6GbykXc3GdaJFuWhuhCPCkxzYLeTsdv8YyHzjoMVsgcYO', 0, NULL, '2024-03-11');
 
 --
 -- Constraints for dumped tables
