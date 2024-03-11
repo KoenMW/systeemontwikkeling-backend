@@ -74,15 +74,16 @@ class UserController extends Controller
                 "expireAt" => $expire
             );
     }
-    public function getUsers() {
+    public function getUsers()
+    {
         try {
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
             $sortByCreateDate = $_GET['sortByCreateDate'] ?? 'ASC';
-    
+
             $users = $this->service->getUsers($searchEmail, $filterRole, $sortByCreateDate);
             header('Content-Type: application/json');
-            echo json_encode($users);
+            $this->respond($users);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
