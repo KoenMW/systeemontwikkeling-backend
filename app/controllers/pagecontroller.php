@@ -18,9 +18,4 @@ class PageController extends Controller
         $page = $this->service->getOne($page_id);
         $this->respond($page);
     }
-
-    function post()
-    {
-        $this->respond("Hello from TestController");
-    }
 }
