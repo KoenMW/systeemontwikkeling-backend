@@ -37,5 +37,7 @@ $router->get('/test', 'TestController@get');
 // pages endpoint
 $router->get('/pages', 'PageController@get');
 
+//password reset endpoint
+$router->post('/password/reset', 'PasswordResetController@reset');
 // Run it!
 $router->run();

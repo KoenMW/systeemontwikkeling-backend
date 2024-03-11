@@ -1,4 +1,5 @@
 <?php
+
 namespace Services;
 
 use Repositories\UserRepository;
@@ -7,9 +8,9 @@ class UserService {
 
     private $repository;
 
-    function __construct()
+    function __construct($db)
     {
-        $this->repository = new UserRepository();
+        $this->repository = new UserRepository($db);
     }
 
     public function checkUsernamePassword($email, $password) {
@@ -17,9 +18,15 @@ class UserService {
     }
     
     public function createUser($user){
-        $this->repository->createUser($user);
+        return $this->repository->createUser($user);
     }
-    public function checkEmailPassword($username, $password){
-        return $this->repository->checkEmailPassword($username, $password);
+
+    public function checkEmailPassword($email, $password){
+        return $this->repository->checkEmailPassword($email, $password);
+    }
+
+    public function updateResetToken($userId, $token, $expiry)
+    {
+        return $this->repository->updateResetToken($userId, $token, $expiry);
     }
 }
