@@ -4,7 +4,8 @@ namespace Services;
 
 use Repositories\UserRepository;
 use PHPMailer\PHPMailer\PHPMailer;
-use Exception;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 class PasswordResetService
 {
