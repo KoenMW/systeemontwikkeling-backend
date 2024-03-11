@@ -21,21 +21,6 @@ class OrderService
         return $this->orderRepository->getAllOrders();
     }
 
-    public function getById(int $id)
-    {
-        return $this->orderRepository->getById($id);
-    }
-
-    public function setCheckin(checkinDTO $checkinDTO)
-    {
-        return $this->orderRepository->setCheckin($checkinDTO);
-    }
-
-    public function checkOrderById(int $id)
-    {
-        return $this->orderRepository->checkOrder($id);
-    }
-
     public function createOrder(Order $order)
     {
         return $this->orderRepository->createOrder($order);
@@ -49,5 +34,41 @@ class OrderService
     public function deleteOrder(int $id)
     {
         return $this->orderRepository->deleteOrder($id);
+    }
+
+    /**
+     * Get order by id
+     * @param int $id
+     * @return Order
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getById(int $id)
+    {
+        return $this->orderRepository->getById($id);
+    }
+
+    /**
+     * sets the checkedIn value of an order
+     * @param checkinDTO $checkinDTO
+     * @return bool
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function setCheckin(checkinDTO $checkinDTO)
+    {
+        return $this->orderRepository->setCheckin($checkinDTO);
+    }
+
+    /**
+     * gets the order and the event data
+     * @param int $id
+     * @return checkOrderDTO
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function checkOrderById(int $id)
+    {
+        return $this->orderRepository->checkOrder($id);
     }
 }

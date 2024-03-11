@@ -1,12 +1,13 @@
 <?php
+
 namespace Models;
 
-class User {
+class User
+{
 
     public int $id;
     public string $password;
     public string $email;
     public int $role;
-    public string $create_time;
-
+    public string $createDate;
 }

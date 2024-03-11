@@ -10,6 +10,11 @@ use Models\Page;
 
 class PageRepository extends Repository
 {
+    /**
+     * Get all pages
+     * @param int $id
+     * created by: Koen Wijchers
+     */
     function getOne($id)
     {
         try {
