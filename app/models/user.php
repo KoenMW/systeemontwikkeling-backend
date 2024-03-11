@@ -7,5 +7,6 @@ class User {
     public string $password;
     public string $email;
     public int $role;
+    public string $create_time;
 
 }

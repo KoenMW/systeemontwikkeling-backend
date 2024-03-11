@@ -83,4 +83,32 @@ class UserRepository extends Repository
         $user->password = "";
         return $user;
     }
+    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC') {
+        $query = "SELECT id, email, role, createDate FROM users WHERE 1 = 1";
+        $parameters = [];
+
+        if ($searchEmail !== null) {
+            $query .= " AND email LIKE :searchEmail";
+            $parameters[':searchEmail'] = '%' . $searchEmail . '%';
+        }
+
+        if ($filterRole !== null) {
+            $query .= " AND role = :filterRole";
+            $parameters[':filterRole'] = $filterRole;
+        }
+
+        $query .= " ORDER BY createDate " . ($sortByCreateDate === 'DESC' ? 'DESC' : 'ASC');
+
+        try {
+            $stmt = $this->connection->prepare($query);
+            foreach ($parameters as $key => &$val) {
+                $stmt->bindParam($key, $val);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS, 'Models\\User');
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 }

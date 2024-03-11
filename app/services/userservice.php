@@ -22,4 +22,7 @@ class UserService {
     public function checkEmailPassword($username, $password){
         return $this->repository->checkEmailPassword($username, $password);
     }
+    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC') {
+        return $this->repository->getUsers($searchEmail, $filterRole, $sortByCreateDate);
+    }
 }
