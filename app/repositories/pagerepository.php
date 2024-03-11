@@ -13,7 +13,7 @@ class PageRepository extends Repository
     /**
      * Get all pages
      * @param int $id
-     * created by: Koen Wijchers
+     * @author Koen Wijchers
      */
     function getOne($id)
     {
