@@ -1,4 +1,5 @@
 <?php
+
 namespace Models;
 
 class User {
@@ -8,5 +9,7 @@ class User {
     public string $email;
     public int $role;
     public string $create_time;
+    public ?string $reset_token;
+    public ?\DateTime $reset_token_expires_at;
 
 }

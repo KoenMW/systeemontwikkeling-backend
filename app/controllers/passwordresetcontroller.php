@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Services\PasswordResetService;
+
 class PasswordResetController extends Controller
 {
     private $passwordResetService;
@@ -29,5 +30,11 @@ class PasswordResetController extends Controller
         $result = $this->passwordResetService->resetPassword($email);
 
         $this->sendResponse($result['message']);
+    }
+
+    // Define a sendResponse method to handle sending responses
+    private function sendResponse($message)
+    {
+        echo json_encode(['message' => $message]);
     }
 }

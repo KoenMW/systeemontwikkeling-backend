@@ -22,7 +22,7 @@ class PasswordResetService
     private function configureMailer()
     {
         $this->mailer->isSMTP();
-        $this->mailer->Host = 'smtp.example.com';
+        $this->mailer->Host = 'smtp.gmail.com';
         $this->mailer->Port = 587;
         $this->mailer->SMTPSecure = 'tls';
         $this->mailer->SMTPAuth = true;
@@ -42,7 +42,7 @@ class PasswordResetService
         $resetToken = bin2hex(random_bytes(16));
         $resetExpiry = date('Y-m-d H:i:s', time() + 3600);
 
-        $this->userRepository->updateResetToken($user['id'], $resetToken, $resetExpiry);
+        $this->userRepository->updateResetToken($user->id, $resetToken, $resetExpiry); 
 
         $resetLink = "http://localhost:5173/reset-password?token=$resetToken";
 
