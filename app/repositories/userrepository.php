@@ -83,31 +83,69 @@ class UserRepository extends Repository
       return $user;
    }
    public function updateResetToken($userId, $token, $expiry)
+{
+    // Calculate expiry time as one hour from now
+    $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    try {
+        $stmt = $this->connection->prepare('UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE id = :id');
+        $stmt->execute(['token' => $token, 'expiry' => $expiry, 'id' => $userId]);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+}
+
+   public function getUserByEmail($email)
    {
       try {
-         $stmt = $this->connection->prepare('UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE id = :id');
-         $stmt->execute(['token' => $token, 'expiry' => $expiry, 'id' => $userId]);
+         $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
+         $stmt->bindParam(':email', $email);
+         $stmt->execute();
+
+         $user = $stmt->fetch(PDO::FETCH_OBJ);
+
+         if (!$user) {
+            return null;
+         }
+
+         return $user;
       } catch (PDOException $e) {
-         echo $e->getMessage(); 
+         echo $e->getMessage();
+         return null;
       }
    }
-   public function getUserByEmail($email)
-    {
-        try {
-            $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            
-            $user = $stmt->fetch(PDO::FETCH_OBJ);
+   public function getUserByResetToken($token)
+   {
+      try {
+         $stmt = $this->connection->prepare("SELECT * FROM users WHERE reset_token = :token AND reset_token_expiry > NOW()");
+         $stmt->bindParam(':token', $token);
+         $stmt->execute();
 
-            if (!$user) {
-                return null;
-            }
+         $user = $stmt->fetch(PDO::FETCH_OBJ);
 
-            return $user;
-        } catch (PDOException $e) {
-            echo $e->getMessage();
+         if (!$user) {
             return null;
-        }
-    }
+         }
+
+         return $user;
+      } catch (PDOException $e) {
+         echo $e->getMessage();
+         return null;
+      }
+   }
+   public function updatePassword($token, $password)
+   {
+      try {
+         $user = $this->getUserByResetToken($token);
+
+         if (!$user) {
+            throw new Exception('User not found or token expired');
+         }
+
+         $hashedPassword = $this->hashPassword($password);
+         $stmt = $this->connection->prepare('UPDATE users SET password = :password, reset_token = NULL, reset_token_expiry = NULL WHERE id = :id');
+         $stmt->execute(['password' => $hashedPassword, 'id' => $user->id]);
+      } catch (PDOException $e) {
+         throw new Exception('Failed to update password: ' . $e->getMessage());
+      }
+   } 
 }
