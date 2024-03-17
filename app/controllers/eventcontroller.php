@@ -13,15 +13,14 @@ class EventController extends Controller
         $this->service = new EventService();
     }
 
+    /**
+     * gets all events by type
+     * @param string $eventType
+     * @author Koen Wijchers
+     */
     function get($eventType)
     {
-        //declare variable test:
         $events = $this->service->getByType($eventType);
         $this->respond($events);
-    }
-
-    function post()
-    {
-        $this->respond("Hello from TestController");
     }
 }
