@@ -123,7 +123,7 @@ class OrderRepository extends Repository
      * @return checkOrderDTO
      * @author Koen Wijchers
      */
-    public function checkOrder(int $id)
+    public function checkOrder($id)
     {
         try {
             $stmt = $this->connection->prepare("

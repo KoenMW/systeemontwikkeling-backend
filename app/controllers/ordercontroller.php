@@ -62,7 +62,6 @@ class OrderController extends Controller
     {
         try {
             $order = $this->orderService->checkOrderById($id);
-
             if (!$order) {
                 $this->respondWithError(404, "Order not found");
                 return;

@@ -4,7 +4,7 @@ namespace Models;
 
 class checkOrderDTO
 {
-    public int $id;
+    public string $id;
     public int $event_id;
     public int $user_id;
     public int $quantity;

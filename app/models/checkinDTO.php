@@ -4,6 +4,6 @@ namespace Models;
 
 class checkinDTO
 {
-    public int $id;
+    public string $id;
     public bool $checkedIn;
 }
