@@ -21,7 +21,7 @@ $router->get('/users', 'UserController@getUsers');
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
 $router->get('/orders/(\d+)', 'OrderController@getById');
-$router->get('/orders/check/(\d+)', 'OrderController@checkOrderById');
+$router->get('/orders/check/([\w\.]+)', 'OrderController@checkOrderById');
 $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
