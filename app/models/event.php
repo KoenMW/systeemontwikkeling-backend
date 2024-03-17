@@ -2,8 +2,6 @@
 
 namespace Models;
 
-use DateTime;
-
 class Event
 {
 
