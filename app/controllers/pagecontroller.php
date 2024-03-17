@@ -23,4 +23,17 @@ class PageController extends Controller
         $page = $this->service->getOne($page_id);
         $this->respond($page);
     }
+
+    /**
+     * gets a detail page by id
+     * @param int $page_id
+     * @return Page
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    function getDetailPage($page_id)
+    {
+        $page = $this->service->getDetailPage($page_id);
+        $this->respond($page);
+    }
 }

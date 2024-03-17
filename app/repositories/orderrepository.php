@@ -42,17 +42,13 @@ class OrderRepository extends Repository
     public function createOrder(Order $order)
     {
         try {
-            $sql = "INSERT INTO Orders (event_id, user_id, quantity, comment, paymentDate) VALUES (?, ?, ?, ?, ?)";
+            $id = uniqid("", true);
+            $sql = "INSERT INTO Orders (id, event_id, user_id, quantity, comment) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->connection->prepare($sql);
             if (!$stmt) {
                 throw new \Exception("Failed to prepare statement");
             }
-            $paymentDate = new \DateTime($order->paymentDate);
-            $result = $stmt->execute([$order->event_id, $order->user_id, $order->quantity, $order->comment, $paymentDate->format('Y-m-d')]);
-            if (!$result) {
-                throw new \Exception("Failed to execute statement");
-            }
-            return $this->connection->lastInsertId();
+            return $stmt->execute([$id, $order->event_id, $order->user_id, $order->quantity, $order->comment]);
         } catch (\Exception $e) {
             error_log($e->getMessage());
             return false;
@@ -127,7 +123,7 @@ class OrderRepository extends Repository
      * @return checkOrderDTO
      * @author Koen Wijchers
      */
-    public function checkOrder(int $id)
+    public function checkOrder($id)
     {
         try {
             $stmt = $this->connection->prepare("

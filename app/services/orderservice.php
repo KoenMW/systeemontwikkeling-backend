@@ -23,6 +23,7 @@ class OrderService
 
     public function createOrder(Order $order)
     {
+        $order->comment ?? $order->comment = '';
         return $this->orderRepository->createOrder($order);
     }
 
@@ -67,7 +68,7 @@ class OrderService
      * @throws \Exception
      * @author Koen Wijchers
      */
-    public function checkOrderById(int $id)
+    public function checkOrderById($id)
     {
         return $this->orderRepository->checkOrder($id);
     }

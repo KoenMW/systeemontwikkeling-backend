@@ -62,7 +62,6 @@ class OrderController extends Controller
     {
         try {
             $order = $this->orderService->checkOrderById($id);
-
             if (!$order) {
                 $this->respondWithError(404, "Order not found");
                 return;
@@ -101,7 +100,7 @@ class OrderController extends Controller
         try {
             $order = $this->createObjectFromPostedJson(Order::class);
 
-            if (!isset($order->event_id, $order->user_id, $order->quantity, $order->comment, $order->paymentDate)) {
+            if (!isset($order->event_id, $order->user_id, $order->quantity)) {
                 $this->respondWithError(400, "Missing order data");
                 return;
             }
