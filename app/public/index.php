@@ -32,6 +32,7 @@ $router->get('/test', 'TestController@get');
 
 // pages endpoint
 $router->get('/pages/(\d+)', 'PageController@get');
+$router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');

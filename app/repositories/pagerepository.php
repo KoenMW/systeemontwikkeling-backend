@@ -152,4 +152,35 @@ class PageRepository extends Repository
             return false;
         }
     }
+
+    /**
+     * gets the detail page by id
+     * @param int $id
+     * @return Page
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getDetailPage($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+                SELECT pages.*, 
+                banners.intro, 
+                banners.picture
+                FROM detail_page
+                LEFT JOIN pages ON detail_page.page_id = pages.id 
+                LEFT JOIN banners ON pages.id = banners.page_id 
+                WHERE pages.id = :id
+            ");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Page::class);
+            $page = $stmt->fetch();
+            $page->cards = $this->getCards($id);
+            return $page;
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
 }
