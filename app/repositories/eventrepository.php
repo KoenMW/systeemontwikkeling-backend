@@ -34,4 +34,70 @@ class EventRepository extends Repository
             echo $e;
         }
     }
+
+    /**
+     * gets the event by page id
+     * @param int $id
+     * @return Event[]
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getEventsByPageId(int $id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+                SELECT id, 
+                title, 
+                startTime, 
+                endTime, 
+                price, 
+                location, 
+                ticket_amount, 
+                eventType
+                FROM events
+                WHERE events.page_id = :id
+            ");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Event::class);
+            $events = $stmt->fetchAll();
+            return $events;
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+
+    /**
+     * gets the event by detail_page id
+     * @param int $id
+     * @return Event[]
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getEventsByDetailPageId(int $id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+                SELECT id, 
+                title, 
+                startTime, 
+                endTime, 
+                price, 
+                location, 
+                ticket_amount, 
+                eventType
+                FROM events
+                WHERE events.detail_page_id = :id
+            ");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Event::class);
+            $events = $stmt->fetchAll();
+            return $events;
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
 }

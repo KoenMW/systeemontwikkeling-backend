@@ -23,6 +23,7 @@ class OrderService
 
     public function createOrder(Order $order)
     {
+        $order->comment ?? $order->comment = '';
         return $this->orderRepository->createOrder($order);
     }
 
