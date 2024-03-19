@@ -17,6 +17,9 @@ $router->setNamespace('Controllers');
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/users', 'UserController@getUsers');
+$router->put('/users/update', 'UserController@updateUser');
+$router->put('/users/changePassword', 'UserController@changePassword'); 
+$router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');

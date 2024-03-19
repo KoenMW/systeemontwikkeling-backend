@@ -16,22 +16,49 @@ class OrderService
         $this->orderRepository = new OrderRepository();
     }
 
+    /**
+    * Retrieves all orders from the database.
+    * @return array An array of Order objects representing all orders in the database
+    * @throws Exception If there's an error fetching the orders from the database
+    * @author Luko Pecotic
+    */
     public function getAllOrders()
     {
         return $this->orderRepository->getAllOrders();
     }
 
+    /**
+    * Creates a new order in the database.
+    * @param Order $order The order to be created
+    * @return bool True if the order was created successfully, false otherwise
+    * @throws Exception If there's an error preparing the SQL statement
+    * @author Luko Pecotic
+    */
     public function createOrder(Order $order)
     {
         $order->comment ?? $order->comment = '';
         return $this->orderRepository->createOrder($order);
     }
 
+    /**
+    * Updates an existing order in the database.
+    * @param Order $order The order to be updated
+    * @return bool True if the order was updated successfully, false otherwise
+    * @throws Exception If there's an error preparing or executing the SQL statement
+    * @author Luko Pecotic
+    */
     public function updateOrder(Order $order)
     {
         return $this->orderRepository->updateOrder($order);
     }
 
+    /**
+    * Deletes an existing order from the database.
+    * @param int $id The id of the order to be deleted
+    * @return bool True if the order was deleted successfully, false otherwise
+    * @throws Exception If there's an error preparing or executing the SQL statement
+    * @author Luko Pecotic
+    */
     public function deleteOrder(int $id)
     {
         return $this->orderRepository->deleteOrder($id);

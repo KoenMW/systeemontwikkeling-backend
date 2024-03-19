@@ -88,4 +88,94 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+
+    /**
+    * Updates a user with the given id, if the user id in the token matches the user id in the request
+    * @author Luko Pecotic
+    */
+    public function updateUser()
+    {
+        try {
+            $jwt = $this->getBearerToken();
+            $key = 'SECRET_KEY';
+            $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
+
+            $data = $this->createObjectFromPostedJson("Models\\User");
+
+            if ($decoded->data->id == $data->id) {
+                $this->service->updateUser($data->id, $data->username, $data->email, $data->phoneNumber, $data->address);
+                $this->respond($data);
+            } else {
+                $this->respondWithError(401, "Unauthorized");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }   
+    }
+
+    /**
+    * Extracts the JWT token from the Authorization header
+    * @return string The JWT token
+    * @throws Exception If the Authorization header is not present
+    * @author Luko Pecotic
+    */
+    private function getBearerToken() 
+    {
+        $headers = getallheaders();
+        if (!empty($headers['Authorization'])) {
+            list(, $token) = explode(' ', $headers['Authorization']);
+            return $token;
+        }
+        throw new Exception('Missing token');
+    }
+
+    /**
+    * Changes the password of the user with the given id, if the user id in the token matches the user id in the request
+    * @author Luko Pecotic
+    */
+    public function changePassword()
+    {
+        try {
+            $jwt = $this->getBearerToken();
+            $key = 'SECRET_KEY';
+            $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
+
+            $json = file_get_contents('php://input');
+            $data = json_decode($json);
+
+            if ($decoded->data->id == $data->id) {
+                $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
+                $this->respond(array("message" => "Password changed successfully"));
+            } else {
+                $this->respondWithError(401, "Unauthorized");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }   
+    }
+
+    /**
+    * Uploads a profile picture for the user with the given id, if the user id in the token matches the user id in the request
+    * @author Luko Pecotic
+    */
+    public function uploadProfilePicture()
+    {
+        try {
+            $jwt = $this->getBearerToken();
+            $key = 'SECRET_KEY';
+            $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
+
+            $json = file_get_contents('php://input');
+            $data = json_decode($json);
+
+            if ($decoded->data->id == $data->id) {
+                $this->service->uploadProfilePicture($data->id, $data->base64Image);
+                $this->respond(array("message" => "Profile picture uploaded successfully"));
+            } else {
+                $this->respondWithError(401, "Unauthorized");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }   
+    }
 }
