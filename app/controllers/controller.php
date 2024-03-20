@@ -24,10 +24,7 @@ class Controller
         $arr = explode(" ", $authHeader);
         $jwt = $arr[1];
 
-        // Decode JWT
-        //import .env file
-        $secret_key = getenv('SECRET_KEY');
-        echo $secret_key;
+        $secret_key = parse_ini_file('../.env')["JWT_SECRET"];
 
         if ($jwt) {
             try {

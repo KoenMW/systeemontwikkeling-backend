@@ -90,15 +90,19 @@ class UserController extends Controller
     }
 
     /**
-    * Updates a user with the given id, if the user id in the token matches the user id in the request
-    * @author Luko Pecotic
-    */
+     * Updates a user with the given id, if the user id in the token matches the user id in the request
+     * @author Luko Pecotic
+     */
     public function updateUser()
     {
         try {
             $decoded = $this->checkForJwt();
 
             $data = $this->createObjectFromPostedJson("Models\\User");
+
+            if (!$decoded) {
+                return;
+            }
 
             if ($decoded->data->id == $data->id) {
                 $this->service->updateUser($data->id, $data->username, $data->email, $data->phoneNumber, $data->address);
@@ -108,13 +112,13 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-        }   
+        }
     }
 
     /**
-    * Changes the password of the user with the given id, if the user id in the token matches the user id in the request
-    * @author Luko Pecotic
-    */
+     * Changes the password of the user with the given id, if the user id in the token matches the user id in the request
+     * @author Luko Pecotic
+     */
     public function changePassword()
     {
         try {
@@ -130,13 +134,13 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-        }   
+        }
     }
 
     /**
-    * Uploads a profile picture for the user with the given id, if the user id in the token matches the user id in the request
-    * @author Luko Pecotic
-    */
+     * Uploads a profile picture for the user with the given id, if the user id in the token matches the user id in the request
+     * @author Luko Pecotic
+     */
     public function uploadProfilePicture()
     {
         try {
@@ -152,7 +156,7 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-        }   
+        }
     }
     public function deleteUser($id)
     {
@@ -172,5 +176,4 @@ class UserController extends Controller
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
-
 }
