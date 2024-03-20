@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use Repositories\Repository;
 use Exception;
+use DateTime;
 
 
 class UserRepository extends Repository
@@ -83,16 +84,14 @@ class UserRepository extends Repository
       return $user;
    }
    public function updateResetToken($userId, $token, $expiry)
-{
-    // Calculate expiry time as one hour from now
-    $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
-    try {
-        $stmt = $this->connection->prepare('UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE id = :id');
-        $stmt->execute(['token' => $token, 'expiry' => $expiry, 'id' => $userId]);
-    } catch (PDOException $e) {
-        echo $e->getMessage();
-    }
-}
+   {
+      try {
+         $stmt = $this->connection->prepare('UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE id = :id');
+         $stmt->execute(['token' => $token, 'expiry' => $expiry, 'id' => $userId]);
+      } catch (PDOException $e) {
+         throw new Exception('Error updating reset token: ' . $e->getMessage());
+      }
+   }
 
    public function getUserByEmail($email)
    {
@@ -103,16 +102,12 @@ class UserRepository extends Repository
 
          $user = $stmt->fetch(PDO::FETCH_OBJ);
 
-         if (!$user) {
-            return null;
-         }
-
-         return $user;
+         return $user ? $user : null;
       } catch (PDOException $e) {
-         echo $e->getMessage();
-         return null;
+         throw new Exception('Error fetching user by email: ' . $e->getMessage());
       }
    }
+
    public function getUserByResetToken($token)
    {
       try {
@@ -122,16 +117,12 @@ class UserRepository extends Repository
 
          $user = $stmt->fetch(PDO::FETCH_OBJ);
 
-         if (!$user) {
-            return null;
-         }
-
-         return $user;
+         return $user ? $user : null;
       } catch (PDOException $e) {
-         echo $e->getMessage();
-         return null;
+         throw new Exception('Error fetching user by reset token: ' . $e->getMessage());
       }
    }
+
    public function updatePassword($token, $password)
    {
       try {
@@ -147,5 +138,5 @@ class UserRepository extends Repository
       } catch (PDOException $e) {
          throw new Exception('Failed to update password: ' . $e->getMessage());
       }
-   } 
+   }
 }
