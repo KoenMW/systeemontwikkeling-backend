@@ -33,5 +33,10 @@ class EventService
     {
         return $this->repository->updateEvent($event);
     }
+    public function deleteEvent($id)
+    {
+        return $this->repository->deleteEvent($id);
+    }
+
 
 }

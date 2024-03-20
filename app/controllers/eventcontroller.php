@@ -41,5 +41,19 @@ class EventController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+    public function deleteEvent($id)
+{
+    try {
+        $result = $this->service->deleteEvent($id);
+        if ($result) {
+            $this->respond(['message' => "Event with ID $id deleted successfully."]);
+        } else {
+            $this->respondWithError(404, "Event not found or already deleted.");
+        }
+    } catch (Exception $e) {
+        $this->respondWithError(500, "Server error: " . $e->getMessage());
+    }
+}
+
 
 }

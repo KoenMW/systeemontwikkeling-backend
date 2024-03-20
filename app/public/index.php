@@ -40,6 +40,8 @@ $router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
 $router->put('/events/update/(\d+)', 'EventController@updateEvent');
+$router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
+
 
 
 // Run it!
