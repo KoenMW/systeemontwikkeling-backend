@@ -33,4 +33,8 @@ class UserService
     {
         return $this->repository->getUsers($searchEmail, $filterRole, $sortByCreateDate);
     }
+    public function deleteUser($id)
+    {
+        return $this->repository->deleteUser($id);
+    }
 }
