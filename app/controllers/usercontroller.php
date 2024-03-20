@@ -120,8 +120,7 @@ class UserController extends Controller
         try {
             $decoded = $this->checkForJwt();
 
-            $json = file_get_contents('php://input');
-            $data = json_decode($json);
+            $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -143,8 +142,7 @@ class UserController extends Controller
         try {
             $decoded = $this->checkForJwt();
 
-            $json = file_get_contents('php://input');
-            $data = json_decode($json);
+            $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
