@@ -113,6 +113,8 @@ class OrderController extends Controller
     public function createOrder()
     {
         try {
+
+            if (!$this->checkForJwt(2)) return;
             $order = $this->createObjectFromPostedJson(Order::class);
 
             if (!isset($order->event_id, $order->user_id, $order->quantity)) {
@@ -138,6 +140,7 @@ class OrderController extends Controller
     public function updateOrder()
     {
         try {
+            if (!$this->checkForJwt(2)) return;
             $order = $this->createObjectFromPostedJson(Order::class);
             if (!isset($order->id, $order->event_id, $order->user_id, $order->quantity, $order->comment, $order->paymentDate)) {
                 $this->respondWithError(400, "Missing order data");
@@ -162,6 +165,7 @@ class OrderController extends Controller
     public function deleteOrder()
     {
         try {
+            if (!$this->checkForJwt(2)) return;
             $id = $_GET['id'] ?? null;
             if ($id) {
                 $deleted = $this->orderService->deleteOrder($id);
