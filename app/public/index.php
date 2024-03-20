@@ -20,6 +20,8 @@ $router->get('/users', 'UserController@getUsers');
 $router->put('/users/update', 'UserController@updateUser');
 $router->put('/users/changePassword', 'UserController@changePassword'); 
 $router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
+$router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
+
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
@@ -39,6 +41,11 @@ $router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');
+$router->post('/events', 'EventController@addEvent');
+$router->put('/events/update/(\d+)', 'EventController@updateEvent');
+$router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
+
+
 
 // Run it!
 $router->run();

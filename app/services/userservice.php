@@ -71,5 +71,8 @@ class UserService
     public function uploadProfilePicture($id, $base64Image)
     {
         $this->repository->uploadProfilePicture($id, $base64Image);
+    public function deleteUser($id)
+    {
+        return $this->repository->deleteUser($id);
     }
 }
