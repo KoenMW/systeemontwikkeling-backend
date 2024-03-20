@@ -100,4 +100,19 @@ class EventRepository extends Repository
             echo $e;
         }
     }
+    public function addEvent(Event $event) {
+        $stmt = $this->connection->prepare("INSERT INTO events (title, startTime, endTime, price, location, ticket_amount, page_id, detail_page_id, eventType) VALUES (:title, :startTime, :endTime, :price, :location, :ticket_amount, :page_id, :detail_page_id, :eventType)");
+        $stmt->execute([
+            ':title' => $event->title,
+            ':startTime' => $event->startTime,
+            ':endTime' => $event->endTime,
+            ':price' => $event->price,
+            ':location' => $event->location,
+            ':ticket_amount' => $event->ticket_amount,
+            ':page_id' => $event->page_id,
+            ':detail_page_id' => $event->detail_page_id,
+            ':eventType' => $event->eventType
+        ]);
+        return $this->connection->lastInsertId();
+    }
 }

@@ -23,4 +23,9 @@ class EventController extends Controller
         $events = $this->service->getByType($eventType);
         $this->respond($events);
     }
+    public function addEvent() {
+        $event = $this->createObjectFromPostedJson("Models\\Event");
+        $eventId = $this->service->addEvent($event);
+        $this->respond(['message' => 'Event added successfully', 'eventId' => $eventId]);
+    }
 }

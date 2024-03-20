@@ -38,6 +38,7 @@ $router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');
+$router->post('/events', 'EventController@addEvent');
 
 // Run it!
 $router->run();
