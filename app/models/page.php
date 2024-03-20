@@ -9,5 +9,6 @@ class Page
     public string $intro;
     public ?string $picture;
     public ?array $cards;
+    public ?array $infoText;
     public ?array $events;
 }
