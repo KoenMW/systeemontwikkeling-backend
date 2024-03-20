@@ -3,7 +3,6 @@
 namespace Repositories;
 
 use Models\Order;
-use Models\checkOrderDTO;
 use Models\checkinDTO;
 use PDO;
 
@@ -99,6 +98,13 @@ class OrderRepository extends Repository
         }
     }
 
+    /**
+     * gets the order by id
+     * @param int $id
+     * @return Order|null
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
     public function getById(int $id)
     {
         try {
@@ -116,7 +122,10 @@ class OrderRepository extends Repository
     }
 
     /**
-     * function to check the payment status of the order and get the tickets asosiated with it
+     * gets the order and the event data
+     * @param int $id
+     * @return checkOrderDTO
+     * @author Koen Wijchers
      */
     public function checkOrder(int $id)
     {
@@ -149,6 +158,13 @@ class OrderRepository extends Repository
         }
     }
 
+    /**
+     * sets the checkedIn value of an order
+     * @param checkinDTO $checkinDTO
+     * @return bool
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
     public function setCheckin(checkinDTO $checkinDTO)
     {
         try {

@@ -32,6 +32,12 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * Get order by id
+     * @param int $id
+     * @return void
+     * @author Koen Wijchers
+     */
     public function getById($id)
     {
         try {
@@ -49,6 +55,9 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * @author Koen Wijchers
+     */
     public function checkOrderById($id)
     {
         try {
@@ -66,6 +75,10 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * sets the checkin status of an order
+     * @author Koen Wijchers
+     */
     public function setCheckin()
     {
         try {

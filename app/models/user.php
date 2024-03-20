@@ -2,7 +2,8 @@
 
 namespace Models;
 
-class User {
+class User
+{
 
     public int $id;
     public string $password;
@@ -11,5 +12,5 @@ class User {
     public string $create_time;
     public ?string $reset_token;
     public ?\DateTime $reset_token_expires_at;
-
+    public string $createDate;
 }

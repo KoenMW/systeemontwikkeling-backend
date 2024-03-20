@@ -14,6 +14,12 @@ class EventService
         $this->repository = new EventRepository();
     }
 
+    /**
+     * gets all events by type
+     * @param string $type
+     * @return array
+     * @author Koen Wijchers
+     */
     public function getByType($type)
     {
         return $this->repository->getByType($type);
