@@ -11,7 +11,7 @@ class User
     public string $email;
     public int $role;
     public string $createDate;
-    public string $img;
+    public ?string $img;
     public int $phoneNumber;
     public string $address;
     public $confirmed;

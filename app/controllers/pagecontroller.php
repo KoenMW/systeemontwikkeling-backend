@@ -36,4 +36,29 @@ class PageController extends Controller
         $page = $this->service->getDetailPage($page_id);
         $this->respond($page);
     }
+
+    /**
+     * updates a page
+     * @param Page $page
+     * @return Page
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    function updatePage()
+    {
+        $decoded = $this->checkForJwt(2);
+        if (!$decoded) {
+            return;
+        }
+
+        if ($decoded->data->role != 2) {
+            $this->respondWithError(401, "Unauthorized");
+            return;
+        }
+
+        $page = $this->createObjectFromPostedJson("Models\\Page");
+        // not jet implemented
+        //$this->service->updatePage($page);
+        $this->respond($page);
+    }
 }

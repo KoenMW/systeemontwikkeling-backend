@@ -14,7 +14,6 @@ class Controller
     {
         // Check for token header
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            print_r($_SERVER);
             $this->respondWithError(401, "No token provided");
             return;
         }
