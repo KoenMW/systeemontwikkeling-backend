@@ -46,15 +46,7 @@ class PageController extends Controller
      */
     function updatePage()
     {
-        $decoded = $this->checkForJwt(2);
-        if (!$decoded) {
-            return;
-        }
-
-        if ($decoded->data->role != 2) {
-            $this->respondWithError(401, "Unauthorized");
-            return;
-        }
+        if (!$this->checkForJwt(2)) return;
 
         $page = $this->createObjectFromPostedJson("Models\\Page");
         // not jet implemented

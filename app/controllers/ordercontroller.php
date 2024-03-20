@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Models\Order;
 use Models\checkinDTO;
+use Models\Role;
 use Services\OrderService;
 
 class OrderController extends Controller
@@ -16,12 +17,14 @@ class OrderController extends Controller
     }
 
     /**
-    * Retrieves all orders.
-    * @author Luko Pecotic
-    */
+     * Retrieves all orders.
+     * @author Luko Pecotic
+     */
     public function getAllOrders()
     {
         try {
+            if (!$this->checkForJwt(2)) return;
+
             $orders = $this->orderService->getAllOrders();
 
             if (!$orders) {
@@ -65,6 +68,8 @@ class OrderController extends Controller
     public function checkOrderById($id)
     {
         try {
+
+            if (!$this->checkForJwt(1)) return;
             $order = $this->orderService->checkOrderById($id);
             if (!$order) {
                 $this->respondWithError(404, "Order not found");
@@ -85,8 +90,10 @@ class OrderController extends Controller
     public function setCheckin()
     {
         try {
+
+            if (!$this->checkForJwt(1)) return;
+
             $DTO = $this->createObjectFromPostedJson(checkinDTO::class);
-            //$this->checkForJwt();
             if (!isset($DTO->id, $DTO->checkedIn)) {
                 $this->respondWithError(400, "Missing order data");
                 return;
@@ -100,9 +107,9 @@ class OrderController extends Controller
     }
 
     /**
-    * Creates a new order.
-    * @author Luko Pecotic
-    */
+     * Creates a new order.
+     * @author Luko Pecotic
+     */
     public function createOrder()
     {
         try {
@@ -125,9 +132,9 @@ class OrderController extends Controller
     }
 
     /**
-    * Updates an existing order.
-    * @author Luko Pecotic
-    */
+     * Updates an existing order.
+     * @author Luko Pecotic
+     */
     public function updateOrder()
     {
         try {
@@ -149,9 +156,9 @@ class OrderController extends Controller
     }
 
     /**
-    * Deletes an existing order.
-    * @author Luko Pecotic
-    */
+     * Deletes an existing order.
+     * @author Luko Pecotic
+     */
     public function deleteOrder()
     {
         try {
