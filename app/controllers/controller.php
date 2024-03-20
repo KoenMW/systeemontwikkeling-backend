@@ -10,10 +10,11 @@ class Controller
 {
     protected $service;
 
-    function checkForJwt()
+    function checkForJwt($role)
     {
         // Check for token header
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            print_r($_SERVER);
             $this->respondWithError(401, "No token provided");
             return;
         }
@@ -24,7 +25,7 @@ class Controller
         $arr = explode(" ", $authHeader);
         $jwt = $arr[1];
 
-        $secret_key = parse_ini_file('../.env')["JWT_SECRET"];
+        $secret_key = $this->getSecretKey($role);
 
         if ($jwt) {
             try {
@@ -34,6 +35,25 @@ class Controller
                 $this->respondWithError(401, $e->getMessage());
                 return;
             }
+        }
+    }
+
+
+    /**
+     * role id to jwt secret key
+     * @param int $role
+     * @return string
+     * @author Koen Wijchers
+     */
+    protected function getSecretKey($role)
+    {
+        switch ($role) {
+            case 1:
+                return parse_ini_file('../.env')["EMPLOYEE_SECRET_KEY"];
+            case 2:
+                return parse_ini_file('../.env')["ADMIN_SECRET_KEY"];
+            default:
+                return parse_ini_file('../.env')["USER_SECRET_KEY"];
         }
     }
 

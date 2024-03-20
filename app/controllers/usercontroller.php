@@ -39,9 +39,10 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+
     public function generateJwt($user)
     {
-        $secret_key = 'SECRET_KEY';
+        $secret_key = $this->getSecretKey($user->role);
 
         $issuer = "THE_ISSUER"; // this can be the domain/servername that issues the token
         $audience = "THE_AUDIENCE"; // this can be the domain/servername that checks the token
@@ -96,9 +97,11 @@ class UserController extends Controller
     public function updateUser()
     {
         try {
-            $decoded = $this->checkForJwt();
 
             $data = $this->createObjectFromPostedJson("Models\\User");
+
+
+            $decoded = $this->checkForJwt($data->role);
 
             if (!$decoded) {
                 return;
@@ -122,9 +125,11 @@ class UserController extends Controller
     public function changePassword()
     {
         try {
-            $decoded = $this->checkForJwt();
 
             $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
+
+
+            $decoded = $this->checkForJwt($data->role);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -144,9 +149,9 @@ class UserController extends Controller
     public function uploadProfilePicture()
     {
         try {
-            $decoded = $this->checkForJwt();
-
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
+
+            $decoded = $this->checkForJwt($data->role);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
