@@ -103,19 +103,23 @@ class EventRepository extends Repository
     }
     public function addEvent(Event $event)
     {
-        $stmt = $this->connection->prepare("INSERT INTO events (title, startTime, endTime, price, location, ticket_amount, page_id, detail_page_id, eventType) VALUES (:title, :startTime, :endTime, :price, :location, :ticket_amount, :page_id, :detail_page_id, :eventType)");
-        $stmt->execute([
-            ':title' => $event->title,
-            ':startTime' => $event->startTime,
-            ':endTime' => $event->endTime,
-            ':price' => $event->price,
-            ':location' => $event->location,
-            ':ticket_amount' => $event->ticket_amount,
-            ':page_id' => $event->page_id,
-            ':detail_page_id' => $event->detail_page_id,
-            ':eventType' => $event->eventType
-        ]);
-        return $this->connection->lastInsertId();
+        try {
+            $stmt = $this->connection->prepare("INSERT INTO events (title, startTime, endTime, price, location, ticket_amount, page_id, detail_page_id, eventType) VALUES (:title, :startTime, :endTime, :price, :location, :ticket_amount, :page_id, :detail_page_id, :eventType)");
+            $stmt->execute([
+                ':title' => $event->title,
+                ':startTime' => $event->startTime,
+                ':endTime' => $event->endTime,
+                ':price' => $event->price,
+                ':location' => $event->location,
+                ':ticket_amount' => $event->ticket_amount,
+                ':page_id' => $event->page_id,
+                ':detail_page_id' => $event->detail_page_id,
+                ':eventType' => $event->eventType
+            ]);
+            return $this->connection->lastInsertId();
+        } catch (PDOException $e) {
+            throw new Exception("Error adding event: " . $e->getMessage());
+        }
     }
     public function updateEvent($event)
     {
@@ -140,17 +144,17 @@ class EventRepository extends Repository
         }
     }
     public function deleteEvent($id)
-{
-    try {
-        $stmt = $this->connection->prepare("DELETE FROM events WHERE id = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->rowCount() > 0;
-    } catch (PDOException $e) {
-        throw new Exception("Error deleting event: " . $e->getMessage());
+    {
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM events WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            throw new Exception("Error deleting event {$id}");
+        }
     }
-}
 
 
 }

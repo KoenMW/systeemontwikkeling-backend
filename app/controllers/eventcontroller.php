@@ -38,7 +38,7 @@ class EventController extends Controller
             $this->service->updateEvent($eventData);
             $this->respond(['message' => 'Event updated successfully.']);
         } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+            $this->respondWithError(500, "something went wrong while updating event {$id}");
         }
     }
     public function deleteEvent($id)
