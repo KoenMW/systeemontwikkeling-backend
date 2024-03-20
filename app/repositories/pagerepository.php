@@ -37,7 +37,8 @@ class PageRepository extends Repository
             $page->infoText = $this->getInfoText($id);
             return $page;
         } catch (PDOException $e) {
-            echo $e;
+            error_log('Error getting page: ' . $e->getMessage());
+            throw new \Exception('Error getting page');
         }
     }
 
@@ -60,7 +61,8 @@ class PageRepository extends Repository
             $cards = $stmt->fetchAll();
             return $cards;
         } catch (PDOException $e) {
-            echo $e;
+            error_log('Error getting cards: ' . $e->getMessage());
+            throw new \Exception('Error getting cards');
         }
     }
 
@@ -83,7 +85,7 @@ class PageRepository extends Repository
             return $stmt->fetchAll();
         } catch (PDOException $e) {
             error_log('Error getting info_text: ' . $e->getMessage());
-            return false;
+            throw new \Exception('Error getting info_text');
         }
     }
 
@@ -103,7 +105,7 @@ class PageRepository extends Repository
             return $this->connection->lastInsertId();
         } catch (PDOException $e) {
             error_log('Error creating page: ' . $e->getMessage());
-            return false;
+            throw new \Exception('Error creating page');
         }
     }
 
@@ -128,7 +130,7 @@ class PageRepository extends Repository
             return true;
         } catch (PDOException $e) {
             error_log('Error creating card: ' . $e->getMessage());
-            return false;
+            throw new \Exception('Error creating card');
         }
     }
 
@@ -153,7 +155,7 @@ class PageRepository extends Repository
             return true;
         } catch (PDOException $e) {
             error_log('Error creating banner: ' . $e->getMessage());
-            return false;
+            throw new \Exception('Error creating banner');
         }
     }
 
@@ -177,7 +179,7 @@ class PageRepository extends Repository
             return true;
         } catch (PDOException $e) {
             error_log('Error creating info text: ' . $e->getMessage());
-            return false;
+            throw new \Exception('Error creating info text');
         }
     }
 
@@ -206,7 +208,7 @@ class PageRepository extends Repository
             return true;
         } catch (PDOException $e) {
             error_log('Error creating detail_page: ' . $e->getMessage());
-            return false;
+            throw new \Exception('Error creating detail_page');
         }
     }
 
@@ -240,7 +242,8 @@ class PageRepository extends Repository
             $page->infoText = $this->getInfoText($id);
             return $page;
         } catch (PDOException $e) {
-            echo $e;
+            error_log('Error getting detail page: ' . $e->getMessage());
+            throw new \Exception('Error getting detail page');
         }
     }
 }

@@ -32,7 +32,8 @@ class EventRepository extends Repository
             $page = $stmt->fetchAll();
             return $page;
         } catch (PDOException $e) {
-            echo $e;
+            error_log('Error getting event: ' . $e->getMessage());
+            throw new \Exception('Error getting event');
         }
     }
 
@@ -65,7 +66,8 @@ class EventRepository extends Repository
             $events = $stmt->fetchAll();
             return $events;
         } catch (PDOException $e) {
-            echo $e;
+            error_log('Error getting event: ' . $e->getMessage());
+            throw new \Exception('Error getting event');
         }
     }
 
@@ -98,7 +100,8 @@ class EventRepository extends Repository
             $events = $stmt->fetchAll();
             return $events;
         } catch (PDOException $e) {
-            echo $e;
+            error_log('Error getting event: ' . $e->getMessage());
+            throw new \Exception('Error getting event');
         }
     }
     public function addEvent(Event $event)
@@ -155,6 +158,4 @@ class EventRepository extends Repository
             throw new Exception("Error deleting event {$id}");
         }
     }
-
-
 }

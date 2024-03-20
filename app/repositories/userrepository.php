@@ -33,7 +33,8 @@ class UserRepository extends Repository
 
             return $user;
         } catch (PDOException $e) {
-            echo $e;
+            error_log($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -57,7 +58,8 @@ class UserRepository extends Repository
         (email, password, role, username, img, phoneNumber, address) VALUES (?,?,?,?,?,?,?)");
             $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role, $user->username, $user->img, $user->phoneNumber, $user->address]);
         } catch (PDOException $e) {
-            echo $e;
+            error_log($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
     function checkEmailPassword($email, $password)
@@ -115,39 +117,39 @@ class UserRepository extends Repository
     }
 
     /**
-    * Updates a user with the given id
-    * @param int $id
-    * @param string $username
-    * @param string $email
-    * @param int $phoneNumber
-    * @param string $address
-    * @author Luko Pecotic
-    */
+     * Updates a user with the given id
+     * @param int $id
+     * @param string $username
+     * @param string $email
+     * @param int $phoneNumber
+     * @param string $address
+     * @author Luko Pecotic
+     */
     public function updateUser($id, $username, $email, $phoneNumber, $address)
     {
-    try {
-        $stmt = $this->connection->prepare("UPDATE users SET username = :username, email = :email, phoneNumber = :phoneNumber, address = :address WHERE id = :id");
+        try {
+            $stmt = $this->connection->prepare("UPDATE users SET username = :username, email = :email, phoneNumber = :phoneNumber, address = :address WHERE id = :id");
 
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':phoneNumber', $phoneNumber);
-        $stmt->bindParam(':address', $address);
-        $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':phoneNumber', $phoneNumber);
+            $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':id', $id);
 
-        $stmt->execute();
-    } catch (PDOException $e) {
-        throw new Exception($e->getMessage());
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
     }
-}
 
     /**
-    * Changes the password of the user with the given id
-    * @param int $id
-    * @param string $currentPassword
-    * @param string $newPassword
-    * @throws Exception If the current password is incorrect or if there's an error updating the password in the database
-    * @author Luko Pecotic
-    */
+     * Changes the password of the user with the given id
+     * @param int $id
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @throws Exception If the current password is incorrect or if there's an error updating the password in the database
+     * @author Luko Pecotic
+     */
     public function changePassword($id, $currentPassword, $newPassword)
     {
         try {
@@ -177,12 +179,12 @@ class UserRepository extends Repository
     }
 
     /**
-    * Uploads a profile picture for the user with the given id
-    * @param int $id
-    * @param string $base64Image
-    * @throws Exception If there's an error updating the profile picture in the database
-    * @author Luko Pecotic
-    */
+     * Uploads a profile picture for the user with the given id
+     * @param int $id
+     * @param string $base64Image
+     * @throws Exception If there's an error updating the profile picture in the database
+     * @author Luko Pecotic
+     */
     public function uploadProfilePicture($id, $base64Image)
     {
         try {
@@ -213,5 +215,4 @@ class UserRepository extends Repository
             throw new Exception("Error deleting user: " . $e->getMessage());
         }
     }
-
 }

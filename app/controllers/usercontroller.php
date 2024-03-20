@@ -39,9 +39,10 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+
     public function generateJwt($user)
     {
-        $secret_key = 'SECRET_KEY';
+        $secret_key = $this->getSecretKey($user->role);
 
         $issuer = "THE_ISSUER"; // this can be the domain/servername that issues the token
         $audience = "THE_AUDIENCE"; // this can be the domain/servername that checks the token
@@ -70,6 +71,7 @@ class UserController extends Controller
             array(
                 "message" => "Successful login.",
                 "jwt" => $jwt,
+                "userId" => $user->id,
                 "email" => $user->email,
                 "expireAt" => $expire
             );
@@ -77,6 +79,8 @@ class UserController extends Controller
     public function getUsers()
     {
         try {
+            if (!$this->checkForJwt(2)) return;
+
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
             $sortByCreateDate = $_GET['sortByCreateDate'] ?? 'ASC';
@@ -90,15 +94,21 @@ class UserController extends Controller
     }
 
     /**
-    * Updates a user with the given id, if the user id in the token matches the user id in the request
-    * @author Luko Pecotic
-    */
+     * Updates a user with the given id, if the user id in the token matches the user id in the request
+     * @author Luko Pecotic
+     */
     public function updateUser()
     {
         try {
-            $decoded = $this->checkForJwt();
 
             $data = $this->createObjectFromPostedJson("Models\\User");
+
+
+            $decoded = $this->checkForJwt($data->role);
+
+            if (!$decoded) {
+                return;
+            }
 
             if ($decoded->data->id == $data->id) {
                 $this->service->updateUser($data->id, $data->username, $data->email, $data->phoneNumber, $data->address);
@@ -108,19 +118,21 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-        }   
+        }
     }
 
     /**
-    * Changes the password of the user with the given id, if the user id in the token matches the user id in the request
-    * @author Luko Pecotic
-    */
+     * Changes the password of the user with the given id, if the user id in the token matches the user id in the request
+     * @author Luko Pecotic
+     */
     public function changePassword()
     {
         try {
-            $decoded = $this->checkForJwt();
 
             $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
+
+
+            $decoded = $this->checkForJwt($data->role);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -130,19 +142,19 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-        }   
+        }
     }
 
     /**
-    * Uploads a profile picture for the user with the given id, if the user id in the token matches the user id in the request
-    * @author Luko Pecotic
-    */
+     * Uploads a profile picture for the user with the given id, if the user id in the token matches the user id in the request
+     * @author Luko Pecotic
+     */
     public function uploadProfilePicture()
     {
         try {
-            $decoded = $this->checkForJwt();
-
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
+
+            $decoded = $this->checkForJwt($data->role);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
@@ -152,7 +164,7 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
-        }   
+        }
     }
     public function deleteUser($id)
     {
@@ -172,5 +184,4 @@ class UserController extends Controller
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
-
 }
