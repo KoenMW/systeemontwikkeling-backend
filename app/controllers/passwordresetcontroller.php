@@ -7,52 +7,61 @@ use Exception;
 
 class PasswordResetController extends Controller
 {
-   private $passwordResetService;
+    private $passwordResetService;
 
-   public function __construct()
-   {
-      $this->passwordResetService = new PasswordResetService();
-   }
+    public function __construct()
+    {
+        $this->passwordResetService = new PasswordResetService();
+    }
 
-   public function reset()
-   {
-      try {
-         $data = json_decode(file_get_contents('php://input'), true);
+    public function reset()
+    {
+        header("Access-Control-Allow-Origin: http://localhost:5173");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Allow-Headers: Content-Type");
 
-         if (empty($data) || !isset($data['email'])) {
-            throw new Exception('Missing email in request body', 400);
-         }
+        try {
+            // Read JSON input
+            $data = json_decode(file_get_contents('php://input'), true);
 
-         $email = trim($data['email']);
+            // Validate email presence
+            if (empty($data) || !isset($data['email'])) {
+                throw new Exception('Missing email in request body', 400);
+            }
 
-         $result = $this->passwordResetService->reset($email);
+            $email = trim($data['email']);
 
-         $this->sendResponse($result['message']);
-      } catch (Exception $e) {
-         $this->sendResponse($e->getMessage(), $e->getCode());
-      }
-   }
+            // Attempt password reset
+            $result = $this->passwordResetService->reset($email);
 
-   public function resetPassword()
-   {
-      try {
-         $data = json_decode(file_get_contents('php://input'), true);
+            // Send response
+            $this->sendResponse($result['message']);
+        } catch (Exception $e) {
+            // Handle exception
+            $this->sendResponse($e->getMessage(), $e->getCode());
+        }
+    }
 
-         if (empty($data) || !isset($data['password']) || !isset($data['token'])) {
-            throw new Exception('Missing password or token in request body', 400);
-         }
-         $password = $data['password'];
-         $token = $data['token'];
+    public function resetPassword($request)
+    {
+        // Extract token and new password from the request
+        $token = $request->query->get('token');
+        $password = $request->input('password');
 
-         $this->passwordResetService->resetPassword($token, $password);
-         $this->sendResponse('Password reset successful');
-      } catch (Exception $e) {
-         $this->sendResponse($e->getMessage(), 500);
-      }
-   }
-   private function sendResponse($message, $statusCode = 200)
-   {
-      http_response_code($statusCode);
-      echo json_encode(['message' => $message]);
-   }
+        try {
+            // Reset the password using the token
+            $this->passwordResetService->resetPassword($token, $password);
+
+            // Password reset successful, send a success response
+            $this->sendResponse('Password reset successful');
+        } catch (Exception $e) {
+            // Handle errors
+            $this->sendResponse($e->getMessage(), 500); // Sending 500 status code for internal server error
+        }
+    }
+    private function sendResponse($message, $statusCode = 200)
+    {
+        http_response_code($statusCode);
+        echo json_encode(['message' => $message]);
+    }
 }
