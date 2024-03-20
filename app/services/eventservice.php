@@ -3,6 +3,7 @@
 namespace Services;
 
 use Repositories\EventRepository;
+use Models\Event;
 
 class EventService
 {
@@ -24,4 +25,18 @@ class EventService
     {
         return $this->repository->getByType($type);
     }
+    public function addEvent(Event $event)
+    {
+        return $this->repository->addEvent($event);
+    }
+    public function updateEvent($event)
+    {
+        return $this->repository->updateEvent($event);
+    }
+    public function deleteEvent($id)
+    {
+        return $this->repository->deleteEvent($id);
+    }
+
+
 }

@@ -26,7 +26,7 @@ class UserController extends Controller
             $tokenResponse = $this->generateJwt($user);
             $this->respond($tokenResponse);
         } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+            $this->respondWithError(500, "Invalid email or password");
         }
     }
     public function createUser()
@@ -85,7 +85,92 @@ class UserController extends Controller
             header('Content-Type: application/json');
             $this->respond($users);
         } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+            $this->respondWithError(500, "something went wrong while fetching users");
         }
     }
+
+    /**
+    * Updates a user with the given id, if the user id in the token matches the user id in the request
+    * @author Luko Pecotic
+    */
+    public function updateUser()
+    {
+        try {
+            $decoded = $this->checkForJwt();
+
+            $data = $this->createObjectFromPostedJson("Models\\User");
+
+            if ($decoded->data->id == $data->id) {
+                $this->service->updateUser($data->id, $data->username, $data->email, $data->phoneNumber, $data->address);
+                $this->respond($data);
+            } else {
+                $this->respondWithError(401, "Unauthorized");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }   
+    }
+
+    /**
+    * Changes the password of the user with the given id, if the user id in the token matches the user id in the request
+    * @author Luko Pecotic
+    */
+    public function changePassword()
+    {
+        try {
+            $decoded = $this->checkForJwt();
+
+            $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
+
+            if ($decoded->data->id == $data->id) {
+                $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
+                $this->respond(array("message" => "Password changed successfully"));
+            } else {
+                $this->respondWithError(401, "Unauthorized");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }   
+    }
+
+    /**
+    * Uploads a profile picture for the user with the given id, if the user id in the token matches the user id in the request
+    * @author Luko Pecotic
+    */
+    public function uploadProfilePicture()
+    {
+        try {
+            $decoded = $this->checkForJwt();
+
+            $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
+
+            if ($decoded->data->id == $data->id) {
+                $this->service->uploadProfilePicture($data->id, $data->base64Image);
+                $this->respond(array("message" => "Profile picture uploaded successfully"));
+            } else {
+                $this->respondWithError(401, "Unauthorized");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }   
+    }
+    public function deleteUser($id)
+    {
+        try {
+            if (empty($id)) {
+                throw new Exception("User ID is required");
+            }
+
+            $result = $this->service->deleteUser($id);
+
+            if ($result) {
+                $this->respond(['message' => "User deleted successfully"]);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, "something went wrong while deleting user {$id}");
+        }
+    }
+
 }
