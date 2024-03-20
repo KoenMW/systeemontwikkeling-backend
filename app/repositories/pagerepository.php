@@ -51,7 +51,7 @@ class PageRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-                SELECT title, text, picture FROM cards WHERE page_id = :id
+                SELECT title, text, picture, redirect_link FROM cards WHERE page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
