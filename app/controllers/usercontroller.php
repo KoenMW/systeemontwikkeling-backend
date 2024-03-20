@@ -72,10 +72,7 @@ class UserController extends Controller
                 "message" => "Successful login.",
                 "jwt" => $jwt,
                 "email" => $user->email,
-                "expireAt" => $expire,
-                "phoneNumber" => $user->phoneNumber,
-                "address" => $user->address,
-                "username" => $user->username
+                "expireAt" => $expire
             );
     }
     public function getUsers()
