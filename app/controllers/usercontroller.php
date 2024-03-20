@@ -88,4 +88,23 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+    public function deleteUser($id)
+    {
+        try {
+            if (empty($id)) {
+                throw new Exception("User ID is required");
+            }
+
+            $result = $this->service->deleteUser($id);
+
+            if ($result) {
+                $this->respond(['message' => "User deleted successfully"]);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+    }
+
 }

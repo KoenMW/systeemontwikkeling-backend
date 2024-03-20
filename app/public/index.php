@@ -17,6 +17,8 @@ $router->setNamespace('Controllers');
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/users', 'UserController@getUsers');
+$router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
+
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');

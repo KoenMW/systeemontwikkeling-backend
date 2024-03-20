@@ -113,4 +113,21 @@ class UserRepository extends Repository
             throw new Exception($e->getMessage());
         }
     }
+    public function deleteUser($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Error deleting user: " . $e->getMessage());
+        }
+    }
+
 }
