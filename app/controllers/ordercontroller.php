@@ -15,6 +15,10 @@ class OrderController extends Controller
         $this->orderService = new OrderService();
     }
 
+    /**
+    * Retrieves all orders.
+    * @author Luko Pecotic
+    */
     public function getAllOrders()
     {
         try {
@@ -95,6 +99,10 @@ class OrderController extends Controller
         }
     }
 
+    /**
+    * Creates a new order.
+    * @author Luko Pecotic
+    */
     public function createOrder()
     {
         try {
@@ -116,6 +124,10 @@ class OrderController extends Controller
         }
     }
 
+    /**
+    * Updates an existing order.
+    * @author Luko Pecotic
+    */
     public function updateOrder()
     {
         try {
@@ -136,6 +148,10 @@ class OrderController extends Controller
         }
     }
 
+    /**
+    * Deletes an existing order.
+    * @author Luko Pecotic
+    */
     public function deleteOrder()
     {
         try {

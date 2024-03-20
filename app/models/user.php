@@ -14,4 +14,5 @@ class User
     public string $img;
     public int $phoneNumber;
     public string $address;
+    public $confirmed;
 }
