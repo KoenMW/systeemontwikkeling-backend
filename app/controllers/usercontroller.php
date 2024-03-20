@@ -26,7 +26,7 @@ class UserController extends Controller
             $tokenResponse = $this->generateJwt($user);
             $this->respond($tokenResponse);
         } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+            $this->respondWithError(500, "Invalid email or password");
         }
     }
     public function createUser()
@@ -85,7 +85,7 @@ class UserController extends Controller
             header('Content-Type: application/json');
             $this->respond($users);
         } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+            $this->respondWithError(500, "something went wrong while fetching users");
         }
     }
     public function deleteUser($id)
@@ -103,7 +103,7 @@ class UserController extends Controller
                 $this->respondWithError(404, "User not found");
             }
         } catch (Exception $e) {
-            $this->respondWithError(500, $e->getMessage());
+            $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
 

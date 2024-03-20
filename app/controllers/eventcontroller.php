@@ -51,7 +51,7 @@ class EventController extends Controller
             $this->respondWithError(404, "Event not found or already deleted.");
         }
     } catch (Exception $e) {
-        $this->respondWithError(500, "Server error: " . $e->getMessage());
+        $this->respondWithError(500, "Error while deleting event with ID $id");
     }
 }
 
