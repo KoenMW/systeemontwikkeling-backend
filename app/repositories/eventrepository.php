@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use Repositories\Repository;
 use Models\Event;
+use Exception;
 
 class EventRepository extends Repository
 {
@@ -34,4 +35,126 @@ class EventRepository extends Repository
             echo $e;
         }
     }
+
+    /**
+     * gets the event by page id
+     * @param int $id
+     * @return Event[]
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getEventsByPageId(int $id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+                SELECT id, 
+                title, 
+                startTime, 
+                endTime, 
+                price, 
+                location, 
+                ticket_amount, 
+                eventType
+                FROM events
+                WHERE events.page_id = :id
+            ");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Event::class);
+            $events = $stmt->fetchAll();
+            return $events;
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+
+    /**
+     * gets the event by detail_page id
+     * @param int $id
+     * @return Event[]
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getEventsByDetailPageId(int $id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+                SELECT id, 
+                title, 
+                startTime, 
+                endTime, 
+                price, 
+                location, 
+                ticket_amount, 
+                eventType
+                FROM events
+                WHERE events.detail_page_id = :id
+            ");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Event::class);
+            $events = $stmt->fetchAll();
+            return $events;
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+    public function addEvent(Event $event)
+    {
+        try {
+            $stmt = $this->connection->prepare("INSERT INTO events (title, startTime, endTime, price, location, ticket_amount, page_id, detail_page_id, eventType) VALUES (:title, :startTime, :endTime, :price, :location, :ticket_amount, :page_id, :detail_page_id, :eventType)");
+            $stmt->execute([
+                ':title' => $event->title,
+                ':startTime' => $event->startTime,
+                ':endTime' => $event->endTime,
+                ':price' => $event->price,
+                ':location' => $event->location,
+                ':ticket_amount' => $event->ticket_amount,
+                ':page_id' => $event->page_id,
+                ':detail_page_id' => $event->detail_page_id,
+                ':eventType' => $event->eventType
+            ]);
+            return $this->connection->lastInsertId();
+        } catch (PDOException $e) {
+            throw new Exception("Error adding event: " . $e->getMessage());
+        }
+    }
+    public function updateEvent($event)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE events SET title=:title, startTime=:startTime, endTime=:endTime, price=:price, location=:location, ticket_amount=:ticket_amount, page_id=:page_id, detail_page_id=:detail_page_id, eventType=:eventType WHERE id=:id");
+            $stmt->execute([
+                ':id' => $event->id,
+                ':title' => $event->title,
+                ':startTime' => $event->startTime,
+                ':endTime' => $event->endTime,
+                ':price' => $event->price,
+                ':location' => $event->location,
+                ':ticket_amount' => $event->ticket_amount,
+                ':page_id' => $event->page_id,
+                ':detail_page_id' => $event->detail_page_id,
+                ':eventType' => $event->eventType,
+            ]);
+
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            throw new Exception("Error updating event: " . $e->getMessage());
+        }
+    }
+    public function deleteEvent($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM events WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            throw new Exception("Error deleting event {$id}");
+        }
+    }
+
+
 }

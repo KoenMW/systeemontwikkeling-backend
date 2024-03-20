@@ -2,22 +2,22 @@
 
 namespace Repositories;
 
+use DateTime;
 use PDO;
 use PDOException;
 use Repositories\Repository;
 use Exception;
-use DateTime;
-
+use Models\User;
 
 class UserRepository extends Repository
 {
-   function checkUsernamePassword($email, $password)
-   {
-      try {
-         // retrieve the user with the given username
-         $stmt = $this->connection->prepare("SELECT id, email, password, role FROM users WHERE email = :email");
-         $stmt->bindParam(':email', $email);
-         $stmt->execute();
+    function login($email, $password)
+    {
+        try {
+            // retrieve the user with the given username
+            $stmt = $this->connection->prepare("SELECT id, email, password, role FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
 
          $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\User');
          $user = $stmt->fetch();
@@ -43,41 +43,42 @@ class UserRepository extends Repository
       return password_hash($password, PASSWORD_DEFAULT);
    }
 
-   // verify the password hash
-   function verifyPassword($input, $hash)
-   {
-      return password_verify($input, $hash);
-   }
-   function createUser($user)
-   {
-      try {
-         //inser the user into the table users and return the user
-         $stmt = $this->connection->prepare("INSERT INTO users 
-        (email, password, role) VALUES (?,?,?)");
-         $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role]);
-      } catch (PDOException $e) {
-         echo $e;
-      }
-   }
-   function checkEmailPassword($email, $password)
-   {
-      // retrieve the user with the given username
-      $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
-      $stmt->bindParam(':email', $email);
-      $stmt->execute();
+    // verify the password hash
+    function verifyPassword($input, $hash)
+    {
+        return password_verify($input, $hash);
+    }
+
+    function signUp(User $user)
+    {
+        try {
+            //inser the user into the table users and return the user
+            $stmt = $this->connection->prepare("INSERT INTO users 
+        (email, password, role, username, img, phoneNumber, address) VALUES (?,?,?,?,?,?,?)");
+            $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role, $user->username, $user->img, $user->phoneNumber, $user->address]);
+        } catch (PDOException $e) {
+            echo $e;
+        }
+    }
+    function checkEmailPassword($email, $password)
+    {
+        // retrieve the user with the given username
+        $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
       $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\\User');
       $user = $stmt->fetch();
 
-      if (!$user) {
-         throw new Exception("Incorrect email");
-      }
+        if (!$user) {
+            throw new Exception("Incorrect email");
+        }
 
-      $passwordResult = $this->verifyPassword($password, $user->password);
+        $passwordResult = $this->verifyPassword($password, $user->password);
 
-      if (!$passwordResult) {
-         throw new Exception("Incorrect password");
-      }
+        if (!$passwordResult) {
+            throw new Exception("Incorrect password");
+        }
 
       // do not pass the password hash to the caller
       $user->password = "";

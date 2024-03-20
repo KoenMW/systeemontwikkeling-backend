@@ -13,29 +13,20 @@ $router = new \Bramus\Router\Router();
 
 $router->setNamespace('Controllers');
 
-// products endpoint
-$router->get('/products', 'ProductController@getAll');
-$router->get('/products/(\d+)', 'ProductController@getOne');
-$router->post('/products', 'ProductController@create');
-$router->put('/products/(\d+)', 'ProductController@update');
-$router->delete('/products/(\d+)', 'ProductController@delete');
-
-// categories endpoint
-$router->get('/categories', 'CategoryController@getAll');
-$router->get('/categories/(\d+)', 'CategoryController@getOne');
-$router->post('/categories', 'CategoryController@create');
-$router->put('/categories/(\d+)', 'CategoryController@update');
-$router->delete('/categories/(\d+)', 'CategoryController@delete');
-
 // users endpoint
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/users', 'UserController@getUsers');
+$router->put('/users/update', 'UserController@updateUser');
+$router->put('/users/changePassword', 'UserController@changePassword'); 
+$router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
+$router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
+
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
 $router->get('/orders/(\d+)', 'OrderController@getById');
-$router->get('/orders/check/(\d+)', 'OrderController@checkOrderById');
+$router->get('/orders/check/([\w\.]+)', 'OrderController@checkOrderById');
 $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
@@ -46,9 +37,15 @@ $router->get('/test', 'TestController@get');
 
 // pages endpoint
 $router->get('/pages/(\d+)', 'PageController@get');
+$router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');
+$router->post('/events', 'EventController@addEvent');
+$router->put('/events/update/(\d+)', 'EventController@updateEvent');
+$router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
+
+
 
 //password reset endpoint
 $router->post('/resetlink', 'PasswordResetController@reset');;

@@ -9,4 +9,5 @@ class Card
     public string $title;
     public string $text;
     public ?string $picture;
+    public ?string $redirect_link;
 }

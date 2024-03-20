@@ -8,7 +8,12 @@ use PDO;
 
 class OrderRepository extends Repository
 {
-
+    /**
+    * Retrieves all orders from the database.
+    * @return array An array of Order objects representing all orders in the database
+    * @throws Exception If there's an error fetching the orders from the database
+    * @author Luko Pecotic
+    */
     public function getAllOrders()
     {
         try {
@@ -39,26 +44,36 @@ class OrderRepository extends Repository
         }
     }
 
+    /**
+    * Creates a new order in the database.
+    * @param Order $order The order to be created
+    * @return bool True if the order was created successfully, false otherwise
+    * @throws Exception If there's an error preparing the SQL statement
+    * @author Luko Pecotic
+    */
     public function createOrder(Order $order)
     {
         try {
-            $sql = "INSERT INTO Orders (event_id, user_id, quantity, comment, paymentDate) VALUES (?, ?, ?, ?, ?)";
+            $id = uniqid("", true);
+            $sql = "INSERT INTO Orders (id, event_id, user_id, quantity, comment) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->connection->prepare($sql);
             if (!$stmt) {
                 throw new \Exception("Failed to prepare statement");
             }
-            $paymentDate = new \DateTime($order->paymentDate);
-            $result = $stmt->execute([$order->event_id, $order->user_id, $order->quantity, $order->comment, $paymentDate->format('Y-m-d')]);
-            if (!$result) {
-                throw new \Exception("Failed to execute statement");
-            }
-            return $this->connection->lastInsertId();
+            return $stmt->execute([$id, $order->event_id, $order->user_id, $order->quantity, $order->comment]);
         } catch (\Exception $e) {
             error_log($e->getMessage());
             return false;
         }
     }
 
+    /**
+    * Updates an existing order in the database.
+    * @param Order $order The order to be updated
+    * @return bool True if the order was updated successfully, false otherwise
+    * @throws Exception If there's an error preparing or executing the SQL statement
+    * @author Luko Pecotic
+    */
     public function updateOrder(Order $order)
     {
         try {
@@ -79,6 +94,13 @@ class OrderRepository extends Repository
         }
     }
 
+    /**
+    * Deletes an existing order from the database.
+    * @param int $id The id of the order to be deleted
+    * @return bool True if the order was deleted successfully, false otherwise
+    * @throws Exception If there's an error preparing or executing the SQL statement
+    * @author Luko Pecotic
+    */
     public function deleteOrder(int $id)
     {
         try {
@@ -127,7 +149,7 @@ class OrderRepository extends Repository
      * @return checkOrderDTO
      * @author Koen Wijchers
      */
-    public function checkOrder(int $id)
+    public function checkOrder($id)
     {
         try {
             $stmt = $this->connection->prepare("
