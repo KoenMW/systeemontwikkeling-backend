@@ -39,6 +39,8 @@ $router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
+$router->put('/events/update/(\d+)', 'EventController@updateEvent');
+
 
 // Run it!
 $router->run();

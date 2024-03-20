@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use Repositories\Repository;
 use Models\Event;
+use Exception;
 
 class EventRepository extends Repository
 {
@@ -115,4 +116,27 @@ class EventRepository extends Repository
         ]);
         return $this->connection->lastInsertId();
     }
+    public function updateEvent($event)
+{
+    try {
+        $stmt = $this->connection->prepare("UPDATE events SET title=:title, startTime=:startTime, endTime=:endTime, price=:price, location=:location, ticket_amount=:ticket_amount, page_id=:page_id, detail_page_id=:detail_page_id, eventType=:eventType WHERE id=:id");
+        $stmt->execute([
+            ':id' => $event->id,
+            ':title' => $event->title,
+            ':startTime' => $event->startTime,
+            ':endTime' => $event->endTime,
+            ':price' => $event->price,
+            ':location' => $event->location,
+            ':ticket_amount' => $event->ticket_amount,
+            ':page_id' => $event->page_id,
+            ':detail_page_id' => $event->detail_page_id,
+            ':eventType' => $event->eventType,
+        ]);
+        
+        return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+        throw new Exception("Error updating event: " . $e->getMessage());
+    }
+}
+
 }

@@ -25,7 +25,13 @@ class EventService
     {
         return $this->repository->getByType($type);
     }
-    public function addEvent(Event $event) {
+    public function addEvent(Event $event)
+    {
         return $this->repository->addEvent($event);
     }
+    public function updateEvent($event)
+    {
+        return $this->repository->updateEvent($event);
+    }
+
 }
