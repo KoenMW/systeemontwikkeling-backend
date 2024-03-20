@@ -20,7 +20,7 @@ class PageController extends Controller
      */
     function get($page_id)
     {
-        $page = $this->service->getOne($page_id);
+        $page = $this->service->getPage($page_id);
         $this->respond($page);
     }
 
