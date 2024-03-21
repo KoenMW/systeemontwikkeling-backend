@@ -21,7 +21,7 @@ $router->put('/users/update', 'UserController@updateUser');
 $router->put('/users/changePassword', 'UserController@changePassword');
 $router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
 $router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
-
+$router->get('/users/(\d+)', 'UserController@getUserById');
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');

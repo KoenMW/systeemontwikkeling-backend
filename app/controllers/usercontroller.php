@@ -76,6 +76,7 @@ class UserController extends Controller
                 "expireAt" => $expire
             );
     }
+
     public function getUsers()
     {
         try {
@@ -166,6 +167,7 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+
     public function deleteUser($id)
     {
         try {
@@ -182,6 +184,31 @@ class UserController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
+        }
+    }
+
+    /**
+    * Fetches a user by their id and sends the user data in the response.
+    * @param int $id The id of the user to fetch.
+    * @throws Exception If the id is not provided or a server error occurs.
+    * @author Luko Pecotic
+    */
+    public function getUserById($id)
+    {
+        try {
+            if (empty($id)) {
+                throw new Exception("User ID is required");
+            }
+
+            $user = $this->service->getUserById($id);
+
+            if ($user) {
+                $this->respond($user);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, "Something went wrong while fetching user {$id}");
         }
     }
 }
