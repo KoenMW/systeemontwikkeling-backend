@@ -36,4 +36,9 @@ class PageService
         $page->events = $this->eventRepository->getEventsByDetailPageId($id);
         return $page;
     }
+
+    public function getAllPageNames()
+    {
+        return $this->repository->getAllPageNames();
+    }
 }

@@ -9,6 +9,7 @@ use Models\Card;
 use Models\ChildPage;
 use Models\InfoText;
 use Models\Page;
+use Models\pageNameDTO;
 
 class PageRepository extends Repository
 {
@@ -244,6 +245,24 @@ class PageRepository extends Repository
         } catch (PDOException $e) {
             error_log('Error getting detail page: ' . $e->getMessage());
             throw new \Exception('Error getting detail page');
+        }
+    }
+
+    /**
+     * gets all names of the pages
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllPageNames()
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT id, name FROM pages");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS, pageNameDTO::class);
+        } catch (PDOException $e) {
+            error_log('Error getting page names: ' . $e->getMessage());
+            throw new \Exception('Error getting page names');
         }
     }
 }
