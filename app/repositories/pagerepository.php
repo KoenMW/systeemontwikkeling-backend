@@ -53,7 +53,7 @@ class PageRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-                SELECT title, text, picture, redirect_link FROM cards WHERE page_id = :id
+                SELECT id, title, text, picture, redirect_link FROM cards WHERE page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -77,7 +77,7 @@ class PageRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-                SELECT title, content, img FROM info_texts WHERE page_id = :id
+                SELECT id, title, content, img FROM info_texts WHERE page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
