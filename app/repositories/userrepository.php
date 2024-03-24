@@ -31,11 +31,12 @@ class UserRepository extends Repository
          // do not pass the password hash to the caller
          $user->password = "";
 
-         return $user;
-      } catch (PDOException $e) {
-         echo $e;
-      }
-   }
+            return $user;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            throw new Exception($e->getMessage());
+        }
+    }
 
    // hash the password (currently uses bcrypt)
    function hashPassword($password)
@@ -57,7 +58,8 @@ class UserRepository extends Repository
         (email, password, role, username, img, phoneNumber, address) VALUES (?,?,?,?,?,?,?)");
             $stmt->execute([$user->email, $this->hashPassword($user->password), $user->role, $user->username, $user->img, $user->phoneNumber, $user->address]);
         } catch (PDOException $e) {
-            echo $e;
+            error_log($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
     function checkEmailPassword($email, $password)

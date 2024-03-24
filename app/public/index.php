@@ -18,7 +18,7 @@ $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/users', 'UserController@getUsers');
 $router->put('/users/update', 'UserController@updateUser');
-$router->put('/users/changePassword', 'UserController@changePassword'); 
+$router->put('/users/changePassword', 'UserController@changePassword');
 $router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
 $router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
 
@@ -38,6 +38,7 @@ $router->get('/test', 'TestController@get');
 // pages endpoint
 $router->get('/pages/(\d+)', 'PageController@get');
 $router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
+$router->put('/pages/update', 'PageController@updatePage');
 
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');

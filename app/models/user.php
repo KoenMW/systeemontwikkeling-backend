@@ -14,7 +14,7 @@ class User
     public ?string $token;
     public ?\DateTime $reset_token_expires;
     public string $createDate;
-    public string $img;
+    public ?string $img;
     public int $phoneNumber;
     public string $address;
     public $confirmed;
