@@ -68,4 +68,38 @@ class PageController extends Controller
             $this->respondWithError(500, "An error occurred while updating the page");
         }
     }
+
+    /**
+     * gets all names of the pages
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    function getAllPageNames()
+    {
+        try {
+            $pages = $this->service->getAllPageNames();
+            $this->respond($pages);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            $this->respondWithError(500, "An error occurred while retrieving the pages");
+        }
+    }
+
+    /**
+     * gets all links of the pages
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    function getAllLinks()
+    {
+        try {
+            $links = $this->service->getAllLinks();
+            $this->respond($links);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            $this->respondWithError(500, "An error occurred while retrieving the links");
+        }
+    }
 }
