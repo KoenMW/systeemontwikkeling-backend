@@ -184,4 +184,45 @@ class UserController extends Controller
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
+     public function reset()
+   {
+      try {
+         $data = json_decode(file_get_contents('php://input'), true);
+
+         if (empty($data) || !isset($data['email'])) {
+            throw new Exception('Missing email in request body', 400);
+         }
+
+         $email = trim($data['email']);
+
+         $result = $this->service->reset($email);
+
+         $this->sendResponse($result['message']);
+      } catch (Exception $e) {
+         $this->sendResponse($e->getMessage(), $e->getCode());
+      }
+   }
+
+   public function resetpassword()
+   {
+      try {
+         $data = json_decode(file_get_contents('php://input'), true);
+
+         if (empty($data) || !isset($data['password']) || !isset($data['token'])) {
+            throw new exception('missing password or token in request body', 400);
+         }
+         $password = $data['password'];
+         $token = $data['token'];
+
+         $this->service->resetpassword($token, $password);
+         $this->sendresponse('password reset successful');
+      } catch (exception $e) {
+         $this->sendresponse($e->getmessage(), 500);
+      }
+   }
+   private function sendresponse($message, $statuscode = 200)
+   {
+      http_response_code($statuscode);
+      echo json_encode(['message' => $message]);
+   }
 }
