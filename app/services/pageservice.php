@@ -30,6 +30,13 @@ class PageService
         return $page;
     }
 
+    /**
+     * gets a detail page by id
+     * @param int $id
+     * @return Page
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
     public function getDetailPage($id)
     {
         $page = $this->repository->getDetailPage($id);
@@ -37,8 +44,27 @@ class PageService
         return $page;
     }
 
+    /**
+     * gets all page names
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
     public function getAllPageNames()
     {
         return $this->repository->getAllPageNames();
+    }
+
+    /**
+     * gets all links
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllLinks()
+    {
+        $links = $this->repository->getAllParentPageLinks();
+        $links = array_merge($links, $this->repository->getAllChildPageLinks());
+        return $links;
     }
 }

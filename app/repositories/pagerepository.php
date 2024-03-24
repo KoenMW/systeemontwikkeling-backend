@@ -77,7 +77,7 @@ class PageRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-                SELECT id, title, content, img FROM info_texts WHERE page_id = :id
+                SELECT id, title, content, img as picture FROM info_texts WHERE page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -174,8 +174,8 @@ class PageRepository extends Repository
         try {
             $stmt = $this->connection->prepare("INSERT INTO info_texts (title, content, img, page_id) VALUES (:title, :content, :img, :page_id)");
             $stmt->bindParam(':title', $infoText->title);
-            $stmt->bindParam(':text', $infoText->content);
-            $stmt->bindParam(':picture', $infoText->img);
+            $stmt->bindParam(':content', $infoText->content);
+            $stmt->bindParam(':img', $infoText->picture);
             $stmt->bindParam(':page_id', $page_id);
             return true;
         } catch (PDOException $e) {
@@ -263,6 +263,52 @@ class PageRepository extends Repository
         } catch (PDOException $e) {
             error_log('Error getting page names: ' . $e->getMessage());
             throw new \Exception('Error getting page names');
+        }
+    }
+
+    /**
+     * gets all parent page links
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllParentPageLinks()
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT p.name as 'link', p.name as 'name'
+            FROM pages p 
+            LEFT JOIN detail_page dp ON p.id = dp.page_id
+            WHERE dp.parent_page_id IS NULL
+        ");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting page names: ' . $e->getMessage());
+            throw new \Exception('Error getting page names');
+        }
+    }
+
+    /**
+     * gets all child page links
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllChildPageLinks()
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT CONCAT(pp.name, '/', dp.page_id) as 'link', p.name as 'name'
+            FROM detail_page dp
+            INNER JOIN pages p ON dp.page_id = p.id
+            INNER JOIN pages pp ON dp.parent_page_id = pp.id
+        ");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting child pages: ' . $e->getMessage());
+            throw new \Exception('Error getting child pages');
         }
     }
 }
