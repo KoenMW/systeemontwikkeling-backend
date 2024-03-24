@@ -87,7 +87,7 @@ class UserRepository extends Repository
    public function updateResetToken($userId, $token, $expiry)
    {
       try {
-         $stmt = $this->connection->prepare('UPDATE users SET reset_token = :token, reset_token_expiry = :expiry WHERE id = :id');
+         $stmt = $this->connection->prepare('UPDATE users SET token = :token, reset_token_expiry = :expiry WHERE id = :id');
          $stmt->execute(['token' => $token, 'expiry' => $expiry, 'id' => $userId]);
       } catch (PDOException $e) {
          throw new Exception('Error updating reset token: ' . $e->getMessage());
@@ -116,7 +116,7 @@ class UserRepository extends Repository
    public function getUserByResetToken($token)
    {
       try {
-         $stmt = $this->connection->prepare("SELECT * FROM users WHERE reset_token = :token AND reset_token_expiry > NOW()");
+         $stmt = $this->connection->prepare("SELECT * FROM users WHERE token = :token AND reset_token_expiry > NOW()");
          $stmt->bindParam(':token', $token);
          $stmt->execute();
 
@@ -142,7 +142,7 @@ class UserRepository extends Repository
          }
 
          $hashedPassword = $this->hashPassword($password);
-         $stmt = $this->connection->prepare('UPDATE users SET password = :password, reset_token = NULL, reset_token_expiry = NULL WHERE id = :id');
+         $stmt = $this->connection->prepare('UPDATE users SET password = :password, token = NULL, reset_token_expiry = NULL WHERE id = :id');
          $stmt->execute(['password' => $hashedPassword, 'id' => $user->id]);
       } catch (PDOException $e) {
          throw new Exception('Failed to update password: ' . $e->getMessage());

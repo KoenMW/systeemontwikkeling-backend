@@ -48,7 +48,7 @@ $router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
 
 
 //password reset endpoint
-$router->post('/resetlink', 'PasswordResetController@reset');;
-$router->put('/resetpassword', 'PasswordResetController@resetPassword');
+$router->post('/resetlink', 'UserController@reset');;
+$router->put('/resetpassword', 'UserController@resetPassword');
 // Run it!
 $router->run();
