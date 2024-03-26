@@ -47,7 +47,7 @@ $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
 $router->put('/events/update/(\d+)', 'EventController@updateEvent');
 $router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
-
+$router->get('/events/id/(\d+)', 'EventController@getEventById');
 
 
 // Run it!

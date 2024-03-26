@@ -37,6 +37,9 @@ class EventService
     {
         return $this->repository->deleteEvent($id);
     }
-
+    public function getEventById($id)
+    {
+        return $this->repository->getEventById($id);
+    }
 
 }
