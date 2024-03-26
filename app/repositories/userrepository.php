@@ -199,6 +199,7 @@ class UserRepository extends Repository
             throw new Exception($e->getMessage());
         }
     }
+
     public function deleteUser($id)
     {
         try {
@@ -213,6 +214,39 @@ class UserRepository extends Repository
             }
         } catch (PDOException $e) {
             throw new Exception("Error deleting user: " . $e->getMessage());
+        }
+    }
+
+    /**
+    * Fetches a user from the database by their id.
+    * @param int $id The id of the user to fetch.
+    * @return User The fetched user.
+    * @throws Exception If no user is found or a database error occurs.
+    * @author Luko Pecotic
+    */
+    public function getUserById($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\\User');
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                throw new Exception("User not found");
+            }
+
+            if ($user->img) {
+                $user->img = base64_encode($user->img);
+            }
+
+            $user->password = "";
+
+            return $user;
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
         }
     }
 }
