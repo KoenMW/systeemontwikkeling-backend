@@ -56,4 +56,13 @@ class EventController extends Controller
             $this->respondWithError(500, "Error while deleting event with ID $id");
         }
     }
+    public function getEventById($id)
+    {
+        try {
+            $event = $this->service->getEventById($id);
+            $this->respond($event);
+        } catch (Exception $e) {
+            $this->respondWithError(500, "Error while getting event with ID $id");
+        }
+    }
 }
