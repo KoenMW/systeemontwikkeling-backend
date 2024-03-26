@@ -23,7 +23,7 @@ class OrderController extends Controller
     public function getAllOrders()
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
 
             $orders = $this->orderService->getAllOrders();
 
@@ -69,7 +69,7 @@ class OrderController extends Controller
     {
         try {
 
-            if (!$this->checkForJwt(1)) return;
+            if (!$this->checkForJwt([1, 2])) return;
             $order = $this->orderService->checkOrderById($id);
             if (!$order) {
                 $this->respondWithError(404, "Order not found");
@@ -91,7 +91,7 @@ class OrderController extends Controller
     {
         try {
 
-            if (!$this->checkForJwt(1)) return;
+            if (!$this->checkForJwt([1, 2])) return;
 
             $DTO = $this->createObjectFromPostedJson(checkinDTO::class);
             if (!isset($DTO->id, $DTO->checkedIn)) {
@@ -114,7 +114,7 @@ class OrderController extends Controller
     {
         try {
 
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
             $order = $this->createObjectFromPostedJson(Order::class);
 
             if (!isset($order->event_id, $order->user_id, $order->quantity)) {
@@ -140,7 +140,7 @@ class OrderController extends Controller
     public function updateOrder()
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
             $order = $this->createObjectFromPostedJson(Order::class);
             if (!isset($order->id, $order->event_id, $order->user_id, $order->quantity, $order->comment, $order->paymentDate)) {
                 $this->respondWithError(400, "Missing order data");
@@ -165,7 +165,7 @@ class OrderController extends Controller
     public function deleteOrder()
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
             $id = $_GET['id'] ?? null;
             if ($id) {
                 $deleted = $this->orderService->deleteOrder($id);

@@ -10,7 +10,12 @@ class Controller
 {
     protected $service;
 
-    function checkForJwt(int $role)
+    /**
+     * Check for JWT token
+     * @param array $allowedRoles the roles that are allowed to access the endpoint
+     * @return object|void the decoded JWT or void if the token is invalid
+     */
+    function checkForJwt(array $allowedRoles = [0])
     {
         // Check for token header
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -24,19 +29,42 @@ class Controller
         $arr = explode(" ", $authHeader);
         $jwt = $arr[1];
 
-        $secret_key = $this->getSecretKey($role);
-
         if ($jwt) {
             try {
-                $decoded = JWT::decode($jwt, new Key($secret_key, 'HS256'));
-                return $decoded;
+                return $this->checkJwtPerRole($jwt, $allowedRoles);
             } catch (Exception $e) {
-                $this->respondWithError(401, $e->getMessage());
+                $this->respondWithError(401, "Invalid token");
                 return;
             }
         }
     }
 
+    /**
+     * Check JWT token per role
+     * @param string $jwt
+     * @return object|void the decoded JWT or void if the token is invalid
+     */
+    function checkJwtPerRole($jwt, $allowedRoles = [0])
+    {
+        if ($jwt == null) {
+            throw new Exception("No token provided");
+        }
+
+        $keys = [];
+        foreach ($allowedRoles as $role) {
+            $keys[] = $this->getSecretKey($role);
+        }
+        $decoded = null;
+        foreach ($keys as $key) {
+            try {
+                $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
+                break;
+            } catch (Exception $e) {
+                continue;
+            }
+        }
+        return $decoded;
+    }
 
     /**
      * role id to jwt secret key

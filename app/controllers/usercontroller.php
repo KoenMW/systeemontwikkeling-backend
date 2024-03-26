@@ -80,7 +80,7 @@ class UserController extends Controller
     public function getUsers()
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
 
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
@@ -200,15 +200,20 @@ class UserController extends Controller
                 throw new Exception("User ID is required");
             }
 
-            $decoded = $this->checkForJwt(0);
-            if ($decoded->data->id != $id) {
-                $decoded = $this->checkForJwt(2);
-                if (!$decoded) {
-                    $this->respondWithError(401, "Unauthorized");
-                    return;
-                } else return;
+            $decoded = $this->checkForJwt([0, 1, 2]);
+
+            if (!$decoded) {
+                return;
+            }
+
+            if ($decoded->data->role == 0 && $decoded->data->id != $id || $decoded->data->role == 1 && $decoded->data->id != $id) {
+                $this->respondWithError(401, "Unauthorized");
+                return;
+            } else if ($decoded->data->role != 2) {
                 $this->respondWithError(401, "Unauthorized");
             }
+
+
 
             $user = $this->service->getUserById($id);
 
