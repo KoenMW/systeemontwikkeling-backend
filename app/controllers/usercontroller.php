@@ -188,16 +188,26 @@ class UserController extends Controller
     }
 
     /**
-    * Fetches a user by their id and sends the user data in the response.
-    * @param int $id The id of the user to fetch.
-    * @throws Exception If the id is not provided or a server error occurs.
-    * @author Luko Pecotic
-    */
+     * Fetches a user by their id and sends the user data in the response.
+     * @param int $id The id of the user to fetch.
+     * @throws Exception If the id is not provided or a server error occurs.
+     * @author Luko Pecotic
+     */
     public function getUserById($id)
     {
         try {
             if (empty($id)) {
                 throw new Exception("User ID is required");
+            }
+
+            $decoded = $this->checkForJwt(0);
+            if ($decoded->data->id != $id) {
+                $decoded = $this->checkForJwt(2);
+                if (!$decoded) {
+                    $this->respondWithError(401, "Unauthorized");
+                    return;
+                } else return;
+                $this->respondWithError(401, "Unauthorized");
             }
 
             $user = $this->service->getUserById($id);

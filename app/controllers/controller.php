@@ -10,7 +10,7 @@ class Controller
 {
     protected $service;
 
-    function checkForJwt($role)
+    function checkForJwt(int $role)
     {
         // Check for token header
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
