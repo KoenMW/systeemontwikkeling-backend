@@ -311,4 +311,23 @@ class PageRepository extends Repository
             throw new \Exception('Error getting child pages');
         }
     }
+
+    /**
+     * Deletes a page by id
+     * @param int $id
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function deletePage($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM pages WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error deleting page: ' . $e->getMessage());
+            throw new \Exception('Error deleting page');
+        }
+    }
 }

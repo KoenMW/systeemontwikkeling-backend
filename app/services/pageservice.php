@@ -67,4 +67,16 @@ class PageService
         $links = array_merge($links, $this->repository->getAllChildPageLinks());
         return $links;
     }
+
+    /**
+     * deletes a page by id
+     * @param int $id
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function deletePage($id)
+    {
+        $this->repository->deletePage($id);
+    }
 }
