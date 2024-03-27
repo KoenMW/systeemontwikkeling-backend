@@ -7,6 +7,7 @@ use Repositories\UserRepository;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
+
 class UserService
 {
 
@@ -160,5 +161,16 @@ class UserService
       if (!$tokenData || strtotime($tokenData->reset_token_expiry) < time()) {
          throw new Exception('Invalid or expired token');
       }
+   }
+
+   /**
+    * Fetches a user by their id by calling the corresponding method in the `UserRepository`.
+    * @param int $id The id of the user to fetch.
+    * @return User The fetched user.
+    * @author Luko Pecotic
+    */
+   public function getUserById($id)
+   {
+      return $this->repository->getUserById($id);
    }
 }
