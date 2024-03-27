@@ -182,4 +182,5 @@ class OrderController extends Controller
             $this->respondWithError(500, "An error occurred while deleting the order");
         }
     }
+    
 }
