@@ -32,7 +32,6 @@ $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
 $router->delete('/orders', 'OrderController@deleteOrder');
 
-
 // test endpoint
 $router->get('/test', 'TestController@get');
 
@@ -46,11 +45,11 @@ $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
 $router->put('/events/update/(\d+)', 'EventController@updateEvent');
 $router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
-$router->get('/event/(\d+)', 'EventController@getEventById');
+
 
 
 //password reset endpoint
-$router->post('/users/resetlink', 'UserController@reset');;
-$router->put('/users/resetpassword', 'UserController@resetPassword');
+$router->post('/resetlink', 'UserController@reset');;
+$router->put('/resetpassword', 'UserController@resetPassword');
 // Run it!
 $router->run();

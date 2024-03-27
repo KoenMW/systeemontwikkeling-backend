@@ -91,5 +91,4 @@ class Controller
         }
         return $object;
     }
-    
 }
