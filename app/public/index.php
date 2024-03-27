@@ -40,7 +40,7 @@ $router->get('/pages/(\d+)', 'PageController@get');
 $router->put('/pages/update', 'PageController@updatePage');
 $router->get('/pages/names', 'PageController@getAllPageNames');
 $router->get('/pages/links', 'PageController@getAllLinks');
-$router->delete('/pages/delete/(\d+)', 'PageController@deletePage');
+$router->delete('/pages/(\d+)', 'PageController@deletePage');
 $router->get('/pages/parent', 'PageController@getAllParentPages');
 
 // events endpoint

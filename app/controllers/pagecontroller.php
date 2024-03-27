@@ -85,6 +85,13 @@ class PageController extends Controller
         }
     }
 
+    /**
+     * Deletes a page by id
+     * @param int $id
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
     public function deletePage($id) {
         try {
             $this->service->deletePage($id);
@@ -95,7 +102,7 @@ class PageController extends Controller
             $this->respondWithError(500, "An error occurred while deleting the page");
         }
     }
-    
+
     /**
      * gets all parent pages
      * @return array
