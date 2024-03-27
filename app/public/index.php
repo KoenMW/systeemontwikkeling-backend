@@ -22,6 +22,8 @@ $router->put('/users/changePassword', 'UserController@changePassword');
 $router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
 $router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
 $router->get('/users/(\d+)', 'UserController@getUserById');
+$router->post('/users/resetlink', 'UserController@reset');;
+$router->put('/users/resetpassword', 'UserController@resetPassword');
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
@@ -50,8 +52,5 @@ $router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
 $router->get('/events/id/(\d+)', 'EventController@getEventById');
 
 
-//password reset endpoint
-$router->post('/resetlink', 'UserController@reset');;
-$router->put('/resetpassword', 'UserController@resetPassword');
 // Run it!
 $router->run();
