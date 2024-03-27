@@ -105,7 +105,7 @@ class UserController extends Controller
             $data = $this->createObjectFromPostedJson("Models\\User");
 
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if (!$decoded) {
                 return;
@@ -133,7 +133,7 @@ class UserController extends Controller
             $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -155,7 +155,7 @@ class UserController extends Controller
         try {
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
@@ -206,11 +206,9 @@ class UserController extends Controller
                 return;
             }
 
-            if ($decoded->data->role == 0 && $decoded->data->id != $id || $decoded->data->role == 1 && $decoded->data->id != $id) {
+            if ($decoded->data->role != 2 && $decoded->data->id != $id) {
                 $this->respondWithError(401, "Unauthorized");
                 return;
-            } else if ($decoded->data->role != 2) {
-                $this->respondWithError(401, "Unauthorized");
             }
 
 
