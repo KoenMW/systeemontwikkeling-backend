@@ -143,6 +143,7 @@ class UserRepository extends Repository
             throw new Exception('User not found or token expired');
          }
 
+
          $hashedPassword = $this->hashPassword($password);
          $stmt = $this->connection->prepare('UPDATE users SET password = :password, token = NULL, reset_token_expiry = NULL WHERE id = :id');
          $stmt->execute(['password' => $hashedPassword, 'id' => $user->id]);
@@ -150,4 +151,112 @@ class UserRepository extends Repository
          throw new Exception('Failed to update password: ' . $e->getMessage());
       }
    }
+
+    /**
+     * Changes the password of the user with the given id
+     * @param int $id
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @throws Exception If the current password is incorrect or if there's an error updating the password in the database
+     * @author Luko Pecotic
+     */
+    public function changePassword($id, $currentPassword, $newPassword)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT password FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\\User');
+            $user = $stmt->fetch();
+
+            $result = $this->verifyPassword($currentPassword, $user->password);
+
+            if (!$result) {
+                throw new Exception("Incorrect current password");
+            }
+
+            $newPasswordHash = $this->hashPassword($newPassword);
+
+            $stmt = $this->connection->prepare("UPDATE users SET password = :password WHERE id = :id");
+            $stmt->bindParam(':password', $newPasswordHash);
+            $stmt->bindParam(':id', $id);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Uploads a profile picture for the user with the given id
+     * @param int $id
+     * @param string $base64Image
+     * @throws Exception If there's an error updating the profile picture in the database
+     * @author Luko Pecotic
+     */
+    public function uploadProfilePicture($id, $base64Image)
+    {
+        try {
+            $decodedImage = base64_decode($base64Image);
+
+            $stmt = $this->connection->prepare("UPDATE users SET img = :img WHERE id = :id");
+            $stmt->bindParam(':img', $decodedImage, PDO::PARAM_LOB);
+            $stmt->bindParam(':id', $id);
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function deleteUser($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("DELETE FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Error deleting user: " . $e->getMessage());
+        }
+    }
+
+    /**
+    * Fetches a user from the database by their id.
+    * @param int $id The id of the user to fetch.
+    * @return User The fetched user.
+    * @throws Exception If no user is found or a database error occurs.
+    * @author Luko Pecotic
+    */
+    public function getUserById($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM users WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\\User');
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                throw new Exception("User not found");
+            }
+
+            if ($user->img) {
+                $user->img = base64_encode($user->img);
+            }
+
+            $user->password = "";
+
+            return $user;
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 }

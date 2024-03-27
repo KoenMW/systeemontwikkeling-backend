@@ -33,7 +33,7 @@ class EventRepository extends Repository
             return $page;
         } catch (PDOException $e) {
             error_log('Error getting event: ' . $e->getMessage());
-            throw new \Exception('Error getting event');
+            throw new Exception('Error getting event');
         }
     }
 
@@ -67,7 +67,7 @@ class EventRepository extends Repository
             return $events;
         } catch (PDOException $e) {
             error_log('Error getting event: ' . $e->getMessage());
-            throw new \Exception('Error getting event');
+            throw new Exception('Error getting event');
         }
     }
 
@@ -101,7 +101,7 @@ class EventRepository extends Repository
             return $events;
         } catch (PDOException $e) {
             error_log('Error getting event: ' . $e->getMessage());
-            throw new \Exception('Error getting event');
+            throw new Exception('Error getting event');
         }
     }
     public function addEvent(Event $event)
@@ -156,6 +156,32 @@ class EventRepository extends Repository
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             throw new Exception("Error deleting event {$id}");
+        }
+    }
+    public function getEventById($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("
+                SELECT id, 
+                title, 
+                startTime, 
+                endTime, 
+                price, 
+                location, 
+                ticket_amount, 
+                eventType
+                FROM events
+                WHERE events.id = :id
+            ");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Event::class);
+            $event = $stmt->fetch();
+            return $event;
+        } catch (PDOException $e) {
+            error_log('Error getting event: ' . $e->getMessage());
+            throw new Exception('Error getting event');
         }
     }
 }

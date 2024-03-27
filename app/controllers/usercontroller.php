@@ -76,10 +76,11 @@ class UserController extends Controller
                 "expireAt" => $expire
             );
     }
+
     public function getUsers()
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
 
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
@@ -104,7 +105,7 @@ class UserController extends Controller
          $data = $this->createObjectFromPostedJson("Models\\User");
 
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if (!$decoded) {
                 return;
@@ -132,7 +133,7 @@ class UserController extends Controller
          $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -154,7 +155,7 @@ class UserController extends Controller
         try {
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
@@ -166,6 +167,7 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
+
     public function deleteUser($id)
     {
         try {
@@ -225,4 +227,55 @@ class UserController extends Controller
       http_response_code($statuscode);
       echo json_encode(['message' => $message]);
    }
+
+    /**
+     * Fetches a user by their id and sends the user data in the response.
+     * @param int $id The id of the user to fetch.
+     * @throws Exception If the id is not provided or a server error occurs.
+     * @author Luko Pecotic
+     */
+    public function getUserById($id)
+    {
+        try {
+            if (empty($id)) {
+                throw new Exception("User ID is required");
+            }
+
+            $decoded = $this->checkForJwt([0, 1, 2]);
+
+            if (!$decoded) {
+                return;
+            }
+
+            switch ($decoded->data->role) {
+                case 0:
+                    if ($decoded->data->id != $id) {
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 1:
+                    if ($decoded->data->id != $id) {
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 2:
+                    break;
+                default:
+                    $this->respondWithError(401, "Unauthorized");
+                    return;
+            }
+
+            $user = $this->service->getUserById($id);
+
+            if ($user) {
+                $this->respond($user);
+            } else {
+                $this->respondWithError(404, "User not found");
+            }
+        } catch (Exception $e) {
+            $this->respondWithError(500, "Something went wrong while fetching user {$id}");
+        }
+    }
 }

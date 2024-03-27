@@ -87,6 +87,17 @@ class UserService
    {
       return $this->repository->deleteUser($id);
    }
+
+    /**
+    * Fetches a user by their id by calling the corresponding method in the `UserRepository`.
+    * @param int $id The id of the user to fetch.
+    * @return User The fetched user.
+    * @author Luko Pecotic
+    */
+    public function getUserById($id)
+    {
+        return $this->repository->getUserById($id);
+    }
    private function configureMailer()
    {
       $this->mailer->isSMTP();

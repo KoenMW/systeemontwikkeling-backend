@@ -33,7 +33,7 @@ class EventController extends Controller
     public function updateEvent($id)
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
             $eventData = $this->createObjectFromPostedJson("Models\\Event");
             $eventData->id = $id;
             $this->service->updateEvent($eventData);
@@ -45,7 +45,7 @@ class EventController extends Controller
     public function deleteEvent($id)
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt([2])) return;
             $result = $this->service->deleteEvent($id);
             if ($result) {
                 $this->respond(['message' => "Event with ID $id deleted successfully."]);
@@ -54,6 +54,15 @@ class EventController extends Controller
             }
         } catch (Exception $e) {
             $this->respondWithError(500, "Error while deleting event with ID $id");
+        }
+    }
+    public function getEventById($id)
+    {
+        try {
+            $event = $this->service->getEventById($id);
+            $this->respond($event);
+        } catch (Exception $e) {
+            $this->respondWithError(500, "Error while getting event with ID $id");
         }
     }
 }
