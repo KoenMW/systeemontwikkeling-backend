@@ -105,7 +105,7 @@ class UserController extends Controller
             $data = $this->createObjectFromPostedJson("Models\\User");
 
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if (!$decoded) {
                 return;
@@ -133,7 +133,7 @@ class UserController extends Controller
             $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -155,7 +155,7 @@ class UserController extends Controller
         try {
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
 
-            $decoded = $this->checkForJwt($data->role);
+            $decoded = $this->checkForJwt([0, 1, 2]);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
