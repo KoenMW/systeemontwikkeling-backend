@@ -206,14 +206,25 @@ class UserController extends Controller
                 return;
             }
 
-            if ($decoded->data->role == 0 && $decoded->data->id != $id || $decoded->data->role == 1 && $decoded->data->id != $id) {
-                $this->respondWithError(401, "Unauthorized");
-                return;
-            } else if ($decoded->data->role != 2) {
-                $this->respondWithError(401, "Unauthorized");
+            switch ($decoded->data->role) {
+                case 0:
+                    if ($decoded->data->id != $id) {
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 1:
+                    if ($decoded->data->id != $id) {
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 2:
+                    break;
+                default:
+                    $this->respondWithError(401, "Unauthorized");
+                    return;
             }
-
-
 
             $user = $this->service->getUserById($id);
 
