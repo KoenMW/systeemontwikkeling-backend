@@ -31,20 +31,6 @@ class PageService
     }
 
     /**
-     * gets a detail page by id
-     * @param int $id
-     * @return Page
-     * @throws \Exception
-     * @author Koen Wijchers
-     */
-    public function getDetailPage($id)
-    {
-        $page = $this->repository->getDetailPage($id);
-        $page->events = $this->eventRepository->getEventsByDetailPageId($id);
-        return $page;
-    }
-
-    /**
      * gets all page names
      * @return array
      * @throws \Exception
@@ -78,5 +64,16 @@ class PageService
     public function deletePage($id)
     {
         $this->repository->deletePage($id);
+    }
+
+    /**
+     * gets all parent page links
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllParentPages()
+    {
+        return $this->repository->getAllParentPages();
     }
 }

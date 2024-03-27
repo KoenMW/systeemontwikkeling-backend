@@ -30,24 +30,6 @@ class PageController extends Controller
     }
 
     /**
-     * gets a detail page by id
-     * @param int $page_id
-     * @return Page
-     * @throws \Exception
-     * @author Koen Wijchers
-     */
-    function getDetailPage($page_id)
-    {
-        try {
-            $page = $this->service->getDetailPage($page_id);
-            $this->respond($page);
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            $this->respondWithError(500, "An error occurred while retrieving the page");
-        }
-    }
-
-    /**
      * updates a page
      * @param Page $page
      * @return Page
@@ -111,6 +93,23 @@ class PageController extends Controller
         } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->respondWithError(500, "An error occurred while deleting the page");
+        }
+    }
+    
+    /**
+     * gets all parent pages
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    function getAllParentPages()
+    {
+        try {
+            $pages = $this->service->getAllParentPages();
+            $this->respond($pages);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            $this->respondWithError(500, "An error occurred while retrieving the pages");
         }
     }
 }

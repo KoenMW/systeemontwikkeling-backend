@@ -57,7 +57,7 @@ class EventRepository extends Repository
                 ticket_amount, 
                 eventType
                 FROM events
-                WHERE events.page_id = :id
+                WHERE events.page_id = :id OR events.detail_page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
