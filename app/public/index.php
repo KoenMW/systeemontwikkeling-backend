@@ -37,10 +37,10 @@ $router->get('/test', 'TestController@get');
 
 // pages endpoint
 $router->get('/pages/(\d+)', 'PageController@get');
-$router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
 $router->put('/pages/update', 'PageController@updatePage');
 $router->get('/pages/names', 'PageController@getAllPageNames');
 $router->get('/pages/links', 'PageController@getAllLinks');
+$router->get('/pages/parent', 'PageController@getAllParentPages');
 
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');

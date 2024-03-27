@@ -22,12 +22,21 @@ class PageRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-                SELECT pages.*, 
-                banners.intro, 
-                banners.picture
-                FROM pages 
-                LEFT JOIN banners ON pages.id = banners.page_id
-                WHERE pages.id = :id
+            SELECT 
+            pages.*, 
+            banners.intro, 
+            banners.picture,
+            parent_pages.id AS parentId
+        FROM 
+            pages 
+        LEFT JOIN 
+            banners ON pages.id = banners.page_id
+        LEFT JOIN 
+            detail_page ON pages.id = detail_page.page_id
+        LEFT JOIN 
+            pages AS parent_pages ON detail_page.parent_page_id = parent_pages.id
+        WHERE 
+            pages.id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
@@ -214,41 +223,6 @@ class PageRepository extends Repository
     }
 
     /**
-     * gets the detail page by id
-     * @param int $id
-     * @return Page
-     * @throws \Exception
-     * @author Koen Wijchers
-     */
-    public function getDetailPage($id)
-    {
-        try {
-            $stmt = $this->connection->prepare("
-                SELECT pages.*, 
-                banners.intro, 
-                banners.picture,
-                parent_pages.name as parentName
-                FROM detail_page
-                LEFT JOIN pages ON detail_page.page_id = pages.id 
-                LEFT JOIN pages as parent_pages ON detail_page.parent_page_id = parent_pages.id
-                LEFT JOIN banners ON pages.id = banners.page_id 
-                WHERE pages.id = :id
-            ");
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-
-            $stmt->setFetchMode(PDO::FETCH_CLASS, ChildPage::class);
-            $page = $stmt->fetch();
-            $page->cards = $this->getCards($id);
-            $page->infoText = $this->getInfoText($id);
-            return $page;
-        } catch (PDOException $e) {
-            error_log('Error getting detail page: ' . $e->getMessage());
-            throw new \Exception('Error getting detail page');
-        }
-    }
-
-    /**
      * gets all names of the pages
      * @return array
      * @throws \Exception
@@ -309,6 +283,29 @@ class PageRepository extends Repository
         } catch (PDOException $e) {
             error_log('Error getting child pages: ' . $e->getMessage());
             throw new \Exception('Error getting child pages');
+        }
+    }
+
+    /**
+     * gets all parent pages
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllParentPages()
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT p.id, p.name
+            FROM pages p 
+            LEFT JOIN detail_page dp ON p.id = dp.page_id
+            WHERE dp.parent_page_id IS NULL
+        ");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting parent pages: ' . $e->getMessage());
+            throw new \Exception('Error getting parent pages');
         }
     }
 }
