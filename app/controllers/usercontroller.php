@@ -50,7 +50,7 @@ class UserController extends Controller
       $issuedAt = time(); // issued at
       $notbefore = $issuedAt; //not valid before 
 
-      $expire = $issuedAtG + 9000;
+      $expire = $issuedAt + 9000;
       $token_payload = array(
          "iss" => $issuer,
          "aud" => $audience,
