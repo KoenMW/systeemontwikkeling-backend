@@ -47,8 +47,11 @@ $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
 $router->put('/events/update/(\d+)', 'EventController@updateEvent');
 $router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
-$router->get('/events/id/(\d+)', 'EventController@getEventById');
+$router->get('/event/id/(\d+)', 'EventController@getEventById');
 
 
+//password reset endpoint
+$router->post('/users/resetlink', 'UserController@reset');;
+$router->put('/users/resetpassword', 'UserController@resetPassword');
 // Run it!
 $router->run();
