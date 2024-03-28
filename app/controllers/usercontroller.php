@@ -80,7 +80,7 @@ class UserController extends Controller
     public function getUsers()
     {
         try {
-            if (!$this->checkForJwt([2])) return;
+            if (!$this->checkForJwt(2)) return;
 
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
@@ -105,7 +105,7 @@ class UserController extends Controller
          $data = $this->createObjectFromPostedJson("Models\\User");
 
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if (!$decoded) {
                 return;
@@ -133,7 +133,7 @@ class UserController extends Controller
          $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -155,7 +155,7 @@ class UserController extends Controller
         try {
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
@@ -241,7 +241,7 @@ class UserController extends Controller
                 throw new Exception("User ID is required");
             }
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if (!$decoded) {
                 return;

@@ -12,10 +12,10 @@ class Controller
 
     /**
      * Check for JWT token
-     * @param array $allowedRoles the roles that are allowed to access the endpoint
+     * @param int $minAllowedRole the minimum role allowed to access the endpoint
      * @return object|void the decoded JWT or void if the token is invalid
      */
-    function checkForJwt(array $allowedRoles = [0])
+    function checkForJwt(int $minAllowedRole = 2)
     {
         // Check for token header
         if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -31,7 +31,7 @@ class Controller
 
         if ($jwt) {
             try {
-                return $this->checkJwtPerRole($jwt, $allowedRoles);
+                return $this->checkJwtPerRole($jwt, $minAllowedRole);
             } catch (Exception $e) {
                 $this->respondWithError(401, "Invalid token");
                 return;
@@ -44,15 +44,15 @@ class Controller
      * @param string $jwt
      * @return object|void the decoded JWT or void if the token is invalid
      */
-    function checkJwtPerRole($jwt, $allowedRoles = [0])
+    function checkJwtPerRole($jwt, $minAllowedRole = 2)
     {
         if ($jwt == null) {
             throw new Exception("No token provided");
         }
 
         $keys = [];
-        foreach ($allowedRoles as $role) {
-            $keys[] = $this->getSecretKey($role);
+        for ($i = $minAllowedRole; $i <= 2; $i++) {
+            $keys[] = $this->getSecretKey($i);
         }
         $decoded = null;
         foreach ($keys as $key) {
@@ -62,6 +62,9 @@ class Controller
             } catch (Exception $e) {
                 continue;
             }
+        }
+        if (!$decoded) {
+            $this->respondWithError(401, "unauthorized");
         }
         return $decoded;
     }
