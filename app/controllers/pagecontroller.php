@@ -119,4 +119,28 @@ class PageController extends Controller
             $this->respondWithError(500, "An error occurred while retrieving the pages");
         }
     }
+
+    function createPage()
+    {
+        try {
+            if (!$this->checkForJwt([2])) return;
+
+            $page = $this->createObjectFromPostedJson("Models\\Page");
+
+            // Validate the page object
+            if (!isset($page->name) || !isset($page->intro)) {
+                $this->respondWithError(400, "Invalid page data");
+                return;
+            }
+
+            // Pass the page object to the service
+            $createdPage = $this->service->createPage($page);
+
+            // Respond with the created page
+            $this->respond($createdPage);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            $this->respondWithError(500, "An error occurred while creating the page");
+        }
+    }
 }

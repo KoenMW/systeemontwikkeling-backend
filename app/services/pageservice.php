@@ -76,4 +76,47 @@ class PageService
     {
         return $this->repository->getAllParentPages();
     }
+
+    /**
+     * creates a new page
+     * @param \Models\Page $page
+     * @return \Models\Page
+     * @throws \Exception
+     */
+    public function createPage($page)
+    {
+        try {
+            // Start a transaction
+            $this->repository->beginTransaction();
+
+            // Create the page in the database
+            $createdPageId = $this->repository->createPage($page->name);
+
+            // Create the cards, infoTexts, and events
+            foreach ($page->cards as $card) {
+                $this->repository->createCard($card, $createdPageId);
+            }
+
+            foreach ($page->infoText as $infoText) {
+                $this->repository->createInfoText($infoText, $createdPageId);
+            }
+
+            // If the page has a parent, create a detail page
+            if ($page->parentId !== null) {
+                $this->repository->createDetailPage($createdPageId, $page->parentId);
+            }
+
+            // Commit the transaction
+            $this->repository->commit();
+
+            // Retrieve the created page
+            $createdPage = $this->repository->getOne($createdPageId);
+
+            return $createdPage;
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of an error
+            $this->repository->rollBack();
+            throw new \Exception("An error occurred while creating the page: " . $e->getMessage());
+        }
+    }
 }
