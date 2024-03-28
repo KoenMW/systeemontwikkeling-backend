@@ -25,12 +25,12 @@ $router->get('/users/(\d+)', 'UserController@getUserById');
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
-$router->get('/orders/(\d+)', 'OrderController@getById');
+$router->get('/orders/([\w\.]+)', 'OrderController@getById');
 $router->get('/orders/check/([\w\.]+)', 'OrderController@checkOrderById');
 $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
-$router->delete('/orders', 'OrderController@deleteOrder');
+$router->delete('/orders/([\w\.]+)', 'OrderController@deleteOrder');
 
 // test endpoint
 $router->get('/test', 'TestController@get');
@@ -49,6 +49,8 @@ $router->put('/events/update/(\d+)', 'EventController@updateEvent');
 $router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
 $router->get('/events/id/(\d+)', 'EventController@getEventById');
 
+// access control endpoint
+$router->get('/accessControl/(\d+)', 'AccessController@get');
 
 // Run it!
 $router->run();
