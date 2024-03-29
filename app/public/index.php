@@ -17,7 +17,7 @@ $router->setNamespace('Controllers');
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/users', 'UserController@getUsers');
-$router->put('/users/update', 'UserController@updateUser');
+$router->put('/users', 'UserController@updateUser');
 $router->put('/users/changePassword', 'UserController@changePassword');
 $router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
 $router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
@@ -45,8 +45,8 @@ $router->get('/pages/parent', 'PageController@getAllParentPages');
 // events endpoint
 $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
-$router->put('/events/update/(\d+)', 'EventController@updateEvent');
-$router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
+$router->put('/events/(\d+)', 'EventController@updateEvent');
+$router->delete('/events/(\d+)', 'EventController@deleteEvent');
 $router->get('/event/id/(\d+)', 'EventController@getEventById');
 
 // access control endpoint

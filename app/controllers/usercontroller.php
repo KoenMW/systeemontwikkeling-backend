@@ -10,18 +10,18 @@ use Firebase\JWT\JWT;
 
 class UserController extends Controller
 {
-   // initialize services
-   protected $service;
-   function __construct()
-   {
-      $this->service = new UserService();
-   }
+    // initialize services
+    protected $service;
+    function __construct()
+    {
+        $this->service = new UserService();
+    }
 
-   public function login()
-   {
-      try {
-         $data = $this->createObjectFromPostedJson("Models\\User");
-         $user = $this->service->checkEmailPassword($data->email, $data->password);
+    public function login()
+    {
+        try {
+            $data = $this->createObjectFromPostedJson("Models\\User");
+            $user = $this->service->checkEmailPassword($data->email, $data->password);
 
             $tokenResponse = $this->generateJwt($user);
             $this->respond($tokenResponse);
@@ -44,28 +44,28 @@ class UserController extends Controller
     {
         $secret_key = $this->getSecretKey($user->role);
 
-      $issuer = "THE_ISSUER"; // this can be the domain/servername that issues the token
-      $audience = "THE_AUDIENCE"; // this can be the domain/servername that checks the token
+        $issuer = "THE_ISSUER"; // this can be the domain/servername that issues the token
+        $audience = "THE_AUDIENCE"; // this can be the domain/servername that checks the token
 
-      $issuedAt = time(); // issued at
-      $notbefore = $issuedAt; //not valid before 
+        $issuedAt = time(); // issued at
+        $notbefore = $issuedAt; //not valid before 
 
-      $expire = $issuedAt + 9000;
-      $token_payload = array(
-         "iss" => $issuer,
-         "aud" => $audience,
-         "iat" => $issuedAt,
-         "nbf" => $notbefore,
-         "exp" => $expire,
-         "data" => array(
-            "id" => $user->id,
-            "email" => $user->email,
-            "role" => $user->role
-         )
-      );
+        $expire = $issuedAt + 9000;
+        $token_payload = array(
+            "iss" => $issuer,
+            "aud" => $audience,
+            "iat" => $issuedAt,
+            "nbf" => $notbefore,
+            "exp" => $expire,
+            "data" => array(
+                "id" => $user->id,
+                "email" => $user->email,
+                "role" => $user->role
+            )
+        );
 
-      // Encode the JWT token
-      $jwt = JWT::encode($token_payload, $secret_key, 'HS256');
+        // Encode the JWT token
+        $jwt = JWT::encode($token_payload, $secret_key, 'HS256');
 
         return
             array(
@@ -86,13 +86,13 @@ class UserController extends Controller
             $filterRole = $_GET['filterRole'] ?? null;
             $sortByCreateDate = $_GET['sortByCreateDate'] ?? 'ASC';
 
-         $users = $this->service->getUsers($searchEmail, $filterRole, $sortByCreateDate);
-         header('Content-Type: application/json');
-         $this->respond($users);
-      } catch (Exception $e) {
-         $this->respondWithError(500, "something went wrong while fetching users");
-      }
-   }
+            $users = $this->service->getUsers($searchEmail, $filterRole, $sortByCreateDate);
+            header('Content-Type: application/json');
+            $this->respond($users);
+        } catch (Exception $e) {
+            $this->respondWithError(500, "something went wrong while fetching users");
+        }
+    }
 
     /**
      * Updates a user with the given id, if the user id in the token matches the user id in the request
@@ -102,7 +102,7 @@ class UserController extends Controller
     {
         try {
 
-         $data = $this->createObjectFromPostedJson("Models\\User");
+            $data = $this->createObjectFromPostedJson("Models\\User");
 
 
             $decoded = $this->checkForJwt(0);
@@ -111,12 +111,30 @@ class UserController extends Controller
                 return;
             }
 
-            if ($decoded->data->id == $data->id) {
-                $this->service->updateUser($data->id, $data->username, $data->email, $data->phoneNumber, $data->address);
-                $this->respond($data);
-            } else {
-                $this->respondWithError(401, "Unauthorized");
+            switch ($decoded->data->role) {
+                case 0:
+                    if ($decoded->data->id != $data->id) {
+                        $decoded->data->role = -1;
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 1:
+                    if ($decoded->data->id != $data->id) {
+                        $decoded->data->role = -1;
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 2:
+                    break;
+                default:
+                    $this->respondWithError(401, "Unauthorized");
+                    return;
             }
+
+            $this->service->updateUser($data);
+            $this->respond($data);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
@@ -130,7 +148,7 @@ class UserController extends Controller
     {
         try {
 
-         $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
+            $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
 
             $decoded = $this->checkForJwt(0);
@@ -175,7 +193,7 @@ class UserController extends Controller
                 throw new Exception("User ID is required");
             }
 
-         $result = $this->service->deleteUser($id);
+            $result = $this->service->deleteUser($id);
 
             if ($result) {
                 $this->respond(['message' => "User deleted successfully"]);
@@ -186,47 +204,47 @@ class UserController extends Controller
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
-     public function reset()
-   {
-      try {
-         $data = json_decode(file_get_contents('php://input'), true);
+    public function reset()
+    {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
 
-         if (empty($data) || !isset($data['email'])) {
-            throw new Exception('Missing email in request body', 400);
-         }
+            if (empty($data) || !isset($data['email'])) {
+                throw new Exception('Missing email in request body', 400);
+            }
 
-         $email = trim($data['email']);
+            $email = trim($data['email']);
 
-         $result = $this->service->reset($email);
+            $result = $this->service->reset($email);
 
-         $this->sendResponse($result['message']);
-      } catch (Exception $e) {
-         $this->sendResponse($e->getMessage(), $e->getCode());
-      }
-   }
+            $this->sendResponse($result['message']);
+        } catch (Exception $e) {
+            $this->sendResponse($e->getMessage(), $e->getCode());
+        }
+    }
 
-   public function resetpassword()
-   {
-      try {
-         $data = json_decode(file_get_contents('php://input'), true);
+    public function resetpassword()
+    {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
 
-         if (empty($data) || !isset($data['password']) || !isset($data['token'])) {
-            throw new exception('missing password or token in request body', 400);
-         }
-         $password = $data['password'];
-         $token = $data['token'];
+            if (empty($data) || !isset($data['password']) || !isset($data['token'])) {
+                throw new exception('missing password or token in request body', 400);
+            }
+            $password = $data['password'];
+            $token = $data['token'];
 
-         $this->service->resetpassword($token, $password);
-         $this->sendresponse('password reset successful');
-      } catch (exception $e) {
-         $this->sendresponse($e->getmessage(), 500);
-      }
-   }
-   private function sendresponse($message, $statuscode = 200)
-   {
-      http_response_code($statuscode);
-      echo json_encode(['message' => $message]);
-   }
+            $this->service->resetpassword($token, $password);
+            $this->sendresponse('password reset successful');
+        } catch (exception $e) {
+            $this->sendresponse($e->getmessage(), 500);
+        }
+    }
+    private function sendresponse($message, $statuscode = 200)
+    {
+        http_response_code($statuscode);
+        echo json_encode(['message' => $message]);
+    }
 
     /**
      * Fetches a user by their id and sends the user data in the response.
