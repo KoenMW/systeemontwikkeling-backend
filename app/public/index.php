@@ -31,6 +31,7 @@ $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
 $router->delete('/orders', 'OrderController@deleteOrder');
+$router->post('/orders/generateAndSendInvoice', 'OrderController@generateAndSendInvoice');
 
 // test endpoint
 $router->get('/test', 'TestController@get');
