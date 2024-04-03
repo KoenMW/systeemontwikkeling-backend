@@ -43,6 +43,7 @@ $router->get('/pages/links', 'PageController@getAllLinks');
 $router->get('/pages/parent', 'PageController@getAllParentPages');
 
 // events endpoint
+$router->get('/events', 'EventController@getAll');
 $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
 $router->put('/events/(\d+)', 'EventController@updateEvent');
