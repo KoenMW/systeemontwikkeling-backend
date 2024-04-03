@@ -8,10 +8,10 @@ use Exception;
 use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
 
-
 class UserController extends Controller
 {
     // initialize services
+    protected $service;
     function __construct()
     {
         $this->service = new UserService();
@@ -80,7 +80,7 @@ class UserController extends Controller
     public function getUsers()
     {
         try {
-            if (!$this->checkForJwt([2])) return;
+            if (!$this->checkForJwt(2)) return;
 
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
@@ -105,18 +105,36 @@ class UserController extends Controller
             $data = $this->createObjectFromPostedJson("Models\\User");
 
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if (!$decoded) {
                 return;
             }
 
-            if ($decoded->data->id == $data->id) {
-                $this->service->updateUser($data->id, $data->username, $data->email, $data->phoneNumber, $data->address);
-                $this->respond($data);
-            } else {
-                $this->respondWithError(401, "Unauthorized");
+            switch ($decoded->data->role) {
+                case 0:
+                    if ($decoded->data->id != $data->id) {
+                        $decoded->data->role = -1;
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 1:
+                    if ($decoded->data->id != $data->id) {
+                        $decoded->data->role = -1;
+                        $this->respondWithError(401, "Unauthorized");
+                        return;
+                    }
+                    break;
+                case 2:
+                    break;
+                default:
+                    $this->respondWithError(401, "Unauthorized");
+                    return;
             }
+
+            $this->service->updateUser($data);
+            $this->respond($data);
         } catch (Exception $e) {
             $this->respondWithError(500, $e->getMessage());
         }
@@ -133,7 +151,7 @@ class UserController extends Controller
             $data = $this->createObjectFromPostedJson("Models\\PasswordChangeDTO");
 
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->changePassword($data->id, $data->currentPassword, $data->newPassword);
@@ -155,7 +173,7 @@ class UserController extends Controller
         try {
             $data = $this->createObjectFromPostedJson("Models\\ProfilePictureDTO");
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if ($decoded->data->id == $data->id) {
                 $this->service->uploadProfilePicture($data->id, $data->base64Image);
@@ -186,6 +204,47 @@ class UserController extends Controller
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
+    public function reset()
+    {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (empty($data) || !isset($data['email'])) {
+                throw new Exception('Missing email in request body', 400);
+            }
+
+            $email = trim($data['email']);
+
+            $result = $this->service->reset($email);
+
+            $this->sendResponse($result['message']);
+        } catch (Exception $e) {
+            $this->sendResponse($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function resetpassword()
+    {
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (empty($data) || !isset($data['password']) || !isset($data['token'])) {
+                throw new exception('missing password or token in request body', 400);
+            }
+            $password = $data['password'];
+            $token = $data['token'];
+
+            $this->service->resetpassword($token, $password);
+            $this->sendresponse('password reset successful');
+        } catch (exception $e) {
+            $this->sendresponse($e->getmessage(), 500);
+        }
+    }
+    private function sendresponse($message, $statuscode = 200)
+    {
+        http_response_code($statuscode);
+        echo json_encode(['message' => $message]);
+    }
 
     /**
      * Fetches a user by their id and sends the user data in the response.
@@ -200,7 +259,7 @@ class UserController extends Controller
                 throw new Exception("User ID is required");
             }
 
-            $decoded = $this->checkForJwt([0, 1, 2]);
+            $decoded = $this->checkForJwt(0);
 
             if (!$decoded) {
                 return;

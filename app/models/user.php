@@ -10,6 +10,9 @@ class User
     public string $password;
     public string $email;
     public int $role;
+    public string $create_time;
+    public ?string $token;
+    public ?\DateTime $reset_token_expires;
     public string $createDate;
     public ?string $img;
     public int $phoneNumber;

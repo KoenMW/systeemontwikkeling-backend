@@ -3,40 +3,36 @@
 namespace Repositories;
 
 use Models\Order;
+use Models\OrderDTO;
 use Models\checkinDTO;
 use PDO;
 
 class OrderRepository extends Repository
 {
     /**
-    * Retrieves all orders from the database.
-    * @return array An array of Order objects representing all orders in the database
-    * @throws Exception If there's an error fetching the orders from the database
-    * @author Luko Pecotic
-    */
+     * Retrieves all orders from the database.
+     * @return array An array of Order objects representing all orders in the database
+     * @throws Exception If there's an error fetching the orders from the database
+     * @author Luko Pecotic
+     */
     public function getAllOrders()
     {
         try {
-            $sql = "SELECT * FROM Orders";
+            $sql = "
+            SELECT 
+                Orders.*, 
+                users.username, 
+                events.title AS eventName
+            FROM 
+                Orders
+            INNER JOIN 
+                users ON Orders.user_id = users.id
+            INNER JOIN 
+                events ON Orders.event_id = events.id
+        ";
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
-            $ordersData = $stmt->fetchAll();
-
-            if (!$ordersData) {
-                throw new \Exception("Failed to fetch orders from the database.");
-            }
-
-            $orders = [];
-            foreach ($ordersData as $orderData) {
-                $order = new Order();
-                $order->id = $orderData['id'];
-                $order->event_id = $orderData['event_id'];
-                $order->user_id = $orderData['user_id'];
-                $order->quantity = $orderData['quantity'];
-                $order->comment = $orderData['comment'];
-                $order->paymentDate = $orderData['paymentDate'];
-                $orders[] = $order;
-            }
+            $orders = $stmt->fetchAll(PDO::FETCH_CLASS, OrderDTO::class);
             return $orders;
         } catch (\Exception $e) {
             error_log('Error fetching orders: ' . $e->getMessage());
@@ -45,12 +41,12 @@ class OrderRepository extends Repository
     }
 
     /**
-    * Creates a new order in the database.
-    * @param Order $order The order to be created
-    * @return bool True if the order was created successfully, false otherwise
-    * @throws Exception If there's an error preparing the SQL statement
-    * @author Luko Pecotic
-    */
+     * Creates a new order in the database.
+     * @param Order $order The order to be created
+     * @return bool True if the order was created successfully, false otherwise
+     * @throws Exception If there's an error preparing the SQL statement
+     * @author Luko Pecotic
+     */
     public function createOrder(Order $order)
     {
         try {
@@ -68,12 +64,12 @@ class OrderRepository extends Repository
     }
 
     /**
-    * Updates an existing order in the database.
-    * @param Order $order The order to be updated
-    * @return bool True if the order was updated successfully, false otherwise
-    * @throws Exception If there's an error preparing or executing the SQL statement
-    * @author Luko Pecotic
-    */
+     * Updates an existing order in the database.
+     * @param Order $order The order to be updated
+     * @return bool True if the order was updated successfully, false otherwise
+     * @throws Exception If there's an error preparing or executing the SQL statement
+     * @author Luko Pecotic
+     */
     public function updateOrder(Order $order)
     {
         try {
@@ -95,13 +91,13 @@ class OrderRepository extends Repository
     }
 
     /**
-    * Deletes an existing order from the database.
-    * @param int $id The id of the order to be deleted
-    * @return bool True if the order was deleted successfully, false otherwise
-    * @throws Exception If there's an error preparing or executing the SQL statement
-    * @author Luko Pecotic
-    */
-    public function deleteOrder(int $id)
+     * Deletes an existing order from the database.
+     * @param int $id The id of the order to be deleted
+     * @return bool True if the order was deleted successfully, false otherwise
+     * @throws Exception If there's an error preparing or executing the SQL statement
+     * @author Luko Pecotic
+     */
+    public function deleteOrder($id)
     {
         try {
             $sql = "DELETE FROM Orders WHERE id = ?";

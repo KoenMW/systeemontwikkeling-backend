@@ -39,7 +39,7 @@ class PageController extends Controller
     function updatePage()
     {
         try {
-            if (!$this->checkForJwt([2])) return;
+            if (!$this->checkForJwt(2)) return;
 
             $page = $this->createObjectFromPostedJson("Models\\Page");
             // not jet implemented

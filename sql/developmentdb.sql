@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 17, 2024 at 12:58 PM
--- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
--- PHP Version: 8.2.16
+-- Gegenereerd op: 24 mrt 2024 om 07:16
+-- Serverversie: 11.1.3-MariaDB-1:11.1.3+maria~ubu2204
+-- PHP-versie: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,16 +20,13 @@ SET time_zone = "+00:00";
 --
 -- Database: `developmentdb`
 --
-CREATE DATABASE IF NOT EXISTS `developmentdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `developmentdb`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `banners`
+-- Tabelstructuur voor tabel `banners`
 --
 
-DROP TABLE IF EXISTS `banners`;
 CREATE TABLE `banners` (
   `id` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
@@ -39,7 +36,7 @@ CREATE TABLE `banners` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `banners`
+-- Gegevens worden geëxporteerd voor tabel `banners`
 --
 
 INSERT INTO `banners` (`id`, `page_id`, `title`, `intro`, `picture`) VALUES
@@ -52,10 +49,9 @@ INSERT INTO `banners` (`id`, `page_id`, `title`, `intro`, `picture`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cards`
+-- Tabelstructuur voor tabel `cards`
 --
 
-DROP TABLE IF EXISTS `cards`;
 CREATE TABLE `cards` (
   `id` int(11) NOT NULL,
   `title` varchar(100) DEFAULT NULL,
@@ -66,7 +62,7 @@ CREATE TABLE `cards` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cards`
+-- Gegevens worden geëxporteerd voor tabel `cards`
 --
 
 INSERT INTO `cards` (`id`, `title`, `text`, `picture`, `page_id`, `redirect_link`) VALUES
@@ -89,17 +85,16 @@ INSERT INTO `cards` (`id`, `title`, `text`, `picture`, `page_id`, `redirect_link
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detail_page`
+-- Tabelstructuur voor tabel `detail_page`
 --
 
-DROP TABLE IF EXISTS `detail_page`;
 CREATE TABLE `detail_page` (
   `page_id` int(11) NOT NULL,
   `parent_page_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `detail_page`
+-- Gegevens worden geëxporteerd voor tabel `detail_page`
 --
 
 INSERT INTO `detail_page` (`page_id`, `parent_page_id`) VALUES
@@ -108,10 +103,9 @@ INSERT INTO `detail_page` (`page_id`, `parent_page_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `events`
+-- Tabelstructuur voor tabel `events`
 --
 
-DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,
@@ -126,29 +120,29 @@ CREATE TABLE `events` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `events`
+-- Gegevens worden geëxporteerd voor tabel `events`
 --
 
 INSERT INTO `events` (`id`, `title`, `startTime`, `price`, `location`, `ticket_amount`, `page_id`, `detail_page_id`, `endTime`, `eventType`) VALUES
 (1, 'Gare du Nord', '2024-07-26 18:00:00', 15.00, 'Patronaat Main Hall', 200, 1, NULL, '2024-07-26 19:00:00', 1),
 (2, 'Mano Restaurant', '2024-07-26 18:00:00', 10.00, 'Bakenessergracht 109', 20, 3, NULL, '2024-07-26 20:00:00', 3),
 (3, 'English Tour', '2024-07-26 10:00:00', 17.50, 'Grote markt', 25, 2, NULL, '2024-07-26 12:30:00', 2),
-(4, 'Rilan & The Bombadiers', '2024-07-26 19:30:00', 15.00, 'Patronaat Main Hall', 200, 1, NULL, '2024-07-26 20:30:00', 1);
+(4, 'Rilan & The Bombadiers', '2024-07-26 19:30:00', 15.00, 'Patronaat Main Hall', 200, 1, NULL, '2024-07-26 20:30:00', 1),
+(5, 'Nicky Romero ', '2024-07-28 23:00:00', 60.00, 'Club Stalker', 100, 4, NULL, '2024-07-28 00:30:00', 4);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `eventType`
+-- Tabelstructuur voor tabel `eventType`
 --
 
-DROP TABLE IF EXISTS `eventType`;
 CREATE TABLE `eventType` (
   `id` int(11) NOT NULL,
   `event` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `eventType`
+-- Gegevens worden geëxporteerd voor tabel `eventType`
 --
 
 INSERT INTO `eventType` (`id`, `event`) VALUES
@@ -160,10 +154,9 @@ INSERT INTO `eventType` (`id`, `event`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `info_texts`
+-- Tabelstructuur voor tabel `info_texts`
 --
 
-DROP TABLE IF EXISTS `info_texts`;
 CREATE TABLE `info_texts` (
   `id` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
@@ -173,7 +166,7 @@ CREATE TABLE `info_texts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `info_texts`
+-- Gegevens worden geëxporteerd voor tabel `info_texts`
 --
 
 INSERT INTO `info_texts` (`id`, `page_id`, `title`, `content`, `img`) VALUES
@@ -182,10 +175,9 @@ INSERT INTO `info_texts` (`id`, `page_id`, `title`, `content`, `img`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Orders`
+-- Tabelstructuur voor tabel `Orders`
 --
 
-DROP TABLE IF EXISTS `Orders`;
 CREATE TABLE `Orders` (
   `id` varchar(23) NOT NULL,
   `event_id` int(11) NOT NULL,
@@ -197,7 +189,7 @@ CREATE TABLE `Orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `Orders`
+-- Gegevens worden geëxporteerd voor tabel `Orders`
 --
 
 INSERT INTO `Orders` (`id`, `event_id`, `user_id`, `quantity`, `comment`, `paymentDate`, `checkedIn`) VALUES
@@ -215,17 +207,16 @@ INSERT INTO `Orders` (`id`, `event_id`, `user_id`, `quantity`, `comment`, `payme
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pages`
+-- Tabelstructuur voor tabel `pages`
 --
 
-DROP TABLE IF EXISTS `pages`;
 CREATE TABLE `pages` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `pages`
+-- Gegevens worden geëxporteerd voor tabel `pages`
 --
 
 INSERT INTO `pages` (`id`, `name`) VALUES
@@ -238,10 +229,9 @@ INSERT INTO `pages` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `restaurant_card`
+-- Tabelstructuur voor tabel `restaurant_card`
 --
 
-DROP TABLE IF EXISTS `restaurant_card`;
 CREATE TABLE `restaurant_card` (
   `id` int(11) NOT NULL,
   `card_id` int(11) NOT NULL,
@@ -251,10 +241,9 @@ CREATE TABLE `restaurant_card` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabelstructuur voor tabel `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
@@ -265,36 +254,39 @@ CREATE TABLE `users` (
   `createDate` date NOT NULL DEFAULT current_timestamp(),
   `phoneNumber` int(10) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
-  `confirmed` bit(11) NOT NULL DEFAULT b'0'
+  `confirmed` bit(11) NOT NULL DEFAULT b'0',
+  `token` varchar(255) DEFAULT NULL,
+  `reset_token_expiry` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Gegevens worden geëxporteerd voor tabel `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `img`, `createDate`, `phoneNumber`, `address`, `confirmed`) VALUES
-(5, 'test', 'test@test.test', '$2y$10$tEK3nr8MsCqHcwGLd.JFsOBwh7.Qgs1ckXcv0zUPB668HGJ1LfsIS', 0, '', '2024-03-11', 1, 'test', b'00000000000');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `img`, `createDate`, `phoneNumber`, `address`, `confirmed`, `token`, `reset_token_expiry`) VALUES
+(5, 'test', 'test@test.test', '$2y$10$tEK3nr8MsCqHcwGLd.JFsOBwh7.Qgs1ckXcv0zUPB668HGJ1LfsIS', 0, '', '2024-03-11', 1, 'test', b'00000000000', '', NULL),
+(7, 'nick', 'nick.schaap127@gmail.com', '$2y$10$MmKNr3Mx7xcbS6bpj7jkJ.o5k0lOPuiMx0XgPT4DBgw92vqJqlp7G', 0, NULL, '2024-03-20', 6, 'test', b'00000000000', NULL, NULL);
 
 --
--- Indexes for dumped tables
+-- Indexen voor geëxporteerde tabellen
 --
 
 --
--- Indexes for table `banners`
+-- Indexen voor tabel `banners`
 --
 ALTER TABLE `banners`
   ADD PRIMARY KEY (`id`),
   ADD KEY `page_id` (`page_id`);
 
 --
--- Indexes for table `cards`
+-- Indexen voor tabel `cards`
 --
 ALTER TABLE `cards`
   ADD PRIMARY KEY (`id`),
   ADD KEY `page_id` (`page_id`);
 
 --
--- Indexes for table `detail_page`
+-- Indexen voor tabel `detail_page`
 --
 ALTER TABLE `detail_page`
   ADD PRIMARY KEY (`page_id`),
@@ -302,7 +294,7 @@ ALTER TABLE `detail_page`
   ADD KEY `parent_page_id` (`parent_page_id`);
 
 --
--- Indexes for table `events`
+-- Indexen voor tabel `events`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`),
@@ -311,20 +303,20 @@ ALTER TABLE `events`
   ADD KEY `detail_page_id` (`detail_page_id`);
 
 --
--- Indexes for table `eventType`
+-- Indexen voor tabel `eventType`
 --
 ALTER TABLE `eventType`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `info_texts`
+-- Indexen voor tabel `info_texts`
 --
 ALTER TABLE `info_texts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `page_id` (`page_id`);
 
 --
--- Indexes for table `Orders`
+-- Indexen voor tabel `Orders`
 --
 ALTER TABLE `Orders`
   ADD PRIMARY KEY (`id`),
@@ -333,95 +325,95 @@ ALTER TABLE `Orders`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `pages`
+-- Indexen voor tabel `pages`
 --
 ALTER TABLE `pages`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `restaurant_card`
+-- Indexen voor tabel `restaurant_card`
 --
 ALTER TABLE `restaurant_card`
   ADD KEY `card_id` (`card_id`);
 
 --
--- Indexes for table `users`
+-- Indexen voor tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT voor geëxporteerde tabellen
 --
 
 --
--- AUTO_INCREMENT for table `banners`
+-- AUTO_INCREMENT voor een tabel `banners`
 --
 ALTER TABLE `banners`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `cards`
+-- AUTO_INCREMENT voor een tabel `cards`
 --
 ALTER TABLE `cards`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `events`
+-- AUTO_INCREMENT voor een tabel `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `eventType`
+-- AUTO_INCREMENT voor een tabel `eventType`
 --
 ALTER TABLE `eventType`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `info_texts`
+-- AUTO_INCREMENT voor een tabel `info_texts`
 --
 ALTER TABLE `info_texts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `pages`
+-- AUTO_INCREMENT voor een tabel `pages`
 --
 ALTER TABLE `pages`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT voor een tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Constraints for dumped tables
+-- Beperkingen voor geëxporteerde tabellen
 --
 
 --
--- Constraints for table `banners`
+-- Beperkingen voor tabel `banners`
 --
 ALTER TABLE `banners`
   ADD CONSTRAINT `banners_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`);
 
 --
--- Constraints for table `cards`
+-- Beperkingen voor tabel `cards`
 --
 ALTER TABLE `cards`
   ADD CONSTRAINT `cards_ibfk_1` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`);
 
 --
--- Constraints for table `detail_page`
+-- Beperkingen voor tabel `detail_page`
 --
 ALTER TABLE `detail_page`
   ADD CONSTRAINT `detail_page_ibfk_1` FOREIGN KEY (`parent_page_id`) REFERENCES `pages` (`id`),
   ADD CONSTRAINT `detail_page_ibfk_2` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`);
 
 --
--- Constraints for table `events`
+-- Beperkingen voor tabel `events`
 --
 ALTER TABLE `events`
   ADD CONSTRAINT `event_typefk` FOREIGN KEY (`eventType`) REFERENCES `eventType` (`id`),
@@ -429,14 +421,14 @@ ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_2` FOREIGN KEY (`detail_page_id`) REFERENCES `detail_page` (`page_id`);
 
 --
--- Constraints for table `Orders`
+-- Beperkingen voor tabel `Orders`
 --
 ALTER TABLE `Orders`
   ADD CONSTRAINT `Orders_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`),
   ADD CONSTRAINT `Orders_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `restaurant_card`
+-- Beperkingen voor tabel `restaurant_card`
 --
 ALTER TABLE `restaurant_card`
   ADD CONSTRAINT `restaurant_card_ibfk_1` FOREIGN KEY (`card_id`) REFERENCES `cards` (`id`);
@@ -445,4 +437,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
