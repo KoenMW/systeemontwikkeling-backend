@@ -7,14 +7,19 @@ use Models\checkinDTO;
 use Models\OrderDTO;
 use Models\Role;
 use Services\OrderService;
-
+use Services\InvoiceService;
+use Services\UserService;
+use Exception;
 class OrderController extends Controller
 {
     private $orderService;
-
+    private $invoiceService;
+    private $userService;
     public function __construct()
     {
         $this->orderService = new OrderService();
+        $this->invoiceService = new InvoiceService($this->orderService);
+        $this->userService = new UserService();
     }
 
     /**
@@ -176,6 +181,35 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->respondWithError(500, "An error occurred while deleting the order");
+        }
+    }
+    public function generateAndSendInvoice()
+    {
+        echo realpath(__DIR__ . "/../../storage/qr-codes/");
+        try {
+            // Assuming you receive order IDs as a JSON payload
+            $data = json_decode(file_get_contents('php://input'), true);
+            $orderIds = $data['orderIds'] ?? [];
+
+            // Ensure order IDs were provided
+            if (empty($orderIds)) {
+                throw new Exception("Order IDs are required.");
+            }
+            $this->orderService->generateEventQrCodes($orderIds);
+
+            // Fetch order details to get user email. This assumes all orders belong to the same user.
+            $ordersDetails = $this->orderService->getOrderDetailsByIds($orderIds);
+            if (empty($ordersDetails)) {
+                throw new Exception("Order details could not be fetched.");
+            }
+
+            // Send the invoice via email
+            $userEmail = $ordersDetails[0]->email;
+            $this->invoiceService->sendInvoiceEmail($orderIds, $userEmail);
+
+            $this->respond(['message' => 'Invoice sent successfully.']);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
         }
     }
 }

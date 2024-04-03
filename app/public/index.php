@@ -30,6 +30,8 @@ $router->get('/orders/check/([\w\.]+)', 'OrderController@checkOrderById');
 $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
+
+$router->post('/orders/generateAndSendInvoice', 'OrderController@generateAndSendInvoice');
 $router->delete('/orders/([\w\.]+)', 'OrderController@deleteOrder');
 
 // test endpoint
