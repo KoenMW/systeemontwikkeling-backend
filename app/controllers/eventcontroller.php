@@ -14,6 +14,12 @@ class EventController extends Controller
         $this->service = new EventService();
     }
 
+    function getAll()
+    {
+        $events = $this->service->getAll();
+        $this->respond($events);
+    }
+
     /**
      * gets all events by type
      * @param string $eventType
