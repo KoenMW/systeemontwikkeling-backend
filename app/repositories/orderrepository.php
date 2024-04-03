@@ -3,6 +3,7 @@
 namespace Repositories;
 
 use Models\Order;
+use Models\OrderDTO;
 use Models\checkinDTO;
 use PDO;
 use Models\invoiceDTO;
@@ -18,26 +19,21 @@ class OrderRepository extends Repository
     public function getAllOrders()
     {
         try {
-            $sql = "SELECT * FROM Orders";
+            $sql = "
+            SELECT 
+                Orders.*, 
+                users.username, 
+                events.title AS eventName
+            FROM 
+                Orders
+            INNER JOIN 
+                users ON Orders.user_id = users.id
+            INNER JOIN 
+                events ON Orders.event_id = events.id
+        ";
             $stmt = $this->connection->prepare($sql);
             $stmt->execute();
-            $ordersData = $stmt->fetchAll();
-
-            if (!$ordersData) {
-                throw new \Exception("Failed to fetch orders from the database.");
-            }
-
-            $orders = [];
-            foreach ($ordersData as $orderData) {
-                $order = new Order();
-                $order->id = $orderData['id'];
-                $order->event_id = $orderData['event_id'];
-                $order->user_id = $orderData['user_id'];
-                $order->quantity = $orderData['quantity'];
-                $order->comment = $orderData['comment'];
-                $order->paymentDate = $orderData['paymentDate'];
-                $orders[] = $order;
-            }
+            $orders = $stmt->fetchAll(PDO::FETCH_CLASS, OrderDTO::class);
             return $orders;
         } catch (\Exception $e) {
             error_log('Error fetching orders: ' . $e->getMessage());
@@ -102,7 +98,8 @@ class OrderRepository extends Repository
      * @throws Exception If there's an error preparing or executing the SQL statement
      * @author Luko Pecotic
      */
-    public function deleteOrder(int $id)
+
+    public function deleteOrder($id)
     {
         try {
             $sql = "DELETE FROM Orders WHERE id = ?";

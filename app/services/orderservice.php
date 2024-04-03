@@ -62,7 +62,8 @@ class OrderService
      * @throws Exception If there's an error preparing or executing the SQL statement
      * @author Luko Pecotic
      */
-    public function deleteOrder(int $id)
+
+    public function deleteOrder($id)
     {
         return $this->orderRepository->deleteOrder($id);
     }
@@ -74,7 +75,7 @@ class OrderService
      * @throws \Exception
      * @author Koen Wijchers
      */
-    public function getById(int $id)
+    public function getById($id)
     {
         return $this->orderRepository->getById($id);
     }
