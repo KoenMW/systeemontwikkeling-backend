@@ -52,7 +52,10 @@ class InvoiceService
                 'eventName' => $order->EventTitle, // Corrected
                 'quantity' => $order->quantity, // Corrected
                 'pricePerItem' => $order->price, // Corrected
-                'subtotal' => $subtotal
+                'subtotal' => $subtotal,
+                'startTime' => $order->startTime, // Corrected
+                'endTime' => $order->endTime, // Corrected
+                'location' => $order->location // Corrected
             ];
             $totalAmount += $subtotal;
         }
@@ -122,23 +125,21 @@ class InvoiceService
         $this->mailer->Body = "Hey " . $userEmail . ",\n\nHere is your invoice and Tickets.\n\nKind regards,\nThe Festival";
         $this->mailer->addAttachment($invoiceFilePath);
         $this->mailer->isHTML(true);
-        
+
         // Create a new PDF for QR codes
         $qrPdf = new TCPDF();
-        foreach ($orderIds as $orderId) {
-            // Fetch the event title for the QR code
-            foreach ($qrdata['items'] as $item) {
-                $eventTitle = $item['eventName'];
-            }
-            // Define the path for the QR code image
-            $qrCodePath = __DIR__ . "/../storage/qr-codes/event_$orderId.png";
+        foreach ($qrdata['items'] as $item) {
+            $qrPdf->AddPage();
+            $qrPdf->writeHTMLCell(0, 0, '', '', "Event: {$item['eventName']}<br>Ticket Amount: {$item['quantity']}<br>Time: {$item['startTime']} - {$item['endTime']}<br>Location: {$item['location']}", 0, 1, 0, true, 'L', true);
+            foreach ($orderIds as $orderId) {
+                // Define the path for the QR code image
+                $qrCodePath = __DIR__ . "/../storage/qr-codes/event_$orderId.png";
 
-            // Check if the QR code file exists before trying to attach it
-            if (file_exists($qrCodePath)) {
-                // Add a page for each QR code and insert the QR code as an image
-                $qrPdf->AddPage();
-                $qrPdf->Cell(0, 10, $eventTitle, 0, 1, 'C');
-                $qrPdf->Image($qrCodePath, 30, 50, 80, 80, 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                // Check if the QR code file exists before trying to attach it
+                if (file_exists($qrCodePath)) {
+                    // Add a page for each QR code and insert the QR code as an image
+                    $qrPdf->Image($qrCodePath, 30, 50, 80, 80, 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+                }
             }
         }
 

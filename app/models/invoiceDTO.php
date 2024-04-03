@@ -1,7 +1,9 @@
 <?php
 
 namespace Models;
-Class InvoiceDTO {
+
+class InvoiceDTO
+{
     public string $orderId;
     public int $event_id;
     public int $user_id;
