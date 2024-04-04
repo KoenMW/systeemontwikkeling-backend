@@ -128,15 +128,16 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Koen Wijchers
      */
-    public function createCard(Card $card, $page_id, $rederectLink = '')
+    public function createCard(Card $card, $page_id, $redirect_link = '')
     {
         try {
-            $stmt = $this->connection->prepare("INSERT INTO cards (title, text, picture, page_id, redirect_link) VALUES (:title, :text, :picture, :page_id, :rederectLink)");
+            $stmt = $this->connection->prepare("INSERT INTO cards (title, text, picture, page_id, redirect_link) VALUES (:title, :text, :picture, :page_id, :redirect_link)");
             $stmt->bindParam(':title', $card->title);
             $stmt->bindParam(':text', $card->text);
             $stmt->bindParam(':picture', $card->picture);
             $stmt->bindParam(':page_id', $page_id);
-            $stmt->bindParam(':rederectLink', $rederectLink);
+            $stmt->bindParam(':redirect_link', $redirect_link);
+            $stmt->execute();
             return true;
         } catch (PDOException $e) {
             error_log('Error creating card: ' . $e->getMessage());
@@ -154,7 +155,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Koen Wijchers
      */
-    public function createBanner($page_id, $title, $intro, $picture = "")
+    public function createBanner($page_id, $title, $intro, $picture)
     {
         try {
             $stmt = $this->connection->prepare("INSERT INTO banners (page_id, title, intro, picture) VALUES (:page_id, :title, :intro, :picture)");
@@ -162,6 +163,7 @@ class PageRepository extends Repository
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':intro', $intro);
             $stmt->bindParam(':picture', $picture);
+            $stmt->execute();
             return true;
         } catch (PDOException $e) {
             error_log('Error creating banner: ' . $e->getMessage());
@@ -173,12 +175,11 @@ class PageRepository extends Repository
      * creates a new card
      * @param InfoText $card
      * @param int $page_id
-     * @param string $rederectLink
      * @return bool
      * @throws \Exception
      * @author Koen Wijchers
      */
-    public function createInfoText(InfoText $infoText, $page_id, $rederectLink = '')
+    public function createInfoText(InfoText $infoText, $page_id)
     {
         try {
             $stmt = $this->connection->prepare("INSERT INTO info_texts (title, content, img, page_id) VALUES (:title, :content, :img, :page_id)");
@@ -186,6 +187,7 @@ class PageRepository extends Repository
             $stmt->bindParam(':content', $infoText->content);
             $stmt->bindParam(':img', $infoText->picture);
             $stmt->bindParam(':page_id', $page_id);
+            $stmt->execute();
             return true;
         } catch (PDOException $e) {
             error_log('Error creating info text: ' . $e->getMessage());
@@ -287,7 +289,7 @@ class PageRepository extends Repository
     }
 
     /**
-     * Deletes a page by id
+     * Deletes a page and its related entities by id
      * @param int $id
      * @return void
      * @throws \Exception
@@ -296,13 +298,79 @@ class PageRepository extends Repository
     public function deletePage($id)
     {
         try {
+            $this->connection->beginTransaction();
+
+            $this->deleteInfoTexts($id);
+            $this->deleteCards($id);
+            $this->deleteBanner($id);
+            $this->deleteDetailPage($id);
+
             $stmt = $this->connection->prepare("DELETE FROM pages WHERE id = :id");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
+
+            $this->connection->commit();
         } catch (PDOException $e) {
+            $this->connection->rollBack();
             error_log('Error deleting page: ' . $e->getMessage());
             throw new \Exception('Error deleting page');
         }
+    }
+
+    /**
+     * Deletes InfoText instances related to a page by page id
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function deleteInfoTexts($pageId)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM info_texts WHERE page_id = :pageId");
+        $stmt->bindParam(':pageId', $pageId);
+        $stmt->execute();
+    }
+
+    /**
+     * Deletes Card instances related to a page by page id
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function deleteCards($pageId)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM cards WHERE page_id = :pageId");
+        $stmt->bindParam(':pageId', $pageId);
+        $stmt->execute();
+    }
+
+    /**
+     * Deletes Banner instances related to a page by page id
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function deleteBanner($pageId)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM banners WHERE page_id = :pageId");
+        $stmt->bindParam(':pageId', $pageId);
+        $stmt->execute();
+    }
+
+    /**
+     * Deletes DetailPage instances related to a page by page id
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function deleteDetailPage($pageId)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM detail_page WHERE page_id = :pageId");
+        $stmt->bindParam(':pageId', $pageId);
+        $stmt->execute();
     }
 
     /**
@@ -325,6 +393,162 @@ class PageRepository extends Repository
         } catch (PDOException $e) {
             error_log('Error getting parent pages: ' . $e->getMessage());
             throw new \Exception('Error getting parent pages');
+        }
+    }
+
+    /**
+     * Updates the name of a page by page id
+     * @param int $pageId
+     * @param string $name
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function updatePage($pageId, $name)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE pages SET name = :name WHERE id = :id");
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':id', $pageId);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error updating page: ' . $e->getMessage());
+            throw new \Exception('Error updating page');
+        }
+    }
+
+    /**
+     * Updates the banner of a page by page id
+     * @param int $pageId
+     * @param string $title
+     * @param string $intro
+     * @param string $picture
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function updateBanner($pageId, $title, $intro, $picture)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE banners SET title = :title, intro = :intro, picture = :picture WHERE page_id = :pageId");
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':intro', $intro);
+            $stmt->bindParam(':picture', $picture);
+            $stmt->bindParam(':pageId', $pageId);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error updating banner: ' . $e->getMessage());
+            throw new \Exception('Error updating banner');
+        }
+    }
+
+    /**
+     * Updates the parent page id of a detail page by page id
+     * @param int $pageId
+     * @param int $parentId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function updateDetailPage($pageId, $parentId)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE detail_page SET parent_page_id = :parentId WHERE page_id = :pageId");
+            $stmt->bindParam(':parentId', $parentId);
+            $stmt->bindParam(':pageId', $pageId);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error updating detail page: ' . $e->getMessage());
+            throw new \Exception('Error updating detail page');
+        }
+    }
+
+    /**
+     * Updates an InfoText instance related to a page by page id
+     * @param Models\InfoText $infoText
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function updateInfoTexts(InfoText $infoText, $pageId)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE info_texts SET title = :title, content = :content, img = :picture WHERE id = :id AND page_id = :pageId");
+            $stmt->bindParam(':title', $infoText->title);
+            $stmt->bindParam(':content', $infoText->content);
+            $stmt->bindParam(':picture', $infoText->picture);
+            $stmt->bindParam(':id', $infoText->id);
+            $stmt->bindParam(':pageId', $pageId);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error updating info text: ' . $e->getMessage());
+            throw new \Exception('Error updating info text');
+        }
+    }
+
+    /**
+     * Updates a Card instance related to a page by page id
+     * @param Models\Card $card
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function updateCards(Card $card, $pageId)
+    {
+        try {
+            $stmt = $this->connection->prepare("UPDATE cards SET title = :title, text = :text, picture = :picture, redirect_link = :redirect_link WHERE id = :id AND page_id = :pageId");
+            $stmt->bindParam(':title', $card->title);
+            $stmt->bindParam(':text', $card->text);
+            $stmt->bindParam(':picture', $card->picture);
+            $stmt->bindParam(':redirect_link', $card->redirect_link);
+            $stmt->bindParam(':id', $card->id);
+            $stmt->bindParam(':pageId', $pageId);
+            $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error updating card: ' . $e->getMessage());
+            throw new \Exception('Error updating card');
+        }
+    }
+
+    /**
+     * Checks if an InfoText instance exists by id
+     * @param int $id
+     * @return bool
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function infoTextExists($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT 1 FROM info_texts WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $e) {
+            error_log('Error checking if info text exists: ' . $e->getMessage());
+            throw new \Exception('Error checking if info text exists');
+        }
+    }
+
+    /**
+     * Checks if a Card instance exists by id
+     * @param int $id
+     * @return bool
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function cardExists($id)
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT 1 FROM cards WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $e) {
+            error_log('Error checking if card exists: ' . $e->getMessage());
+            throw new \Exception('Error checking if card exists');
         }
     }
 }

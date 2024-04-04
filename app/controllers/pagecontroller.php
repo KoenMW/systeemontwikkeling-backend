@@ -42,9 +42,10 @@ class PageController extends Controller
             if (!$this->checkForJwt(2)) return;
 
             $page = $this->createObjectFromPostedJson("Models\\Page");
-            // not jet implemented
-            //$this->service->updatePage($page);
-            $this->respond($page);
+
+            $updatedPage = $this->service->updatePage($page);
+
+            $this->respond($updatedPage);
         } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->respondWithError(500, "An error occurred while updating the page");
@@ -120,23 +121,21 @@ class PageController extends Controller
         }
     }
 
+    /**
+    * Creates a new page from posted JSON data
+    * @return void
+    * @throws \Exception
+    * @author Luko Pecotic
+    */
     function createPage()
     {
         try {
-            if (!$this->checkForJwt([2])) return;
+            if (!$this->checkForJwt(2)) return;
 
             $page = $this->createObjectFromPostedJson("Models\\Page");
 
-            // Validate the page object
-            if (!isset($page->name) || !isset($page->intro)) {
-                $this->respondWithError(400, "Invalid page data");
-                return;
-            }
-
-            // Pass the page object to the service
             $createdPage = $this->service->createPage($page);
 
-            // Respond with the created page
             $this->respond($createdPage);
         } catch (\Exception $e) {
             error_log($e->getMessage());

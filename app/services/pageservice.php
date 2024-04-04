@@ -78,45 +78,177 @@ class PageService
     }
 
     /**
-     * creates a new page
-     * @param \Models\Page $page
-     * @return \Models\Page
+     * Creates a new page with the given page data
+     * @param Models\Page $page
+     * @return Models\Page
      * @throws \Exception
+     * @author Luko Pecotic
      */
     public function createPage($page)
     {
         try {
-            // Start a transaction
             $this->repository->beginTransaction();
 
-            // Create the page in the database
             $createdPageId = $this->repository->createPage($page->name);
 
-            // Create the cards, infoTexts, and events
-            foreach ($page->cards as $card) {
-                $this->repository->createCard($card, $createdPageId);
+            $intro = isset($page->intro) ? $page->intro : null;
+            $picture = isset($page->picture) ? $page->picture : null;
+
+            $this->repository->createBanner($createdPageId, $page->name, $intro, $picture);
+
+            if (isset($page->infoText)) {
+                $this->createInfoTexts($page->infoText, $createdPageId);
             }
 
-            foreach ($page->infoText as $infoText) {
-                $this->repository->createInfoText($infoText, $createdPageId);
+            if (isset($page->cards)) {
+                $this->createCards($page->cards, $createdPageId);
             }
-
-            // If the page has a parent, create a detail page
-            if ($page->parentId !== null) {
+            
+            if (isset($page->parentId)) {
                 $this->repository->createDetailPage($createdPageId, $page->parentId);
             }
 
-            // Commit the transaction
             $this->repository->commit();
 
-            // Retrieve the created page
             $createdPage = $this->repository->getOne($createdPageId);
 
             return $createdPage;
         } catch (\Exception $e) {
-            // Rollback the transaction in case of an error
             $this->repository->rollBack();
             throw new \Exception("An error occurred while creating the page: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Creates new InfoText instances for a page
+     * @param array $infoTextData
+     * @param int $createdPageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function createInfoTexts($infoTextData, $createdPageId)
+    {
+        foreach ($infoTextData as $infoTextData) {
+            $infoText = new \Models\InfoText();
+            $infoText->title = $infoTextData->title;
+            $infoText->content = $infoTextData->content;
+            $infoText->picture = $infoTextData->picture;
+
+            $this->repository->createInfoText($infoText, $createdPageId);
+        }
+    }
+
+    /**
+     * Creates new Card instances for a page
+     * @param array $cardData
+     * @param int $createdPageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function createCards($cardData, $createdPageId)
+    {
+        foreach ($cardData as $cardData) {
+            $card = new \Models\Card();
+            $card->title = $cardData->title;
+            $card->text = $cardData->text;
+            $card->picture = $cardData->picture;
+
+            $this->repository->createCard($card, $createdPageId, $cardData->redirect_link);
+        }
+    }
+
+    /**
+     * Updates a page and its related entities
+     * @param Models\Page $page
+     * @return Models\Page
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function updatePage($page)
+    {
+        try {
+            $this->repository->beginTransaction();
+
+            $this->repository->updatePage($page->id, $page->name);
+
+            $intro = isset($page->intro) ? $page->intro : null;
+            $picture = isset($page->picture) ? $page->picture : null;
+
+            $this->repository->updateBanner($page->id, $page->name, $page->intro, $page->picture);
+
+            if (isset($page->infoText)) {
+                $this->updateInfoTexts($page->infoText, $page->id);
+            }
+
+            if (isset($page->cards)) {
+                $this->updateCards($page->cards, $page->id);
+            }
+
+            if (isset($page->parentId)) {
+                $this->repository->updateDetailPage($page->id, $page->parentId);
+            }
+
+            $this->repository->commit();
+
+            $updatedPage = $this->repository->getOne($page->id);
+
+            return $updatedPage;
+        } catch (\Exception $e) {
+            $this->repository->rollBack();
+            throw new \Exception("An error occurred while updating the page: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Updates existing InfoText instances or creates new ones for a page
+     * @param array $infoTextsData
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function updateInfoTexts($infoTextsData, $pageId)
+    {
+        foreach ($infoTextsData as $infoTextData) {
+            $infoText = new \Models\InfoText();
+            $infoText->id = $infoTextData->id;
+            $infoText->title = $infoTextData->title;
+            $infoText->content = $infoTextData->content;
+            $infoText->picture = $infoTextData->picture;
+            
+            if ($this->repository->infoTextExists($infoText->id)) {
+                $this->repository->updateInfoTexts($infoText, $pageId);
+            } else {
+                $this->repository->createInfoText($infoText, $pageId);
+            }
+        }
+    }
+
+    /**
+     * Updates existing Card instances or creates new ones for a page
+     * @param array $cardsData
+     * @param int $pageId
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function updateCards($cardsData, $pageId)
+    {
+        foreach ($cardsData as $cardData) {
+            $card = new \Models\Card();
+            $card->id = $cardData->id;
+            $card->title = $cardData->title;
+            $card->text = $cardData->text;
+            $card->picture = $cardData->picture;
+            $card->redirect_link = $cardData->redirect_link;
+
+            if ($this->repository->cardExists($card->id)) {
+                $this->repository->updateCards($card, $pageId);
+            } else {
+                $this->repository->createCard($card, $pageId, $cardData->redirect_link);
+            }
         }
     }
 }
