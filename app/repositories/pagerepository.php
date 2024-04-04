@@ -300,10 +300,10 @@ class PageRepository extends Repository
         try {
             $this->connection->beginTransaction();
 
-            $this->deleteInfoTexts($id);
-            $this->deleteCards($id);
-            $this->deleteBanner($id);
-            $this->deleteDetailPage($id);
+            $this->deleteInfoTextsByPageId($id);
+            $this->deleteCardsByPageId($id);
+            $this->deleteBannerByPageId($id);
+            $this->deleteDetailPageByPageId($id);
 
             $stmt = $this->connection->prepare("DELETE FROM pages WHERE id = :id");
             $stmt->bindParam(':id', $id);
@@ -324,7 +324,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Luko Pecotic
      */
-    private function deleteInfoTexts($pageId)
+    private function deleteInfoTextsByPageId($pageId)
     {
         $stmt = $this->connection->prepare("DELETE FROM info_texts WHERE page_id = :pageId");
         $stmt->bindParam(':pageId', $pageId);
@@ -338,7 +338,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Luko Pecotic
      */
-    private function deleteCards($pageId)
+    private function deleteCardsByPageId($pageId)
     {
         $stmt = $this->connection->prepare("DELETE FROM cards WHERE page_id = :pageId");
         $stmt->bindParam(':pageId', $pageId);
@@ -352,7 +352,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Luko Pecotic
      */
-    private function deleteBanner($pageId)
+    private function deleteBannerByPageId($pageId)
     {
         $stmt = $this->connection->prepare("DELETE FROM banners WHERE page_id = :pageId");
         $stmt->bindParam(':pageId', $pageId);
@@ -366,11 +366,69 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Luko Pecotic
      */
-    private function deleteDetailPage($pageId)
+    private function deleteDetailPageByPageId($pageId)
     {
         $stmt = $this->connection->prepare("DELETE FROM detail_page WHERE page_id = :pageId");
         $stmt->bindParam(':pageId', $pageId);
         $stmt->execute();
+    }
+
+    /**
+     * Deletes an InfoText instance from the database by its ID
+     * @param int $id
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function deleteInfoText($id)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM info_texts WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+    }
+
+    /**
+     * Deletes a Card instance from the database by its ID
+     * @param int $id
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function deleteCard($id)
+    {
+        $stmt = $this->connection->prepare("DELETE FROM cards WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+    }
+
+    /**
+     * Retrieves the IDs of InfoText instances associated with a specific page from the database
+     * @param int $pageId
+     * @return array
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function getInfoTextIdsByPageId($pageId)
+    {
+        $stmt = $this->connection->prepare("SELECT id FROM info_texts WHERE page_id = :pageId");
+        $stmt->bindParam(':pageId', $pageId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    /**
+     * Retrieves the IDs of Card instances associated with a specific page from the database
+     * @param int $pageId
+     * @return array
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    public function getCardIdsByPageId($pageId)
+    {
+        $stmt = $this->connection->prepare("SELECT id FROM cards WHERE page_id = :pageId");
+        $stmt->bindParam(':pageId', $pageId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     /**
@@ -471,7 +529,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Luko Pecotic
      */
-    public function updateInfoTexts(InfoText $infoText, $pageId)
+    public function updateInfoText(InfoText $infoText, $pageId)
     {
         try {
             $stmt = $this->connection->prepare("UPDATE info_texts SET title = :title, content = :content, img = :picture WHERE id = :id AND page_id = :pageId");
@@ -495,7 +553,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Luko Pecotic
      */
-    public function updateCards(Card $card, $pageId)
+    public function updateCard(Card $card, $pageId)
     {
         try {
             $stmt = $this->connection->prepare("UPDATE cards SET title = :title, text = :text, picture = :picture, redirect_link = :redirect_link WHERE id = :id AND page_id = :pageId");

@@ -173,6 +173,9 @@ class PageService
 
             $this->repository->updatePage($page->id, $page->name);
 
+            $this->deleteInfoTexts($page);
+            $this->deleteCards($page);
+
             $intro = isset($page->intro) ? $page->intro : null;
             $picture = isset($page->picture) ? $page->picture : null;
 
@@ -202,6 +205,44 @@ class PageService
     }
 
     /**
+     * Deletes InfoText instances from a page that are not in the updated page data
+     * @param Models\Page $page
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function deleteInfoTexts($page)
+    {
+        $currentInfoTextIds = $this->repository->getInfoTextIdsByPageId($page->id);
+        $infoTextIds = isset($page->infoTexts) ? array_map(function($infoText) { return $infoText->id; }, $page->infoTexts) : [];
+
+        foreach ($currentInfoTextIds as $currentInfoTextId) {
+            if (!in_array($currentInfoTextId, $infoTextIds)) {
+                $this->repository->deleteInfoText($currentInfoTextId);
+            }
+        }
+    }
+
+    /**
+     * Deletes Card instances from a page that are not in the updated page data
+     * @param Models\Page $page
+     * @return void
+     * @throws \Exception
+     * @author Luko Pecotic
+     */
+    private function deleteCards($page)
+    {
+        $currentCardIds = $this->repository->getCardIdsByPageId($page->id);
+        $cardIds = isset($page->cards) ? array_map(function($card) { return $card->id; }, $page->cards) : [];
+    
+        foreach ($currentCardIds as $currentCardId) {
+            if (!in_array($currentCardId, $cardIds)) {
+                $this->repository->deleteCard($currentCardId);
+            }
+        }
+    }
+
+    /**
      * Updates existing InfoText instances or creates new ones for a page
      * @param array $infoTextsData
      * @param int $pageId
@@ -219,7 +260,7 @@ class PageService
             $infoText->picture = $infoTextData->picture;
             
             if ($this->repository->infoTextExists($infoText->id)) {
-                $this->repository->updateInfoTexts($infoText, $pageId);
+                $this->repository->updateInfoText($infoText, $pageId);
             } else {
                 $this->repository->createInfoText($infoText, $pageId);
             }
@@ -245,7 +286,7 @@ class PageService
             $card->redirect_link = $cardData->redirect_link;
 
             if ($this->repository->cardExists($card->id)) {
-                $this->repository->updateCards($card, $pageId);
+                $this->repository->updateCard($card, $pageId);
             } else {
                 $this->repository->createCard($card, $pageId, $cardData->redirect_link);
             }
