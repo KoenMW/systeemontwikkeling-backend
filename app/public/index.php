@@ -30,6 +30,8 @@ $router->get('/orders/check/([\w\.]+)', 'OrderController@checkOrderById');
 $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
+
+$router->post('/orders/generateAndSendInvoice', 'OrderController@generateAndSendInvoice');
 $router->delete('/orders/([\w\.]+)', 'OrderController@deleteOrder');
 
 // test endpoint
@@ -45,6 +47,7 @@ $router->post('/pages', 'PageController@createPage');
 $router->put('/pages/(\d+)', 'PageController@updatePage');
 
 // events endpoint
+$router->get('/events', 'EventController@getAll');
 $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
 $router->put('/events/(\d+)', 'EventController@updateEvent');

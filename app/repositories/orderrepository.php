@@ -6,6 +6,7 @@ use Models\Order;
 use Models\OrderDTO;
 use Models\checkinDTO;
 use PDO;
+use Models\invoiceDTO;
 
 class OrderRepository extends Repository
 {
@@ -97,6 +98,7 @@ class OrderRepository extends Repository
      * @throws Exception If there's an error preparing or executing the SQL statement
      * @author Luko Pecotic
      */
+
     public function deleteOrder($id)
     {
         try {
@@ -195,6 +197,43 @@ class OrderRepository extends Repository
         } catch (\Exception $e) {
             error_log('Error checking in order: ' . $e->getMessage());
             return false;
+        }
+    }
+    function getOrderDetailsByIds($orderIds)
+    {
+        try {
+            $placeholders = implode(',', array_fill(0, count($orderIds), '?'));
+            $stmt = $this->connection->prepare("
+            SELECT 
+            Orders.id AS OrderID,
+            Orders.quantity,
+            Orders.paymentDate,
+            users.username,
+            users.email,
+            users.phoneNumber,
+            users.address,
+            events.title AS EventTitle,
+            events.startTime,
+            events.endTime,
+            events.price,
+            events.location,
+            events.eventType
+        FROM 
+            Orders
+        JOIN 
+            users ON Orders.user_id = users.id
+        JOIN 
+            events ON Orders.event_id = events.id
+        WHERE 
+            Orders.id IN ($placeholders)
+            ");
+            $stmt->execute($orderIds);
+            $stmt->setFetchMode(PDO::FETCH_CLASS, 'Models\\InvoiceDTO');
+            $orders = $stmt->fetchAll();
+            return $orders;
+        } catch (\Exception $e) {
+            error_log('Error fetching order: ' . $e->getMessage());
+            return null;
         }
     }
 }

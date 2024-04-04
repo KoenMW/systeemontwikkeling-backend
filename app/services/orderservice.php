@@ -6,6 +6,9 @@ use Models\checkinDTO;
 use Models\Order;
 use Models\checkOrderDTO;
 use Repositories\OrderRepository;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+use Models\invoiceDTO;
 
 class OrderService
 {
@@ -59,6 +62,7 @@ class OrderService
      * @throws Exception If there's an error preparing or executing the SQL statement
      * @author Luko Pecotic
      */
+
     public function deleteOrder($id)
     {
         return $this->orderRepository->deleteOrder($id);
@@ -98,5 +102,27 @@ class OrderService
     public function checkOrderById($id)
     {
         return $this->orderRepository->checkOrder($id);
+    }
+    public function getOrderDetailsByIds(array $orderIds)
+    {
+        return $this->orderRepository->getOrderDetailsByIds($orderIds);
+    }
+    public function generateEventQrCodes(array $eventIds)
+    {
+        $writer = new PngWriter();
+
+        foreach ($eventIds as $eventId) {
+            // Create a new QR Code instance
+            $qrCode = QrCode::create($eventId)
+                ->setSize(300) // Size of the QR Code
+                ->setMargin(10); // Margin around the QR Code
+
+            // Define the output path for the QR code image
+            $outputPath = __DIR__ . "/../storage/qr-codes/event_$eventId.png";
+            // Write the QR code to a file
+            $writer->write($qrCode)->saveToFile($outputPath);
+
+            echo "QR Code generated for event ID $eventId at $outputPath\n";
+        }
     }
 }
