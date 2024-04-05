@@ -229,7 +229,7 @@ class OrderController extends Controller
    {
       $data = json_decode(file_get_contents('php://input'), true);
       try {
-         Stripe::setApiKey('sk_test_51OyXZUA3RX6WGrx7c8ZQtFxzBRGpP1We1kxHBzbsA3Xwyzw5bURSlt4lQMcoxoAa2QApMy5PQa1e9Ke3zbuUqSfY00NbQbaIfu');
+         Stripe::setApiKey('sk_test_51OyXZUA3RX6WGrx7c8ZQtFxzBRGpP1We1kxHBzbsA3Xwyzw5bURSlt4lQMcoxoAa2QApMy5PQa1e9Ke3zbuUqSfY00NbQbaIfu'); //halen uit de env file
 
          $paymentIntent = PaymentIntent::create([
             'amount' => $data['amount'],
