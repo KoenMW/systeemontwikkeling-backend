@@ -97,7 +97,7 @@ class PageController extends Controller
         try {
             $this->service->deletePage($id);
     
-            $this->respond(null, 204); 
+            $this->respond(null, 200); 
         } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->respondWithError(500, "An error occurred while deleting the page");

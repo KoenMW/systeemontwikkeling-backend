@@ -5,6 +5,9 @@ namespace Services;
 use Repositories\PageRepository;
 use Repositories\EventRepository;
 
+use Models\Card;
+use Models\InfoText;
+
 class PageService
 {
 
@@ -91,8 +94,8 @@ class PageService
 
             $createdPageId = $this->repository->createPage($page->name);
 
-            $intro = isset($page->intro) ? $page->intro : null;
-            $picture = isset($page->picture) ? $page->picture : null;
+            $intro = $page->intro ?? null;
+            $picture = $page->picture ?? null;
 
             $this->repository->createBanner($createdPageId, $page->name, $intro, $picture);
 
@@ -130,7 +133,7 @@ class PageService
     private function createInfoTexts($infoTextData, $createdPageId)
     {
         foreach ($infoTextData as $infoTextData) {
-            $infoText = new \Models\InfoText();
+            $infoText = new InfoText();
             $infoText->title = $infoTextData->title;
             $infoText->content = $infoTextData->content;
             $infoText->picture = $infoTextData->picture;
@@ -150,7 +153,7 @@ class PageService
     private function createCards($cardData, $createdPageId)
     {
         foreach ($cardData as $cardData) {
-            $card = new \Models\Card();
+            $card = new Card();
             $card->title = $cardData->title;
             $card->text = $cardData->text;
             $card->picture = $cardData->picture;
@@ -176,8 +179,8 @@ class PageService
             $this->deleteInfoTexts($page);
             $this->deleteCards($page);
 
-            $intro = isset($page->intro) ? $page->intro : null;
-            $picture = isset($page->picture) ? $page->picture : null;
+            $intro = $page->intro ?? null;
+            $picture = $page->picture ?? null;
 
             $this->repository->updateBanner($page->id, $page->name, $page->intro, $page->picture);
 
@@ -253,7 +256,7 @@ class PageService
     private function updateInfoTexts($infoTextsData, $pageId)
     {
         foreach ($infoTextsData as $infoTextData) {
-            $infoText = new \Models\InfoText();
+            $infoText = new InfoText();
             $infoText->id = $infoTextData->id;
             $infoText->title = $infoTextData->title;
             $infoText->content = $infoTextData->content;
@@ -278,7 +281,7 @@ class PageService
     private function updateCards($cardsData, $pageId)
     {
         foreach ($cardsData as $cardData) {
-            $card = new \Models\Card();
+            $card = new Card();
             $card->id = $cardData->id;
             $card->title = $cardData->title;
             $card->text = $cardData->text;

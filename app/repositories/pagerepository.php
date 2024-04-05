@@ -155,7 +155,7 @@ class PageRepository extends Repository
      * @throws \Exception
      * @author Koen Wijchers
      */
-    public function createBanner($page_id, $title, $intro, $picture)
+    public function createBanner($page_id, $title, $intro, $picture = "")
     {
         try {
             $stmt = $this->connection->prepare("INSERT INTO banners (page_id, title, intro, picture) VALUES (:page_id, :title, :intro, :picture)");
@@ -289,7 +289,7 @@ class PageRepository extends Repository
     }
 
     /**
-     * Deletes a page and its related entities by id
+     * Deletes a page by id
      * @param int $id
      * @return void
      * @throws \Exception
@@ -298,79 +298,13 @@ class PageRepository extends Repository
     public function deletePage($id)
     {
         try {
-            $this->connection->beginTransaction();
-
-            $this->deleteInfoTextsByPageId($id);
-            $this->deleteCardsByPageId($id);
-            $this->deleteBannerByPageId($id);
-            $this->deleteDetailPageByPageId($id);
-
             $stmt = $this->connection->prepare("DELETE FROM pages WHERE id = :id");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
-
-            $this->connection->commit();
         } catch (PDOException $e) {
-            $this->connection->rollBack();
             error_log('Error deleting page: ' . $e->getMessage());
             throw new \Exception('Error deleting page');
         }
-    }
-
-    /**
-     * Deletes InfoText instances related to a page by page id
-     * @param int $pageId
-     * @return void
-     * @throws \Exception
-     * @author Luko Pecotic
-     */
-    private function deleteInfoTextsByPageId($pageId)
-    {
-        $stmt = $this->connection->prepare("DELETE FROM info_texts WHERE page_id = :pageId");
-        $stmt->bindParam(':pageId', $pageId);
-        $stmt->execute();
-    }
-
-    /**
-     * Deletes Card instances related to a page by page id
-     * @param int $pageId
-     * @return void
-     * @throws \Exception
-     * @author Luko Pecotic
-     */
-    private function deleteCardsByPageId($pageId)
-    {
-        $stmt = $this->connection->prepare("DELETE FROM cards WHERE page_id = :pageId");
-        $stmt->bindParam(':pageId', $pageId);
-        $stmt->execute();
-    }
-
-    /**
-     * Deletes Banner instances related to a page by page id
-     * @param int $pageId
-     * @return void
-     * @throws \Exception
-     * @author Luko Pecotic
-     */
-    private function deleteBannerByPageId($pageId)
-    {
-        $stmt = $this->connection->prepare("DELETE FROM banners WHERE page_id = :pageId");
-        $stmt->bindParam(':pageId', $pageId);
-        $stmt->execute();
-    }
-
-    /**
-     * Deletes DetailPage instances related to a page by page id
-     * @param int $pageId
-     * @return void
-     * @throws \Exception
-     * @author Luko Pecotic
-     */
-    private function deleteDetailPageByPageId($pageId)
-    {
-        $stmt = $this->connection->prepare("DELETE FROM detail_page WHERE page_id = :pageId");
-        $stmt->bindParam(':pageId', $pageId);
-        $stmt->execute();
     }
 
     /**
