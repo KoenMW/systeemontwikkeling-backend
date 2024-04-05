@@ -31,7 +31,8 @@ $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
 $router->delete('/orders', 'OrderController@deleteOrder');
-
+//payment endpoint
+$router->post('/payment', 'OrderController@createPayment');
 // test endpoint
 $router->get('/test', 'TestController@get');
 

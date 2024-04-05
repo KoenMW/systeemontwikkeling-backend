@@ -11,6 +11,7 @@
     "require": {
         "bramus/router": "~1.6",
         "firebase/php-jwt": "^6.10",
-        "phpmailer/phpmailer": "*"
+        "phpmailer/phpmailer": "*",
+        "stripe/stripe-php": "^13.16"
     }
 }
