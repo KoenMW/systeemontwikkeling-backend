@@ -7,6 +7,7 @@ use Repositories\UserRepository;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
+
 class UserService
 {
 
@@ -53,9 +54,9 @@ class UserService
     * @param string $address
     * @author Luko Pecotic
     */
-   public function updateUser($id, $username, $email, $phoneNumber, $address)
+   public function updateUser($user)
    {
-      $this->repository->updateUser($id, $username, $email, $phoneNumber, $address);
+      $this->repository->updateUser($user);
    }
 
    /**
@@ -88,16 +89,16 @@ class UserService
       return $this->repository->deleteUser($id);
    }
 
-    /**
+   /**
     * Fetches a user by their id by calling the corresponding method in the `UserRepository`.
     * @param int $id The id of the user to fetch.
     * @return User The fetched user.
     * @author Luko Pecotic
     */
-    public function getUserById($id)
-    {
-        return $this->repository->getUserById($id);
-    }
+   public function getUserById($id)
+   {
+      return $this->repository->getUserById($id);
+   }
    private function configureMailer()
    {
       $this->mailer->isSMTP();

@@ -17,7 +17,7 @@ $router->setNamespace('Controllers');
 $router->post('/users/login', 'UserController@login');
 $router->post('/users/signUp', 'UserController@createUser');
 $router->get('/users', 'UserController@getUsers');
-$router->put('/users/update', 'UserController@updateUser');
+$router->put('/users', 'UserController@updateUser');
 $router->put('/users/changePassword', 'UserController@changePassword');
 $router->put('/users/uploadProfilePicture', 'UserController@uploadProfilePicture');
 $router->delete('/users/delete/(\d+)', 'UserController@deleteUser');
@@ -25,12 +25,14 @@ $router->get('/users/(\d+)', 'UserController@getUserById');
 
 // orders endpoint
 $router->get('/orders', 'OrderController@getAllOrders');
-$router->get('/orders/(\d+)', 'OrderController@getById');
+$router->get('/orders/([\w\.]+)', 'OrderController@getById');
 $router->get('/orders/check/([\w\.]+)', 'OrderController@checkOrderById');
 $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
-$router->delete('/orders', 'OrderController@deleteOrder');
+
+$router->post('/orders/generateAndSendInvoice', 'OrderController@generateAndSendInvoice');
+$router->delete('/orders/([\w\.]+)', 'OrderController@deleteOrder');
 //payment endpoint
 $router->post('/payment', 'OrderController@createPayment');
 // test endpoint
@@ -38,21 +40,27 @@ $router->get('/test', 'TestController@get');
 
 // pages endpoint
 $router->get('/pages/(\d+)', 'PageController@get');
-$router->get('/pages/detail/(\d+)', 'PageController@getDetailPage');
-$router->put('/pages/update', 'PageController@updatePage');
 $router->get('/pages/names', 'PageController@getAllPageNames');
 $router->get('/pages/links', 'PageController@getAllLinks');
+$router->delete('/pages/(\d+)', 'PageController@deletePage');
+$router->get('/pages/parent', 'PageController@getAllParentPages');
+$router->post('/pages', 'PageController@createPage');
+$router->put('/pages/(\d+)', 'PageController@updatePage');
 
 // events endpoint
+$router->get('/events', 'EventController@getAll');
 $router->get('/events/(\d+)', 'EventController@get');
 $router->post('/events', 'EventController@addEvent');
-$router->put('/events/update/(\d+)', 'EventController@updateEvent');
-$router->delete('/events/delete/(\d+)', 'EventController@deleteEvent');
+$router->put('/events/(\d+)', 'EventController@updateEvent');
+$router->delete('/events/(\d+)', 'EventController@deleteEvent');
 $router->get('/event/id/(\d+)', 'EventController@getEventById');
 
+// access control endpoint
+$router->get('/accessControl/(\d+)', 'AccessController@get');
 
 //password reset endpoint
 $router->post('/users/resetlink', 'UserController@reset');;
 $router->put('/users/resetpassword', 'UserController@resetPassword');
+
 // Run it!
 $router->run();

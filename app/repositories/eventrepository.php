@@ -10,6 +10,21 @@ use Exception;
 
 class EventRepository extends Repository
 {
+    function getAll()
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT * FROM events");
+            $stmt->execute();
+
+            $stmt->setFetchMode(PDO::FETCH_CLASS, Event::class);
+            $events = $stmt->fetchAll();
+            return $events;
+        } catch (PDOException $e) {
+            error_log('Error getting events: ' . $e->getMessage());
+            throw new Exception('Error getting events');
+        }
+    }
+
     function getByType($type)
     {
         try {
@@ -57,7 +72,7 @@ class EventRepository extends Repository
                 ticket_amount, 
                 eventType
                 FROM events
-                WHERE events.page_id = :id
+                WHERE events.page_id = :id OR events.detail_page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();

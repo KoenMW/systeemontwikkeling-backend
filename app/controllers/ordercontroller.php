@@ -4,30 +4,36 @@ namespace Controllers;
 
 use Models\Order;
 use Models\checkinDTO;
+use Models\OrderDTO;
 use Models\Role;
 use Services\OrderService;
+use Services\InvoiceService;
+use Services\UserService;
+use Exception;
 use \Stripe\Stripe;
 use \Stripe\PaymentIntent;
 
 class OrderController extends Controller
 {
-   private $orderService;
+    private $orderService;
+    private $invoiceService;
+    private $userService;
+    public function __construct()
+    {
+        $this->orderService = new OrderService();
+        $this->invoiceService = new InvoiceService($this->orderService);
+        $this->userService = new UserService();
+    }
 
-   public function __construct()
-   {
-      $this->orderService = new OrderService();
-   }
-
-   /**
-    * Retrieves all orders.
-    * @author Luko Pecotic
-    */
-   public function getAllOrders()
-   {
-      try {
-         if (!$this->checkForJwt([2])) return;
-
-         $orders = $this->orderService->getAllOrders();
+    /**
+     * Retrieves all orders.
+     * @author Luko Pecotic
+     */
+    public function getAllOrders()
+    {
+        try {
+            if (!$this->checkForJwt(2)) return;
+            $orders = $this->orderService->getAllOrders();
 
          if (!$orders) {
             $this->respondWithError(404, "Orders not found");
@@ -41,16 +47,17 @@ class OrderController extends Controller
       }
    }
 
-   /**
-    * Get order by id
-    * @param int $id
-    * @return void
-    * @author Koen Wijchers
-    */
-   public function getById($id)
-   {
-      try {
-         $order = $this->orderService->getById($id);
+    /**
+     * Get order by id
+     * @param int $id
+     * @return void
+     * @author Koen Wijchers
+     */
+    public function getById($id)
+    {
+        try {
+            if (!$this->checkForJwt(1)) return;
+            $order = $this->orderService->getById($id);
 
          if (!$order) {
             $this->respondWithError(404, "Order not found");
@@ -71,12 +78,12 @@ class OrderController extends Controller
    {
       try {
 
-         if (!$this->checkForJwt([1, 2])) return;
-         $order = $this->orderService->checkOrderById($id);
-         if (!$order) {
-            $this->respondWithError(404, "Order not found");
-            return;
-         }
+            if (!$this->checkForJwt(1)) return;
+            $order = $this->orderService->checkOrderById($id);
+            if (!$order) {
+                $this->respondWithError(404, "Order not found");
+                return;
+            }
 
          $this->respond($order);
       } catch (\Exception $e) {
@@ -93,7 +100,7 @@ class OrderController extends Controller
    {
       try {
 
-         if (!$this->checkForJwt([1, 2])) return;
+            if (!$this->checkForJwt(1)) return;
 
          $DTO = $this->createObjectFromPostedJson(checkinDTO::class);
          if (!isset($DTO->id, $DTO->checkedIn)) {
@@ -151,55 +158,79 @@ class OrderController extends Controller
 }
 
 
-   /**
-    * Updates an existing order.
-    * @author Luko Pecotic
-    */
-   public function updateOrder()
-   {
-      try {
-         if (!$this->checkForJwt([2])) return;
-         $order = $this->createObjectFromPostedJson(Order::class);
-         if (!isset($order->id, $order->event_id, $order->user_id, $order->quantity, $order->comment, $order->paymentDate)) {
-            $this->respondWithError(400, "Missing order data");
-            return;
-         }
-         $updated = $this->orderService->updateOrder($order);
-         if ($updated) {
-            $this->respond($order);
-         } else {
-            $this->respondWithError(500, "Failed to update order");
-         }
-      } catch (\Exception $e) {
-         error_log($e->getMessage());
-         $this->respondWithError(500, "An error occurred while updating the order");
-      }
-   }
-
-   /**
-    * Deletes an existing order.
-    * @author Luko Pecotic
-    */
-   public function deleteOrder()
-   {
-      try {
-         if (!$this->checkForJwt([2])) return;
-         $id = $_GET['id'] ?? null;
-         if ($id) {
-            $deleted = $this->orderService->deleteOrder($id);
-            if ($deleted) {
-               $this->respond(['message' => 'Order deleted successfully']);
+    /**
+     * Updates an existing order.
+     * @author Luko Pecotic
+     */
+    public function updateOrder()
+    {
+        try {
+            if (!$this->checkForJwt(2)) return;
+            $order = $this->createObjectFromPostedJson(OrderDTO::class);
+            $updated = $this->orderService->updateOrder($order);
+            if ($updated) {
+                $this->respond($order);
             } else {
-               $this->respondWithError(404, "Order not found");
+                $this->respondWithError(500, "Failed to update order");
             }
-         } else {
-            $this->respondWithError(400, "Invalid id");
-         }
-      } catch (\Exception $e) {
-         error_log($e->getMessage());
-         $this->respondWithError(500, "An error occurred while deleting the order");
-      }
-   }
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            $this->respondWithError(500, "An error occurred while updating the order");
+        }
+    }
+
+    /**
+     * Deletes an existing order.
+     * @author Luko Pecotic
+     */
+    public function deleteOrder($id)
+    {
+        try {
+            if (!$this->checkForJwt(2)) return;
+            if ($id) {
+                $deleted = $this->orderService->deleteOrder($id);
+                if ($deleted) {
+                    $this->respond(['message' => 'Order deleted successfully']);
+                } else {
+                    $this->respondWithError(404, "Order not found");
+                }
+            } else {
+                $this->respondWithError(400, "Invalid id");
+            }
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            $this->respondWithError(500, "An error occurred while deleting the order");
+        }
+    }
+    public function generateAndSendInvoice()
+    {
+        echo realpath(__DIR__ . "/../../storage/qr-codes/");
+        try {
+            // Assuming you receive order IDs as a JSON payload
+            $data = json_decode(file_get_contents('php://input'), true);
+            $orderIds = $data['orderIds'] ?? [];
+
+            // Ensure order IDs were provided
+            if (empty($orderIds)) {
+                throw new Exception("Order IDs are required.");
+            }
+            $this->orderService->generateEventQrCodes($orderIds);
+
+            // Fetch order details to get user email. This assumes all orders belong to the same user.
+            $ordersDetails = $this->orderService->getOrderDetailsByIds($orderIds);
+            if (empty($ordersDetails)) {
+                throw new Exception("Order details could not be fetched.");
+            }
+
+            // Send the invoice via email
+            $userEmail = $ordersDetails[0]->email;
+            $this->invoiceService->sendInvoiceEmail($orderIds, $userEmail);
+
+            $this->respond(['message' => 'Invoice sent successfully.']);
+        } catch (Exception $e) {
+            $this->respondWithError(500, $e->getMessage());
+        }
+    }
    public function createPayment()
    {
       $data = json_decode(file_get_contents('php://input'), true);

@@ -15,6 +15,11 @@ class EventService
         $this->repository = new EventRepository();
     }
 
+    function getAll()
+    {
+        return $this->repository->getAll();
+    }
+
     /**
      * gets all events by type
      * @param string $type
@@ -41,5 +46,4 @@ class EventService
     {
         return $this->repository->getEventById($id);
     }
-
 }
