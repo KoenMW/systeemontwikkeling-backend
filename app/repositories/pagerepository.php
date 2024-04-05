@@ -86,7 +86,7 @@ class PageRepository extends Repository
     {
         try {
             $stmt = $this->connection->prepare("
-                SELECT id, title, content, img as picture FROM info_texts WHERE page_id = :id
+                SELECT id, title, content, TO_BASE64(img) as picture FROM info_texts WHERE page_id = :id
             ");
             $stmt->bindParam(':id', $id);
             $stmt->execute();
