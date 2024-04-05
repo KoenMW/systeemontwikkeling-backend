@@ -6,6 +6,7 @@ class Page
 {
     public int $id;
     public ?int $parentId;
+    public ?string $parentName;
     public ?string $name;
     public ?string $intro;
     public ?string $picture;
