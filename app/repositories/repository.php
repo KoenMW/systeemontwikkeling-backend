@@ -25,4 +25,37 @@ class Repository
       throw new \Exception('Connection failed');
     }
   }
+
+  /**
+ * Begins a new transaction
+ * @return void
+ * @throws \Exception
+ * @author Luko Pecotic
+ */
+  public function beginTransaction()
+  {
+    $this->connection->beginTransaction();
+  }
+
+  /**
+   * Commits the current transaction
+   * @return void
+   * @throws \Exception
+   * @author Luko Pecotic
+   */
+  public function commit()
+  {
+    $this->connection->commit();
+  }
+
+  /**
+   * Rolls back the current transaction
+   * @return void
+   * @throws \Exception
+   * @author Luko Pecotic
+   */
+  public function rollBack()
+  {
+    $this->connection->rollBack();
+  }
 }
