@@ -26,7 +26,8 @@ class PageRepository extends Repository
             pages.*, 
             banners.intro, 
             banners.picture,
-            parent_pages.id AS parentId
+            parent_pages.id AS parentId,
+            parent_pages.name AS parentName
         FROM 
             pages 
         LEFT JOIN 
