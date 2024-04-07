@@ -6,6 +6,7 @@ use Models\checkinDTO;
 use Models\Order;
 use Models\checkOrderDTO;
 use Repositories\OrderRepository;
+use Repositories\EventRepository;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
 use Models\invoiceDTO;
@@ -13,10 +14,11 @@ use Models\invoiceDTO;
 class OrderService
 {
     private $orderRepository;
-
+    private $eventRepository;
     public function __construct()
     {
         $this->orderRepository = new OrderRepository();
+        $this->eventRepository = new EventRepository();
     }
 
     /**
@@ -30,18 +32,25 @@ class OrderService
         return $this->orderRepository->getAllOrders();
     }
 
-    /**
-     * Creates a new order in the database.
-     * @param Order $order The order to be created
-     * @return bool True if the order was created successfully, false otherwise
-     * @throws Exception If there's an error preparing the SQL statement
-     * @author Luko Pecotic
-     */
+    
     public function createOrder(Order $order)
-    {
+{
+    try {
         $order->comment ?? $order->comment = '';
-        return $this->orderRepository->createOrder($order);
+        $createdOrder = $this->orderRepository->createOrder($order);
+
+        $event = $this->eventRepository->getEventById($order->event_id);
+        if ($event) {
+            $updatedTicketAmount = $event->ticket_amount - $order->quantity;
+            $this->eventRepository->updateEventTicketAmount($order->event_id, $updatedTicketAmount);
+        }
+
+        return $createdOrder;
+    } catch (\Exception $e) {
+        error_log($e->getMessage());
+        return false;
     }
+}
 
     /**
      * Updates an existing order in the database.

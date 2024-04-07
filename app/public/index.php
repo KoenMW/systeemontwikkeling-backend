@@ -33,7 +33,8 @@ $router->put('/orders/checkin', 'OrderController@setCheckin');
 
 $router->post('/orders/generateAndSendInvoice', 'OrderController@generateAndSendInvoice');
 $router->delete('/orders/([\w\.]+)', 'OrderController@deleteOrder');
-
+//payment endpoint
+$router->post('/payment', 'OrderController@createPayment');
 // test endpoint
 $router->get('/test', 'TestController@get');
 
