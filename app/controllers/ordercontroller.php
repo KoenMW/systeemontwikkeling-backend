@@ -136,6 +136,7 @@ class OrderController extends Controller
             $order->event_id = $ticket['id'];
             $order->user_id = $userId;
             $order->quantity = $ticket['quantity'];
+            $order->comment = $ticket['comment'] ?? null;
             
             $createdOrder = $this->orderService->createOrder($order);
             if ($createdOrder) {
