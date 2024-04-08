@@ -12,7 +12,7 @@ class User
     public int $role;
     public string $create_time;
     public ?string $token;
-    public ?\DateTime $reset_token_expiry;
+    public ?\DateTime $reset_token_expire;
     public string $createDate;
     public ?string $img;
     public int $phoneNumber;
