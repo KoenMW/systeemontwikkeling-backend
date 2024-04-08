@@ -58,7 +58,7 @@ $router->get('/event/id/(\d+)', 'EventController@getEventById');
 $router->get('/accessControl/(\d+)', 'AccessController@get');
 
 //password reset endpoint
-$router->post('/users/resetlink', 'UserController@reset');;
+$router->post('/users/resetlink', 'UserController@reset');
 $router->put('/users/resetpassword', 'UserController@resetPassword');
 
 // Run it!
