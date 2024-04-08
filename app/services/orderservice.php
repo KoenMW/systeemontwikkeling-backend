@@ -130,6 +130,8 @@ class OrderService
             $outputPath = __DIR__ . "/../storage/qr-codes/event_$eventId.png";
             // Write the QR code to a file
             $writer->write($qrCode)->saveToFile($outputPath);
+
+            echo "QR Code generated for event ID $eventId at $outputPath\n";
         }
     }
 }

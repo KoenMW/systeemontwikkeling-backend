@@ -48,12 +48,11 @@ class OrderRepository extends Repository
     * @throws Exception If there's an error preparing the SQL statement
     * @author Luko Pecotic
     */
-
    public function createOrder(Order $order)
    {
       try {
          $id = uniqid("", true);
-         $paymentDate = date('Y-m-d');
+         $paymentDate = date('Y-m-d'); 
 
          $sql = "INSERT INTO Orders (id, event_id, user_id, quantity, comment, paymentDate) VALUES (?, ?, ?, ?, ?, ?)";
          $stmt = $this->connection->prepare($sql);
@@ -62,14 +61,13 @@ class OrderRepository extends Repository
             throw new \Exception("Failed to prepare statement");
          }
 
-         $stmt->execute([$id, $order->event_id, $order->user_id, $order->quantity, $order->comment, $paymentDate]);
-
-         return $id;
+         return $stmt->execute([$id, $order->event_id, $order->user_id, $order->quantity, $order->comment, $paymentDate]);
       } catch (\Exception $e) {
          error_log($e->getMessage());
          return false;
       }
    }
+
 
    /**
     * Updates an existing order in the database.

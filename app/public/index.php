@@ -31,6 +31,7 @@ $router->post('/orders', 'OrderController@createOrder');
 $router->put('/orders', 'OrderController@updateOrder');
 $router->put('/orders/checkin', 'OrderController@setCheckin');
 
+$router->post('/orders/generateAndSendInvoice', 'OrderController@generateAndSendInvoice');
 $router->delete('/orders/([\w\.]+)', 'OrderController@deleteOrder');
 //payment endpoint
 $router->post('/payment', 'OrderController@createPayment');
