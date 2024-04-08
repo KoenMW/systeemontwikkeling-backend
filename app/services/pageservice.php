@@ -106,6 +106,7 @@ class PageService
             if (isset($page->cards)) {
                 $this->createCards($page->cards, $createdPageId);
             }
+            
             if (isset($page->parentId)) {
                 $this->repository->createDetailPage($createdPageId, $page->parentId);
             }
@@ -216,9 +217,7 @@ class PageService
     private function deleteInfoTexts($page)
     {
         $currentInfoTextIds = $this->repository->getInfoTextIdsByPageId($page->id);
-        $infoTextIds = isset($page->infoTexts) ? array_map(function ($infoText) {
-            return $infoText->id;
-        }, $page->infoTexts) : [];
+        $infoTextIds = isset($page->infoTexts) ? array_map(function($infoText) { return $infoText->id; }, $page->infoTexts) : [];
 
         foreach ($currentInfoTextIds as $currentInfoTextId) {
             if (!in_array($currentInfoTextId, $infoTextIds)) {
@@ -237,10 +236,8 @@ class PageService
     private function deleteCards($page)
     {
         $currentCardIds = $this->repository->getCardIdsByPageId($page->id);
-        $cardIds = isset($page->cards) ? array_map(function ($card) {
-            return $card->id;
-        }, $page->cards) : [];
-
+        $cardIds = isset($page->cards) ? array_map(function($card) { return $card->id; }, $page->cards) : [];
+    
         foreach ($currentCardIds as $currentCardId) {
             if (!in_array($currentCardId, $cardIds)) {
                 $this->repository->deleteCard($currentCardId);
@@ -264,7 +261,7 @@ class PageService
             $infoText->title = $infoTextData->title;
             $infoText->content = $infoTextData->content;
             $infoText->picture = $infoTextData->picture;
-
+            
             if ($this->repository->infoTextExists($infoText->id)) {
                 $this->repository->updateInfoText($infoText, $pageId);
             } else {
@@ -297,16 +294,5 @@ class PageService
                 $this->repository->createCard($card, $pageId, $cardData->redirect_link);
             }
         }
-    }
-
-    /**
-     * Gets all page ids
-     * @return array
-     * @throws \Exception
-     * @author Koen Wijchers
-     */
-    public function getPageIds()
-    {
-        return $this->repository->getPageIds();
     }
 }
