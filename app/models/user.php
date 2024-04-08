@@ -18,4 +18,6 @@ class User
     public int $phoneNumber;
     public string $address;
     public $confirmed;
+    public ?string $token;
+    public ?string $reset_token_expire;
 }
