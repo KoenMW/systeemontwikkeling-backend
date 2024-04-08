@@ -2,8 +2,6 @@
 
 namespace Models;
 
-use DateTime;
-
 class Page
 {
     public int $id;

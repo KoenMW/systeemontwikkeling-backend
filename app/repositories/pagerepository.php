@@ -544,22 +544,4 @@ class PageRepository extends Repository
             throw new \Exception('Error checking if card exists');
         }
     }
-
-    /**
-     * gets all page ids
-     * @return array
-     * @throws \Exception
-     * @author Koen Wijchers
-     */
-    public function getPageIds()
-    {
-        try {
-            $stmt = $this->connection->prepare("SELECT id, name FROM pages");
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_CLASS);
-        } catch (PDOException $e) {
-            error_log('Error getting page ids: ' . $e->getMessage());
-            throw new \Exception('Error getting page ids');
-        }
-    }
 }
