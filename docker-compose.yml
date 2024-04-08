@@ -32,5 +32,7 @@ services:
         environment:
             - PMA_HOST=mysql
         restart: unless-stopped
+        volumes:
+            - ./phpmyadmin.ini:/usr/local/etc/php/conf.d/phpmyadmin.ini
 volumes:
     mysqldata: {}
