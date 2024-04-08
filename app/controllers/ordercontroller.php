@@ -115,8 +115,10 @@ class OrderController extends Controller
          $this->respondWithError(500, "An error occurred while checking in the order");
       }
    }
-
-
+   /**
+    * Creates a new order.
+    * @author nick
+    */
    public function createOrder()
    {
       try {
