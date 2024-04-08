@@ -130,8 +130,8 @@ class EventRepository extends Repository
             ':price' => $event->price,
             ':location' => $event->location,
             ':ticket_amount' => $event->ticket_amount,
-            ':page_id' => $event->page_id,
-            ':detail_page_id' => $event->detail_page_id,
+            ':page_id' => $event->page_id ?? null,
+            ':detail_page_id' => $event->detail_page_id ?? null,
             ':eventType' => $event->eventType
          ]);
          return $this->connection->lastInsertId();
@@ -142,6 +142,8 @@ class EventRepository extends Repository
    public function updateEvent($event)
    {
       try {
+         // write event to file:
+         file_put_contents('event.txt', json_encode($event) . PHP_EOL, FILE_APPEND);
          $stmt = $this->connection->prepare("UPDATE events SET title=:title, startTime=:startTime, endTime=:endTime, price=:price, location=:location, ticket_amount=:ticket_amount, page_id=:page_id, detail_page_id=:detail_page_id, eventType=:eventType WHERE id=:id");
          $stmt->execute([
             ':id' => $event->id,
@@ -151,8 +153,8 @@ class EventRepository extends Repository
             ':price' => $event->price,
             ':location' => $event->location,
             ':ticket_amount' => $event->ticket_amount,
-            ':page_id' => $event->page_id,
-            ':detail_page_id' => $event->detail_page_id,
+            ':page_id' => $event->page_id ?? null,
+            ':detail_page_id' => $event->detail_page_id ?? null,
             ':eventType' => $event->eventType,
          ]);
 
