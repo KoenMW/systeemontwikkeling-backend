@@ -142,9 +142,7 @@ class EventRepository extends Repository
    public function updateEvent($event)
    {
       try {
-         // write event to file:
-         file_put_contents('event.txt', json_encode($event) . PHP_EOL, FILE_APPEND);
-         $stmt = $this->connection->prepare("UPDATE events SET title=:title, startTime=:startTime, endTime=:endTime, price=:price, location=:location, ticket_amount=:ticket_amount, page_id=:page_id, detail_page_id=:detail_page_id, eventType=:eventType WHERE id=:id");
+         $stmt = $this->connection->prepare("UPDATE events SET title=:title, startTime=:startTime, endTime=:endTime, price=:price, location=:location, ticket_amount=:ticket_amount, eventType=:eventType, page_id=:page_id, detail_page_id=:detail_page_id WHERE id=:id");
          $stmt->execute([
             ':id' => $event->id,
             ':title' => $event->title,
@@ -155,11 +153,12 @@ class EventRepository extends Repository
             ':ticket_amount' => $event->ticket_amount,
             ':page_id' => $event->page_id ?? null,
             ':detail_page_id' => $event->detail_page_id ?? null,
-            ':eventType' => $event->eventType,
+            ':eventType' => $event->eventType
          ]);
 
          return $stmt->rowCount() > 0;
       } catch (PDOException $e) {
+         file_put_contents('error.txt', print_r($e->getMessage(), TRUE));
          throw new Exception("Error updating event: " . $e->getMessage());
       }
    }
