@@ -101,16 +101,17 @@ class UserService
    }
    private function configureMailer()
    {
-      $this->mailer->isSMTP();
-      $this->mailer->Host = 'smtp.gmail.com';
-      $this->mailer->Port = 587;
-      $this->mailer->SMTPSecure = 'tls';
-      $this->mailer->SMTPAuth = true;
-      $this->mailer->Username = 'nick.schaap127@gmail.com';
-      $this->mailer->Password = 'ijlf nadp miej vftf';
-      $this->mailer->setFrom('nick.schaap127@gmail.com', 'Nick Schaap');
-   }
+      $env = parse_ini_file('../.env');
 
+      $this->mailer->isSMTP();
+      $this->mailer->Host = $env['SMTP_HOST'];
+      $this->mailer->Port = $env['SMTP_PORT'];
+      $this->mailer->SMTPSecure = $env['SMTP_SECURE'];
+      $this->mailer->SMTPAuth = $env['SMTP_AUTH'];
+      $this->mailer->Username = $env['SMTP_USERNAME'];
+      $this->mailer->Password = $env['SMTP_PASSWORD'];
+      $this->mailer->setFrom($env['SMTP_FROM_ADDRESS'], $env['SMTP_FROM_NAME']);
+   }
 
    public function reset($email)
    {
