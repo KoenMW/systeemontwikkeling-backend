@@ -13,6 +13,6 @@ class Event
     public string $location;
     public int $ticket_amount;
     public int $eventType;
-    public $page_id;
-    public $detail_page_id;
+    public ?int $page_id;
+    public ?int $detail_page_id;
 }

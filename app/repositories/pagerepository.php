@@ -544,4 +544,38 @@ class PageRepository extends Repository
             throw new \Exception('Error checking if card exists');
         }
     }
+
+    /**
+     * gets all page ids with their names
+     * @return array
+     * @throws \Exception
+     */
+    public function getAllPageIdsAndNames()
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT id, name FROM pages");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting page names: ' . $e->getMessage());
+            throw new \Exception('Error getting page names');
+        }
+    }
+
+    /**
+     * gets all detail page ids with their names
+     * @return array
+     * @throws \Exception
+     */
+    public function getAllDetailPageIdsAndNames()
+    {
+        try {
+            $stmt = $this->connection->prepare("SELECT id, name FROM pages WHERE id IN (SELECT page_id FROM detail_page)");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting detail page names: ' . $e->getMessage());
+            throw new \Exception('Error getting detail page names');
+        }
+    }
 }

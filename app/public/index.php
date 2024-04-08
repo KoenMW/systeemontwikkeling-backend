@@ -45,6 +45,8 @@ $router->delete('/pages/(\d+)', 'PageController@deletePage');
 $router->get('/pages/parent', 'PageController@getAllParentPages');
 $router->post('/pages', 'PageController@createPage');
 $router->put('/pages/(\d+)', 'PageController@updatePage');
+$router->get('/pages/ids', 'PageController@getAllPageIdsAndNames');
+$router->get('/pages/detail/ids', 'PageController@getAllDetailPageIdsAndNames');
 
 // events endpoint
 $router->get('/events', 'EventController@getAll');
