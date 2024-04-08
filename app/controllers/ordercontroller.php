@@ -33,7 +33,8 @@ class OrderController extends Controller
    public function getAllOrders()
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
          $orders = $this->orderService->getAllOrders();
 
          if (!$orders) {
@@ -57,7 +58,8 @@ class OrderController extends Controller
    public function getById($id)
    {
       try {
-         if (!$this->checkForJwt(1)) return;
+         if (!$this->checkForJwt(1))
+            return;
          $order = $this->orderService->getById($id);
 
          if (!$order) {
@@ -79,7 +81,8 @@ class OrderController extends Controller
    {
       try {
 
-         if (!$this->checkForJwt(1)) return;
+         if (!$this->checkForJwt(1))
+            return;
          $order = $this->orderService->checkOrderById($id);
          if (!$order) {
             $this->respondWithError(404, "Order not found");
@@ -101,7 +104,8 @@ class OrderController extends Controller
    {
       try {
 
-         if (!$this->checkForJwt(1)) return;
+         if (!$this->checkForJwt(1))
+            return;
 
          $DTO = $this->createObjectFromPostedJson(checkinDTO::class);
          if (!isset($DTO->id, $DTO->checkedIn)) {
@@ -119,7 +123,8 @@ class OrderController extends Controller
    public function createOrder()
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
 
          $data = json_decode(file_get_contents('php://input'), true);
          $tickets = $data['tickets'] ?? [];
@@ -137,7 +142,7 @@ class OrderController extends Controller
             $order->user_id = $userId;
             $order->quantity = $ticket['quantity'];
             $order->comment = $ticket['comment'] ?? null;
-            
+
             $createdOrder = $this->orderService->createOrder($order);
             if ($createdOrder) {
                $createdOrders[] = $createdOrder;
@@ -160,7 +165,8 @@ class OrderController extends Controller
    public function updateOrder()
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
          $order = $this->createObjectFromPostedJson(OrderDTO::class);
          $updated = $this->orderService->updateOrder($order);
          if ($updated) {
@@ -181,7 +187,8 @@ class OrderController extends Controller
    public function deleteOrder($id)
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
          if ($id) {
             $deleted = $this->orderService->deleteOrder($id);
             if ($deleted) {
@@ -243,9 +250,14 @@ class OrderController extends Controller
             'confirm' => true,
             'receipt_email' => $data['email'],
          ]);
-
-         http_response_code(200);
-         echo json_encode(['clientSecret' => $paymentIntent->client_secret]);
+         if ($paymentIntent->status == 'succeeded') {
+            http_response_code(200);
+            echo json_encode(['clientSecret' => $paymentIntent->client_secret]);
+         } else {
+            $this->invoiceService->sendRecoveryEmail($data['email']);
+            http_response_code(402); // Payment Required
+            echo json_encode(['error' => 'Payment failed. Recovery link sent.']);
+         }
       } catch (\Exception $e) {
          http_response_code(500);
          echo json_encode(['error' => $e->getMessage()]);

@@ -41,28 +41,27 @@ class InvoiceService
         $subtotalPerItem = [];
         $totalAmount = 0;
 
-        // Loop through each order to calculate subtotals and total amount
         foreach ($orderDetails as $order) {
-            $subtotal = $order->quantity * $order->price; // Corrected: Accessing properties with object syntax
+            $subtotal = $order->quantity * $order->price;
             $subtotalPerItem[] = [
-                'username' => $order->username, // Corrected
-                'phoneNumber' => $order->phoneNumber, // Corrected
-                'address' => $order->address, // Corrected
-                'email' => $order->email, // Corrected
-                'eventName' => $order->EventTitle, // Corrected
-                'quantity' => $order->quantity, // Corrected
-                'pricePerItem' => $order->price, // Corrected
+                'username' => $order->username,
+                'phoneNumber' => $order->phoneNumber,
+                'address' => $order->address,
+                'email' => $order->email,
+                'eventName' => $order->EventTitle,
+                'quantity' => $order->quantity,
+                'pricePerItem' => $order->price,
                 'subtotal' => $subtotal,
-                'startTime' => $order->startTime, // Corrected
-                'endTime' => $order->endTime, // Corrected
-                'location' => $order->location // Corrected
+                'startTime' => $order->startTime,
+                'endTime' => $order->endTime,
+                'location' => $order->location
             ];
             $totalAmount += $subtotal;
         }
 
         // Invoice data
         $invoiceData = [
-            'invoiceNumber' => uniqid('INV-'), // Example invoice number generation
+            'invoiceNumber' => uniqid('INV-'),
             'invoiceDate' => date('Y-m-d'),
             'items' => $subtotalPerItem,
             'totalAmount' => $totalAmount
@@ -75,7 +74,6 @@ class InvoiceService
     {
         $invoiceData = $this->generateInvoiceData($orderIds);
 
-        // Initialize your PDF library and start adding content
         $pdf = new TCPDF();
         $pdf->AddPage();
         $pdf->SetFont('helvetica', '', 12);
@@ -84,7 +82,7 @@ class InvoiceService
         $pdf->Write(0, "Invoice Number: {$invoiceData['invoiceNumber']}\n", '', 0, 'L', true, 0, false, false, 0);
         $pdf->Write(0, "Invoice Date: {$invoiceData['invoiceDate']}\n\n", '', 0, 'L', true, 0, false, false, 0);
 
-        // Adding client details (assuming all orders belong to the same user)
+        // Adding client details 
         $firstItem = $invoiceData['items'][0];
         $pdf->Write(0, "Username: {$firstItem['username']}\n", '', 0, 'L', true, 0, false, false, 0);
         $pdf->Write(0, "Phone Number: {$firstItem['phoneNumber']}\n", '', 0, 'L', true, 0, false, false, 0);
@@ -167,6 +165,35 @@ class InvoiceService
                 unlink($qrPdfFilePath);
             }
             return ['error' => 'Error sending email: ' . $e->getMessage()];
+        }
+    }
+    public function sendRecoveryEmail($userEmail)
+    {
+        $this->mailer->addAddress($userEmail);
+        $this->mailer->Subject = 'Payment Recovery Link';
+
+        // Generate the recovery link
+        $link = "http://localhost:5173/shop";
+        $expiration = time() + (24 * 60 * 60);
+        $expirationDate = date('Y-m-d H:i:s', $expiration);
+
+
+        $this->mailer->Body = "Hey " . $userEmail . ",\n\n"
+            . "We noticed that your payment attempt was not successful.\n\n"
+            . "Please use the following link to retry your payment: \n"
+            . "<a href=\"$link\">Click Here</a>\n\n"
+            . "This link will expire on $expirationDate.\n\n"
+            . "Kind regards,\n"
+            . "The Festival";
+
+        $this->mailer->isHTML(true);
+
+        // Send the email
+        try {
+            $this->mailer->send();
+            return ['message' => 'Recovery email sent successfully.'];
+        } catch (Exception $e) {
+            return ['error' => 'Failed to send recovery email: ' . $e->getMessage()];
         }
     }
 
