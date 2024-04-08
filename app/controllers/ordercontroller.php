@@ -119,12 +119,15 @@ class OrderController extends Controller
          $this->respondWithError(500, "An error occurred while checking in the order");
       }
    }
-
+   /**
+    * Creates a new order.
+    * @author nick
+    */
    public function createOrder()
    {
       try {
-         if (!$this->checkForJwt(2))
-            return;
+
+         if (!$this->checkForJwt(0)) return;
 
          $data = json_decode(file_get_contents('php://input'), true);
          $tickets = $data['tickets'] ?? [];
@@ -135,23 +138,25 @@ class OrderController extends Controller
             return;
          }
 
-         $createdOrders = [];
+         $createdOrderIds = [];
          foreach ($tickets as $ticket) {
             $order = new Order();
             $order->event_id = $ticket['id'];
             $order->user_id = $userId;
             $order->quantity = $ticket['quantity'];
-            $order->comment = $ticket['comment'] ?? null;
 
-            $createdOrder = $this->orderService->createOrder($order);
-            if ($createdOrder) {
-               $createdOrders[] = $createdOrder;
+            $order->comment = $ticket['comment'];
+
+            $orderId = $this->orderService->createOrder($order);
+            if ($orderId) {
+               $createdOrderIds[] = $orderId;
             } else {
                throw new \Exception("Failed to create order for ticket: " . json_encode($ticket));
             }
          }
+         
+         $this->generateAndSendInvoice($createdOrderIds);
 
-         $this->respond($createdOrders);
       } catch (\Exception $e) {
          error_log($e->getMessage());
          $this->respondWithError(500, "An error occurred while creating the order(s).");
@@ -204,14 +209,11 @@ class OrderController extends Controller
          $this->respondWithError(500, "An error occurred while deleting the order");
       }
    }
-   public function generateAndSendInvoice()
+
+   public function generateAndSendInvoice($orderIds)
    {
       echo realpath(__DIR__ . "/../../storage/qr-codes/");
       try {
-         // Assuming you receive order IDs as a JSON payload
-         $data = json_decode(file_get_contents('php://input'), true);
-         $orderIds = $data['orderIds'] ?? [];
-
          // Ensure order IDs were provided
          if (empty($orderIds)) {
             throw new Exception("Order IDs are required.");
@@ -233,6 +235,7 @@ class OrderController extends Controller
          $this->respondWithError(500, $e->getMessage());
       }
    }
+
    public function createPayment()
    {
       $data = json_decode(file_get_contents('php://input'), true);

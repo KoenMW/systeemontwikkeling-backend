@@ -93,12 +93,11 @@ class PageController extends Controller
      * @throws \Exception
      * @author Luko Pecotic
      */
-    public function deletePage($id)
-    {
+    public function deletePage($id) {
         try {
             $this->service->deletePage($id);
-
-            $this->respond(null, 200);
+    
+            $this->respond(null, 200); 
         } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->respondWithError(500, "An error occurred while deleting the page");
@@ -123,11 +122,11 @@ class PageController extends Controller
     }
 
     /**
-     * Creates a new page from posted JSON data
-     * @return void
-     * @throws \Exception
-     * @author Luko Pecotic
-     */
+    * Creates a new page from posted JSON data
+    * @return void
+    * @throws \Exception
+    * @author Luko Pecotic
+    */
     function createPage()
     {
         try {
@@ -141,23 +140,6 @@ class PageController extends Controller
         } catch (\Exception $e) {
             error_log($e->getMessage());
             $this->respondWithError(500, "An error occurred while creating the page");
-        }
-    }
-
-    /**
-     * gets all page ids
-     * @return array
-     * @throws \Exception
-     * @author Koen Wijchers
-     */
-    function getPageIds()
-    {
-        try {
-            $pages = $this->service->getPageIds();
-            $this->respond($pages);
-        } catch (\Exception $e) {
-            error_log($e->getMessage());
-            $this->respondWithError(500, "An error occurred while retrieving the pages");
         }
     }
 }

@@ -211,7 +211,7 @@ class UserController extends Controller
     {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
-
+            
             if (empty($data) || !isset($data['email'])) {
                 throw new Exception('Missing email in request body', 400);
             }
