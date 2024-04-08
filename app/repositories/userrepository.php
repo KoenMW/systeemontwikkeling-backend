@@ -88,6 +88,9 @@ class UserRepository extends Repository
     }
     public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC')
     {
+        $searchEmail = isset($_GET['searchEmail']) ? $_GET['searchEmail'] : null;
+        $filterRole = isset($_GET['filterRole']) ? $_GET['filterRole'] : null;
+        $sortByCreateDate = isset($_GET['sortOrder']) ? $_GET['sortOrder'] : 'ASC';
         $query = "SELECT id, email, role, createDate FROM users WHERE 1 = 1";
         $parameters = [];
 

@@ -80,17 +80,20 @@ class UserController extends Controller
     public function getUsers()
     {
         try {
-            if (!$this->checkForJwt(2)) return;
+            if (!$this->checkForJwt(2))
+                return;
 
             $searchEmail = $_GET['searchEmail'] ?? null;
             $filterRole = $_GET['filterRole'] ?? null;
             $sortByCreateDate = $_GET['sortByCreateDate'] ?? 'ASC';
 
+
             $users = $this->service->getUsers($searchEmail, $filterRole, $sortByCreateDate);
             header('Content-Type: application/json');
-            $this->respond($users);
+            echo json_encode($users);
         } catch (Exception $e) {
-            $this->respondWithError(500, "something went wrong while fetching users");
+            http_response_code(500);
+            echo json_encode(["message" => "something went wrong while fetching users"]);
         }
     }
 
