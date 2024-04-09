@@ -206,6 +206,13 @@ class OrderRepository extends Repository
          return false;
       }
    }
+   /**
+    * gets the order and the event data
+    * @param int $id
+    * @return InvoiceDTO
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    function getOrderDetailsByIds($orderIds)
    {
       try {

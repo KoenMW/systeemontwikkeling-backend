@@ -24,7 +24,13 @@ class EventRepository extends Repository
          throw new Exception('Error getting events');
       }
    }
-
+   /**
+    * gets the event by type
+    * @param string $type
+    * @return Event[]
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    function getByType($type)
    {
       try {
@@ -119,6 +125,12 @@ class EventRepository extends Repository
          throw new Exception('Error getting event');
       }
    }
+   /**
+    * gets the event by page id
+    * @param int $id
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function addEvent(Event $event)
    {
       try {
@@ -139,6 +151,13 @@ class EventRepository extends Repository
          throw new Exception("Error adding event: " . $e->getMessage());
       }
    }
+   /**
+    * updates the event
+    * @param Event $event
+    * @return bool
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function updateEvent($event)
    {
       try {
@@ -161,7 +180,13 @@ class EventRepository extends Repository
          throw new Exception("Error updating event: " . $e->getMessage());
       }
    }
-
+   /**
+    * deletes the event
+    * @param int $id
+    * @return bool
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function deleteEvent($id)
    {
       try {
@@ -174,6 +199,13 @@ class EventRepository extends Repository
          throw new Exception("Error deleting event {$id}");
       }
    }
+   /**
+    * gets the event by id
+    * @param int $id
+    * @return Event
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function getEventById($id)
    {
       try {

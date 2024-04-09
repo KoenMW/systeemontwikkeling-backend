@@ -209,7 +209,11 @@ class OrderController extends Controller
          $this->respondWithError(500, "An error occurred while deleting the order");
       }
    }
-
+   /**
+    * Generates and sends an invoice for the given order IDs.
+    * @throws Exception If there's an error generating the invoice or sending the email
+    * @author Omar Al Sayasna
+    */
    public function generateAndSendInvoice($orderIds)
    {
       echo realpath(__DIR__ . "/../../storage/qr-codes/");

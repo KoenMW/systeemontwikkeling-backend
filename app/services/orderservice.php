@@ -116,6 +116,12 @@ class OrderService
     {
         return $this->orderRepository->getOrderDetailsByIds($orderIds);
     }
+    /**
+     * Generates QR codes for the given event IDs.
+     * @param array $eventIds An array of event IDs for which to generate QR codes
+     * @throws Exception If there's an error generating the QR codes
+     * @author Omar Al Sayasna
+     */
     public function generateEventQrCodes(array $eventIds)
     {
         $writer = new PngWriter();
