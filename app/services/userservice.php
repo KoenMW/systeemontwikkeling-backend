@@ -222,7 +222,7 @@ class UserService
 
       $tokenData = $this->repository->getUserByResetToken($token);
 
-      if (!$tokenData || strtotime($tokenData->reset_token_expiry) < time()) {
+      if (!$tokenData || $tokenData->reset_token_expire < time()) {
          throw new Exception('Invalid or expired token');
       }
    }

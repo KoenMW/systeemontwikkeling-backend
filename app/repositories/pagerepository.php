@@ -544,4 +544,50 @@ class PageRepository extends Repository
             throw new \Exception('Error checking if card exists');
         }
     }
+
+    /**
+     * gets all parent page ids and names
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllParentIdsAndNames()
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT p.id, p.name
+            FROM pages p 
+            LEFT JOIN detail_page dp ON p.id = dp.page_id
+            WHERE dp.parent_page_id IS NULL
+        ");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting parent pages: ' . $e->getMessage());
+            throw new \Exception('Error getting parent pages');
+        }
+    }
+
+    /**
+     * gets all child page ids and names
+     * @return array
+     * @throws \Exception
+     * @author Koen Wijchers
+     */
+    public function getAllChildIdsAndNames()
+    {
+        try {
+            $stmt = $this->connection->prepare("
+            SELECT p.id, p.name
+            FROM detail_page dp
+            INNER JOIN pages p ON dp.page_id = p.id
+            INNER JOIN pages pp ON dp.parent_page_id = pp.id
+        ");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_CLASS);
+        } catch (PDOException $e) {
+            error_log('Error getting child pages: ' . $e->getMessage());
+            throw new \Exception('Error getting child pages');
+        }
+    }
 }

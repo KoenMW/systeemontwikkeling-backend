@@ -42,7 +42,9 @@ class EventRepository extends Repository
                 price, 
                 location, 
                 ticket_amount, 
-                eventType
+                eventType,
+                page_id,
+                detail_page_id
                 FROM events
                 WHERE events.eventType = :type
             ");
@@ -76,7 +78,9 @@ class EventRepository extends Repository
                 price, 
                 location, 
                 ticket_amount, 
-                eventType
+                eventType,
+                page_id,
+                detail_page_id
                 FROM events
                 WHERE events.page_id = :id OR events.detail_page_id = :id
             ");
@@ -110,7 +114,9 @@ class EventRepository extends Repository
                 price, 
                 location, 
                 ticket_amount, 
-                eventType
+                eventType,
+                page_id,
+                detail_page_id
                 FROM events
                 WHERE events.detail_page_id = :id
             ");
@@ -146,6 +152,8 @@ class EventRepository extends Repository
             ':detail_page_id' => $event->detail_page_id,
             ':eventType' => $event->eventType
          ]);
+
+
          return $this->connection->lastInsertId();
       } catch (PDOException $e) {
          throw new Exception("Error adding event: " . $e->getMessage());
