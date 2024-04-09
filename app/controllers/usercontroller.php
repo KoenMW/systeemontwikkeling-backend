@@ -16,7 +16,11 @@ class UserController extends Controller
     {
         $this->service = new UserService();
     }
-
+    /**
+     * Logs in a user with the given email and password and sends a JWT token in the response.
+     * @throws Exception If the email or password is missing or incorrect, or a server error occurs.
+     * @author Omar Al Sayasna
+     */
     public function login()
     {
         try {
@@ -29,6 +33,10 @@ class UserController extends Controller
             $this->respondWithError(500, "Invalid email or password");
         }
     }
+    /**
+     * Creates a new user with the given data and sends the user data in the response.
+     * @author Omar Al Sayasna
+     */
     public function createUser()
     {
         try {
@@ -39,7 +47,11 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
-
+    /**
+     * Generates a JWT token for the given user.
+     * @throws Exception If the user role is invalid or a server error occurs.
+     * @author Omar Al Sayasna
+     */
     public function generateJwt($user)
     {
         $secret_key = $this->getSecretKey($user->role);
@@ -76,7 +88,11 @@ class UserController extends Controller
                 "expireAt" => $expire
             );
     }
-
+    /**
+     * Gets the secret key for the given user role.
+     * @throws Exception If the role is invalid
+     * @author Omar Al Sayasna
+     */
     public function getUsers()
     {
         try {
@@ -188,7 +204,13 @@ class UserController extends Controller
             $this->respondWithError(500, $e->getMessage());
         }
     }
-
+    /**
+     * Deletes a user with the given id, if the user id in the token matches the user id in the request
+     * @param int $id The id of the user to delete
+     * @throws Exception If the id is not provided or a server error occurs
+     * @throws Exception If the user id in the token does not match the user id in the request
+     * @author Omar Al Sayasna
+     */
     public function deleteUser($id)
     {
         try {
@@ -216,7 +238,7 @@ class UserController extends Controller
     {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
-            
+
             if (empty($data) || !isset($data['email'])) {
                 throw new Exception('Missing email in request body', 400);
             }

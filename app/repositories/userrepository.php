@@ -11,6 +11,14 @@ use Models\User;
 
 class UserRepository extends Repository
 {
+    /**
+     * Logs in a user with the given email and password
+     * @param string $email The email of the user
+     * @param string $password The password of the user
+     * @return User The logged in user
+     * @throws Exception If the email is incorrect, the password is incorrect, or a database error occurs
+     * @author Omar Al Sayasna
+     */
     function login($email, $password)
     {
         try {
@@ -49,7 +57,12 @@ class UserRepository extends Repository
     {
         return password_verify($input, $hash);
     }
-
+    /**
+     * Signs up a user with the given user object
+     * @param User $user The user object to sign up
+     * @throws Exception If there's an error signing up the user
+     * @author Omar Al Sayasna
+     */
     function signUp(User $user)
     {
         try {
@@ -62,6 +75,13 @@ class UserRepository extends Repository
             throw new Exception($e->getMessage());
         }
     }
+    /**
+     * Checks if the email is already in use
+     * @param string $email The email to check
+     * @return bool True if the email is already in use, false otherwise
+     * @throws Exception If there's an error checking the email in the database
+     * @author Omar Al Sayasna
+     */
     function checkEmailPassword($email, $password)
     {
         // retrieve the user with the given username
@@ -86,6 +106,12 @@ class UserRepository extends Repository
         $user->password = "";
         return $user;
     }
+    /**
+     * Fetches all users from the database
+     * @return User[] The fetched users
+     * @throws Exception If there's an error fetching the users from the database
+     * @author Omar Al Sayasna
+     */
     public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC')
     {
         $searchEmail = isset($_GET['searchEmail']) ? $_GET['searchEmail'] : null;
@@ -313,7 +339,13 @@ class UserRepository extends Repository
             throw new Exception($e->getMessage());
         }
     }
-
+    /**
+     * Deletes a user with the given id
+     * @param int $id
+     * @return bool True if the user was deleted, false otherwise
+     * @throws Exception If there's an error deleting the user from the database
+     * @author Omar Al Sayasna
+     */
     public function deleteUser($id)
     {
         try {

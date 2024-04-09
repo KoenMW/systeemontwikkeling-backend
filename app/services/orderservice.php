@@ -75,7 +75,6 @@ class OrderService
     * @throws Exception If there's an error preparing or executing the SQL statement
     * @author Luko Pecotic
     */
-
    public function deleteOrder($id)
    {
       return $this->orderRepository->deleteOrder($id);
@@ -116,10 +115,24 @@ class OrderService
    {
       return $this->orderRepository->checkOrder($id);
    }
+
+   /**
+    * Retrieves all orders from the database.
+    * @return array An array of Order objects representing all orders in the database
+    * @throws Exception If there's an error fetching the orders from the database
+    * @author Luko Pecotic
+    */
    public function getOrderDetailsByIds(array $orderIds)
    {
       return $this->orderRepository->getOrderDetailsByIds($orderIds);
    }
+
+   /**
+    * Generates QR codes for the given event IDs.
+    * @param array $eventIds An array of event IDs for which to generate QR codes
+    * @throws Exception If there's an error generating the QR codes
+    * @author Omar Al Sayasna
+    */
    public function generateEventQrCodes(array $eventIds)
    {
       $writer = new PngWriter();
