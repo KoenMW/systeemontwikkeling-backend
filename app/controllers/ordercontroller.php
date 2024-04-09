@@ -120,7 +120,7 @@ class OrderController extends Controller
       }
    }
    /**
-    * Creates a new order.
+    * Creates a new order when the payment is successful.
     * @author nick
     */
    public function createOrder()
@@ -239,7 +239,10 @@ class OrderController extends Controller
          $this->respondWithError(500, $e->getMessage());
       }
    }
-
+   /**
+    * Creates a payment intent for a new order.
+    * @author nick
+    */
    public function createPayment()
    {
       $data = json_decode(file_get_contents('php://input'), true);
@@ -259,6 +262,7 @@ class OrderController extends Controller
          ]);
          if ($paymentIntent->status == 'succeeded') {
             http_response_code(200);
+            //stuurd de client secret terug naar de frontend als de payment is gelukt
             echo json_encode(['clientSecret' => $paymentIntent->client_secret]);
          } else {
             $this->invoiceService->sendRecoveryEmail($data['email']);

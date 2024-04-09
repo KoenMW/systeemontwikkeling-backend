@@ -201,7 +201,14 @@ class UserRepository extends Repository
             throw new Exception($e->getMessage());
         }
     }
-
+    /**
+     * updates the reset token for the user with the given id
+     * @param int $userId
+     * @param string $token
+     * @param DateTime $expiry
+     * @throws Exception If there's an error updating the reset token in the database
+     * @author nick
+     */
     public function updateResetToken($userId, $token, $expiry)
     {
         try {
@@ -231,6 +238,13 @@ class UserRepository extends Repository
             return null;
         }
     }
+    /**
+     * Fetches a user from the database by their reset token.
+     * @param string $token The reset token of the user to fetch.
+     * @return User The fetched user.
+     * @throws Exception If no user is found or a database error occurs.
+     * @author nicks 
+     */
     public function getUserByResetToken($token)
     {
         try {
