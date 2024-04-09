@@ -207,6 +207,11 @@ class UserController extends Controller
             $this->respondWithError(500, "something went wrong while deleting user {$id}");
         }
     }
+    /**
+     * Sends a password reset email to the user with the given email address
+     * @throws Exception If the email is not provided or a server error occurs.
+     * @author nick
+     */
     public function reset()
     {
         try {
@@ -225,7 +230,11 @@ class UserController extends Controller
             $this->sendResponse($e->getMessage(), $e->getCode());
         }
     }
-
+    /**
+     * Resets the password of the user with the given token
+     * @throws Exception If the password or token is not provided or a server error occurs.
+     * @author nick
+     */
     public function resetpassword()
     {
         try {
@@ -243,6 +252,12 @@ class UserController extends Controller
             $this->sendresponse($e->getmessage(), 500);
         }
     }
+    /**
+     * Sends a response with the given message and status code.
+     * @param string $message The message to send in the response.
+     * @param int $statuscode The status code to send in the response.
+     * @author nick
+     */
     private function sendresponse($message, $statuscode = 200)
     {
         http_response_code($statuscode);

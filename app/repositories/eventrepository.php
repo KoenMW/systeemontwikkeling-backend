@@ -200,6 +200,14 @@ class EventRepository extends Repository
          throw new Exception('Error getting event');
       }
    }
+   /**
+    * Updates the ticket amount of an event
+    * @param int $eventId The id of the event
+    * @param int $ticketAmount The new ticket amount
+    * @return bool True if the ticket amount was updated successfully, false otherwise
+    * @throws Exception If there's an error preparing or executing the SQL statement
+    * @author nick
+    */
    public function updateEventTicketAmount($eventId, $ticketAmount)
    {
       try {
