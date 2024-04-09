@@ -19,18 +19,35 @@ class UserService
       $this->mailer = new PHPMailer();
       $this->configureMailer();
    }
-
+   /**
+    * Checks if the given username and password match a user in the database.
+    * @param string $email The email of the user to check
+    * @param string $password The password of the user to check
+    * @throws Exception If there's an error fetching the user from the database
+    * @author Omar Al Sayasna
+    */
    public function checkUsernamePassword($email, $password)
    {
       return $this->repository->login($email, $password);
    }
-
+   /**
+    * Creates a new user in the database.
+    * @param User $user The user to be created
+    * @throws Exception If there's an error creating the user in the database
+    * @author Omar Al Sayasna
+    */
    public function createUser(User $user)
    {
       $user->img ?? $user->img = '';
       $this->repository->signUp($user);
    }
-
+   /**
+    * Checks if the given email and password match a user in the database.
+    * @param string $email The email of the user to check
+    * @param string $password The password of the user to check
+    * @throws Exception If there's an error fetching the user from the database
+    * @author Omar Al Sayasna
+    */
    public function checkEmailPassword($email, $password)
    {
       return $this->repository->checkEmailPassword($email, $password);
@@ -40,6 +57,14 @@ class UserService
    {
       return $this->repository->updateResetToken($userId, $token, $expiry);
    }
+   /**
+    * Fetches all users from the database
+    * @param string $searchEmail The email to search for
+    * @param string $filterRole The role to filter by
+    * @param string $sortByCreateDate The order to sort the users by
+    * @throws Exception If there's an error fetching the users from the database
+    * @author Omar Al Sayasna
+    */
    public function getUsers($searchEmail = null, $filterRole = null, $sortByCreateDate = 'ASC')
    {
       return $this->repository->getUsers($searchEmail, $filterRole, $sortByCreateDate);
@@ -83,7 +108,12 @@ class UserService
    {
       $this->repository->uploadProfilePicture($id, $base64Image);
    }
-
+   /**
+    * Deletes a user with the given id
+    * @param int $id
+    * @throws Exception If there's an error deleting the user from the database
+    * @author Omar Al Sayasna
+    */
    public function deleteUser($id)
    {
       return $this->repository->deleteUser($id);
@@ -99,6 +129,11 @@ class UserService
    {
       return $this->repository->getUserById($id);
    }
+   /**
+    * Configures the mailer with the SMTP settings from the .env file
+    * @throws Exception If there's an error reading the .env file or if the mailer settings are invalid
+    * @author nick
+    */
    private function configureMailer()
    {
       $env = parse_ini_file('../.env');
@@ -112,7 +147,13 @@ class UserService
       $this->mailer->Password = $env['SMTP_PASSWORD'];
       $this->mailer->setFrom($env['SMTP_FROM_ADDRESS'], $env['SMTP_FROM_NAME']);
    }
-
+   /**
+    * Sends a password reset email to the user with the given email address
+    * @param string $email The email address of the user
+    * @return array An array containing a success message or an error message if the email could not be sent
+    * @throws Exception If there's an error sending the email
+    * @author nick
+    */
    public function reset($email)
    {
       $user = $this->repository->getUserByEmail($email);
@@ -153,7 +194,13 @@ class UserService
          return ['error' => 'Error sending email: ' . $e->getMessage()];
       }
    }
-
+   /**
+    * Resets the password of a user with the given reset token
+    * @param string $token The reset token
+    * @param string $password The new password
+    * @throws Exception If the token is invalid or expired, or if there's an error updating the password in the database
+    * @author nick
+    */
    public function resetPassword($token, $password)
    {
 
@@ -164,13 +211,18 @@ class UserService
          throw new Exception('Failed to reset password: ' . $e->getMessage());
       }
    }
-
+   /**
+    * Validates a reset token
+    * @param string $token The reset token
+    * @throws Exception If the token is invalid or expired
+    * @author nick
+    */
    public function validateToken($token)
    {
 
       $tokenData = $this->repository->getUserByResetToken($token);
 
-      if (!$tokenData || strtotime($tokenData->reset_token_expiry) < time()) {
+      if (!$tokenData || $tokenData->reset_token_expire < time()) {
          throw new Exception('Invalid or expired token');
       }
    }

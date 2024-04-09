@@ -24,7 +24,13 @@ class EventRepository extends Repository
          throw new Exception('Error getting events');
       }
    }
-
+   /**
+    * gets the event by type
+    * @param string $type
+    * @return Event[]
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    function getByType($type)
    {
       try {
@@ -36,7 +42,9 @@ class EventRepository extends Repository
                 price, 
                 location, 
                 ticket_amount, 
-                eventType
+                eventType,
+                page_id,
+                detail_page_id
                 FROM events
                 WHERE events.eventType = :type
             ");
@@ -70,7 +78,9 @@ class EventRepository extends Repository
                 price, 
                 location, 
                 ticket_amount, 
-                eventType
+                eventType,
+                page_id,
+                detail_page_id
                 FROM events
                 WHERE events.page_id = :id OR events.detail_page_id = :id
             ");
@@ -104,7 +114,9 @@ class EventRepository extends Repository
                 price, 
                 location, 
                 ticket_amount, 
-                eventType
+                eventType,
+                page_id,
+                detail_page_id
                 FROM events
                 WHERE events.detail_page_id = :id
             ");
@@ -119,6 +131,12 @@ class EventRepository extends Repository
          throw new Exception('Error getting event');
       }
    }
+   /**
+    * gets the event by page id
+    * @param int $id
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function addEvent(Event $event)
    {
       try {
@@ -134,11 +152,20 @@ class EventRepository extends Repository
             ':detail_page_id' => $event->detail_page_id,
             ':eventType' => $event->eventType
          ]);
+
+
          return $this->connection->lastInsertId();
       } catch (PDOException $e) {
          throw new Exception("Error adding event: " . $e->getMessage());
       }
    }
+   /**
+    * updates the event
+    * @param Event $event
+    * @return bool
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function updateEvent($event)
    {
       try {
@@ -161,7 +188,13 @@ class EventRepository extends Repository
          throw new Exception("Error updating event: " . $e->getMessage());
       }
    }
-
+   /**
+    * deletes the event
+    * @param int $id
+    * @return bool
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function deleteEvent($id)
    {
       try {
@@ -174,6 +207,13 @@ class EventRepository extends Repository
          throw new Exception("Error deleting event {$id}");
       }
    }
+   /**
+    * gets the event by id
+    * @param int $id
+    * @return Event
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    public function getEventById($id)
    {
       try {
@@ -200,6 +240,14 @@ class EventRepository extends Repository
          throw new Exception('Error getting event');
       }
    }
+   /**
+    * Updates the ticket amount of an event
+    * @param int $eventId The id of the event
+    * @param int $ticketAmount The new ticket amount
+    * @return bool True if the ticket amount was updated successfully, false otherwise
+    * @throws Exception If there's an error preparing or executing the SQL statement
+    * @author nick
+    */
    public function updateEventTicketAmount($eventId, $ticketAmount)
    {
       try {

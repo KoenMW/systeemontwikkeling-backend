@@ -33,7 +33,8 @@ class OrderController extends Controller
    public function getAllOrders()
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
          $orders = $this->orderService->getAllOrders();
 
          if (!$orders) {
@@ -57,7 +58,8 @@ class OrderController extends Controller
    public function getById($id)
    {
       try {
-         if (!$this->checkForJwt(1)) return;
+         if (!$this->checkForJwt(1))
+            return;
          $order = $this->orderService->getById($id);
 
          if (!$order) {
@@ -79,7 +81,8 @@ class OrderController extends Controller
    {
       try {
 
-         if (!$this->checkForJwt(1)) return;
+         if (!$this->checkForJwt(1))
+            return;
          $order = $this->orderService->checkOrderById($id);
          if (!$order) {
             $this->respondWithError(404, "Order not found");
@@ -101,7 +104,8 @@ class OrderController extends Controller
    {
       try {
 
-         if (!$this->checkForJwt(1)) return;
+         if (!$this->checkForJwt(1))
+            return;
 
          $DTO = $this->createObjectFromPostedJson(checkinDTO::class);
          if (!isset($DTO->id, $DTO->checkedIn)) {
@@ -116,12 +120,13 @@ class OrderController extends Controller
       }
    }
    /**
-    * Creates a new order.
+    * Creates a new order when the payment is successful.
     * @author nick
     */
    public function createOrder()
    {
       try {
+
          if (!$this->checkForJwt(0)) return;
 
          $data = json_decode(file_get_contents('php://input'), true);
@@ -139,6 +144,8 @@ class OrderController extends Controller
             $order->event_id = $ticket['id'];
             $order->user_id = $userId;
             $order->quantity = $ticket['quantity'];
+
+            $order->comment = $ticket['comment'];
 
             $orderId = $this->orderService->createOrder($order);
             if ($orderId) {
@@ -163,7 +170,8 @@ class OrderController extends Controller
    public function updateOrder()
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
          $order = $this->createObjectFromPostedJson(OrderDTO::class);
          $updated = $this->orderService->updateOrder($order);
          if ($updated) {
@@ -184,7 +192,8 @@ class OrderController extends Controller
    public function deleteOrder($id)
    {
       try {
-         if (!$this->checkForJwt(2)) return;
+         if (!$this->checkForJwt(2))
+            return;
          if ($id) {
             $deleted = $this->orderService->deleteOrder($id);
             if ($deleted) {
@@ -200,7 +209,11 @@ class OrderController extends Controller
          $this->respondWithError(500, "An error occurred while deleting the order");
       }
    }
-
+   /**
+    * Generates and sends an invoice for the given order IDs.
+    * @throws Exception If there's an error generating the invoice or sending the email
+    * @author Omar Al Sayasna
+    */
    public function generateAndSendInvoice($orderIds)
    {
       echo realpath(__DIR__ . "/../../storage/qr-codes/");
@@ -226,7 +239,10 @@ class OrderController extends Controller
          $this->respondWithError(500, $e->getMessage());
       }
    }
-
+   /**
+    * Creates a payment intent for a new order.
+    * @author nick
+    */
    public function createPayment()
    {
       $data = json_decode(file_get_contents('php://input'), true);
@@ -244,9 +260,15 @@ class OrderController extends Controller
             'confirm' => true,
             'receipt_email' => $data['email'],
          ]);
-
-         http_response_code(200);
-         echo json_encode(['clientSecret' => $paymentIntent->client_secret]);
+         if ($paymentIntent->status == 'succeeded') {
+            http_response_code(200);
+            //stuurd de client secret terug naar de frontend als de payment is gelukt
+            echo json_encode(['clientSecret' => $paymentIntent->client_secret]);
+         } else {
+            $this->invoiceService->sendRecoveryEmail($data['email']);
+            http_response_code(402); // Payment Required
+            echo json_encode(['error' => 'Payment failed. Recovery link sent.']);
+         }
       } catch (\Exception $e) {
          http_response_code(500);
          echo json_encode(['error' => $e->getMessage()]);

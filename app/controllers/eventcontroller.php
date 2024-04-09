@@ -13,7 +13,11 @@ class EventController extends Controller
     {
         $this->service = new EventService();
     }
-
+    /**
+     * gets all events
+     * @throws Exception
+     * @author Omar Al Sayasna
+     */
     function getAll()
     {
         $events = $this->service->getAll();
@@ -30,12 +34,22 @@ class EventController extends Controller
         $events = $this->service->getByType($eventType);
         $this->respond($events);
     }
+    /**
+     * adds an event
+     * @throws Exception
+     * @author Omar Al Sayasna
+     */
     public function addEvent()
     {
         $event = $this->createObjectFromPostedJson("Models\\Event");
         $eventId = $this->service->addEvent($event);
         $this->respond(['message' => 'Event added successfully', 'eventId' => $eventId]);
     }
+    /**
+     * updates an event
+     * @throws Exception
+     * @author Omar Al Sayasna
+     */
     public function updateEvent($id)
     {
         try {
@@ -48,6 +62,11 @@ class EventController extends Controller
             $this->respondWithError(500, "something went wrong while updating event {$id}");
         }
     }
+    /**
+     * deletes an event
+     * @throws Exception
+     * @author Omar Al Sayasna
+     */
     public function deleteEvent($id)
     {
         try {
@@ -62,6 +81,11 @@ class EventController extends Controller
             $this->respondWithError(500, "Error while deleting event with ID $id");
         }
     }
+    /**
+     * gets the event by id
+     * @throws Exception
+     * @author Omar Al Sayasna
+     */
     public function getEventById($id)
     {
         try {

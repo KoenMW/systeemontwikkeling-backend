@@ -39,16 +39,13 @@ class OrderRepository extends Repository
          error_log('Error fetching orders: ' . $e->getMessage());
          return [];
       }
-   }
-
+   } 
    /**
-    * Creates a new order in the database.
-    * @param Order $order The order to be created
-    * @return bool True if the order was created successfully, false otherwise
-    * @throws Exception If there's an error preparing the SQL statement
-    * @author Luko Pecotic
+    * Retrieves all orders from the database.
+    * @return array An array of Order objects representing all orders in the database
+    * @throws Exception If there's an error fetching the orders from the database
+    * @author nick
     */
-
    public function createOrder(Order $order)
    {
       try {
@@ -206,6 +203,13 @@ class OrderRepository extends Repository
          return false;
       }
    }
+   /**
+    * gets the order and the event data
+    * @param int $id
+    * @return InvoiceDTO
+    * @throws \Exception
+    * @author Omar Al Sayasna
+    */
    function getOrderDetailsByIds($orderIds)
    {
       try {
