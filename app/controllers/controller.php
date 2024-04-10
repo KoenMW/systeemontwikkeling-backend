@@ -28,6 +28,7 @@ class Controller
         // Strip the part "Bearer " from the header
         $arr = explode(" ", $authHeader);
         $jwt = $arr[1];
+        file_put_contents('login.txt', print_r($jwt, TRUE));
 
         if ($jwt) {
             try {

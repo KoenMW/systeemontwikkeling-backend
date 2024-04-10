@@ -80,9 +80,6 @@ class OrderController extends Controller
    public function checkOrderById($id)
    {
       try {
-
-         if (!$this->checkForJwt(1))
-            return;
          $order = $this->orderService->checkOrderById($id);
          if (!$order) {
             $this->respondWithError(404, "Order not found");
@@ -103,10 +100,6 @@ class OrderController extends Controller
    public function setCheckin()
    {
       try {
-
-         if (!$this->checkForJwt(1))
-            return;
-
          $DTO = $this->createObjectFromPostedJson(checkinDTO::class);
          if (!isset($DTO->id, $DTO->checkedIn)) {
             $this->respondWithError(400, "Missing order data");
@@ -144,7 +137,6 @@ class OrderController extends Controller
             $order->event_id = $ticket['id'];
             $order->user_id = $userId;
             $order->quantity = $ticket['quantity'];
-
             $order->comment = $ticket['comment'];
 
             $orderId = $this->orderService->createOrder($order);
@@ -154,9 +146,9 @@ class OrderController extends Controller
                throw new \Exception("Failed to create order for ticket: " . json_encode($ticket));
             }
          }
-         
-         $this->generateAndSendInvoice($createdOrderIds);
 
+         $this->generateAndSendInvoice($createdOrderIds);
+         
       } catch (\Exception $e) {
          error_log($e->getMessage());
          $this->respondWithError(500, "An error occurred while creating the order(s).");
