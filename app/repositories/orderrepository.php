@@ -48,7 +48,7 @@ class OrderRepository extends Repository
     */
    public function createOrder(Order $order)
    {
-      try {
+      try { 
          $id = uniqid("", true);
          $paymentDate = date('Y-m-d');
 
